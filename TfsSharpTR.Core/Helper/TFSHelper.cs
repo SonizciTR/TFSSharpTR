@@ -14,6 +14,8 @@ namespace TfsSharpTR.Core.Helper
     public static class TFSHelper
     {
         private static TfsVariable initSetting = null;
+        private static List<string> grpsUser = null;
+        private static List<string> grpsAll = null;
         private static TfsTeamProjectCollection teamColl = null;
         private static IIdentityManagementService idService = null;
         private static TeamFoundationIdentity tfsId = null;
@@ -74,40 +76,36 @@ namespace TfsSharpTR.Core.Helper
 
         public static List<string> GroupUserJoined()
         {
-            var grps = new List<string>();
+            if (grpsUser == null)
+                CollectGroups();
+
+            return grpsUser;
+        }
+
+        public static List<string> GroupsAll()
+        {
+            if (grpsAll == null)
+                CollectGroups();
+
+            return grpsAll;
+        }
+
+        private static bool CollectGroups()
+        {
+            grpsAll = new List<string>();
+            grpsUser = new List<string>();
             string projectUri = ProjectUri;
             TeamFoundationIdentity[] projectGroups = IdentityService.ListApplicationGroups(projectUri, ReadIdentityOptions.None);
 
-            //Dictionary<IdentityDescriptor, object> descSet = new Dictionary<IdentityDescriptor, object>(IdentityDescriptorComparer.Instance);
-
             foreach (TeamFoundationIdentity projectGroup in projectGroups)
             {
-                //descSet[projectGroup.Descriptor] = projectGroup.Descriptor;
                 bool isMem = IdentityService.IsMember(projectGroup.Descriptor, TFSIdentity.Descriptor);
                 if (isMem)
-                    grps.Add(projectGroup.DisplayName);
+                    grpsUser.Add(projectGroup.DisplayName);
+                grpsAll.Add(projectGroup.DisplayName);
             }
 
-            //// Expanded membership of project groups
-            //projectGroups = IdentityService.ReadIdentities(descSet.Keys.ToArray(), MembershipQuery.Expanded, ReadIdentityOptions.None);
-
-           
-            //// Collect all descriptors
-            //foreach (TeamFoundationIdentity projectGroup in projectGroups)
-            //{
-            //    foreach (IdentityDescriptor mem in projectGroup.Members)
-            //    {
-            //        descSet[mem] = mem;
-            //        grps.Add(mem.Identifier);
-            //    }
-            //}
-
-            return grps;
+            return true;
         }
-
-        //public static List<string> GroupsAll()
-        //{
-        //    TeamColl.
-        //}
     }
 }

@@ -53,10 +53,10 @@ namespace TfsSharpTR.Core.Helper
             {
                 if (tfsId == null)
                 {
-                    tfsId = IdentityService.ReadIdentity(IdentitySearchFactor.AccountName, 
+                    tfsId = IdentityService.ReadIdentity(IdentitySearchFactor.DisplayName, 
                         initSetting.BuildRequestedUser, 
-                        MembershipQuery.Expanded, 
-                        ReadIdentityOptions.IncludeReadFromSource);
+                        MembershipQuery.None, 
+                        ReadIdentityOptions.None);
                 }
                 return tfsId;
             }

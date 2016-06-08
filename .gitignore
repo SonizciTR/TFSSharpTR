@@ -4,5 +4,7 @@
 
 /packages
 /TfsSharpTR.Core/bin/Debug
+/TfsSharpTR.Core/obj/Debug
 /TfsSharpTR.PreBuild/bin/Debug
+/TfsSharpTR.PreBuild/obj/Debug
 /TfsSharpTR.UnitTest

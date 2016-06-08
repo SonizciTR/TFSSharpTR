@@ -4,20 +4,20 @@ TFS Sharp Task Runner for TFS 2015 Web Build
 This project is started for customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at build process. Then you will set your setting in a json file. 
 
 ####Ready Tasks:
-1. FileControlTask : Inside "TfsSharpTR.PreBuild" solution. Git has no file lock feature. Some cases you need some files not to modified or modiefied by some specific users. With this task, just add necessary setting to json file. It checks automatically.
+1. FileControlTask : Inside "TfsSharpTR.PreBuild" solution. Git has no file lock feature. Some cases you need some files not to modified or modiefied by some specific users. With this task, just add necessary setting to json file ("FileControlTask" part). It checks automatically.
 ```javascript
 {
   "PreBuildTasks": [ "FileControlTask" ], //Must have settings
-  "PostBuildTasks": [ "TestTask" ],//Must have settings
+  "PostBuildTasks": [ "TestTask" ], //Must have settings
 
-  "FileControlTask": [
+  "FileControlTask": [ // It is a array, You can add as much as you need
     {
       "FileName": "GlobalSupression.cs",
       "AllowedUser": [ ],
       "AllowedGroup": [ "DirectBackendCore" ],
       "RestrictedUser": [ ],
       "RestrictedGroup": [ ]
-    }, // It is a array, You can add as much as you need
+    }, 
   ],
 }
 ```
@@ -31,7 +31,7 @@ This project is started for customizing DevOps operation at TFS. Designed for TF
 
 ## Setting Json File
 There is a must have part :
-```
+```javascript
 {
   "PreBuildTasks": [ "FileControlTask" ],
   "PostBuildTasks": [ "TestTask" ]
@@ -39,7 +39,7 @@ There is a must have part :
 ```
 
 Other settings are all optional. Like "FileControlTask" part below.
-```
+```javascript
 {
   "PreBuildTasks": [ "FileControlTask" ],
   "PostBuildTasks": [ "TestTask" ],
@@ -60,9 +60,9 @@ Other settings are all optional. Like "FileControlTask" part below.
 
 It is very easy. Look "TestTask.cs" file. 
 
-Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyTask"), this is your task. Inherit your class from BaseTask<T>. "T" should be inherited from BaseBuildSetting. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
+Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirstTask" etc...), this is your task. Inherit your class from BaseTask<T>. "T" should be inherited from BaseBuildSetting. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
 
-If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Don't forget to add json format to setting file.
+If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add json format to setting file.
 
 
 ### Libraries Required Externally

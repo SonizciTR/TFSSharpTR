@@ -39,11 +39,20 @@
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
       <HintPath>..\DLLs\14\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Common">
+      <HintPath>..\DLLs\14\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Work.WebApi">
+      <HintPath>..\DLLs\14\Microsoft.TeamFoundation.Work.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Client">
       <HintPath>..\DLLs\14\Microsoft.VisualStudio.Services.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Common">
       <HintPath>..\DLLs\14\Microsoft.VisualStudio.Services.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.WebApi">
+      <HintPath>..\DLLs\14\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>

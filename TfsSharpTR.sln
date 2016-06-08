@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsSharpTR.Core", "TfsSharpTR.Core\TfsSharpTR.Core.csproj", "{90F44CC7-998E-48CD-9EA2-F22AECF51F2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsSharpTR.PreBuild", "TfsSharpTR.PreBuild\TfsSharpTR.PreBuild.csproj", "{014C83E4-C296-4B25-9A34-242F60C5DA05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsSharpTR.UnitTest", "TfsSharpTR.UnitTest\TfsSharpTR.UnitTest.csproj", "{645B1CE4-0D8C-4D4D-BEFD-9F98AD08523A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLLs", "DLLs", "{D658F3ED-E1D0-4196-B60A-B9D964F0B3CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "14", "14", "{D110191F-CBE1-436A-8261-469EA5743B78}"
+	ProjectSection(SolutionItems) = preProject
+		DLLs\14\Microsoft.TeamFoundation.Client.dll = DLLs\14\Microsoft.TeamFoundation.Client.dll
+		DLLs\14\Microsoft.TeamFoundation.Common.dll = DLLs\14\Microsoft.TeamFoundation.Common.dll
+		DLLs\14\Microsoft.TeamFoundation.VersionControl.Client.dll = DLLs\14\Microsoft.TeamFoundation.VersionControl.Client.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90F44CC7-998E-48CD-9EA2-F22AECF51F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F44CC7-998E-48CD-9EA2-F22AECF51F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F44CC7-998E-48CD-9EA2-F22AECF51F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F44CC7-998E-48CD-9EA2-F22AECF51F2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{014C83E4-C296-4B25-9A34-242F60C5DA05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{014C83E4-C296-4B25-9A34-242F60C5DA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{014C83E4-C296-4B25-9A34-242F60C5DA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{014C83E4-C296-4B25-9A34-242F60C5DA05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{645B1CE4-0D8C-4D4D-BEFD-9F98AD08523A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{645B1CE4-0D8C-4D4D-BEFD-9F98AD08523A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{645B1CE4-0D8C-4D4D-BEFD-9F98AD08523A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{645B1CE4-0D8C-4D4D-BEFD-9F98AD08523A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D110191F-CBE1-436A-8261-469EA5743B78} = {D658F3ED-E1D0-4196-B60A-B9D964F0B3CB}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,16 @@
+﻿{
+  "PreBuildTasks": [ "FileControlTask" ],
+  "PostBuildTasks": [ "TestTask" ],
+
+  "FileControlTask": [
+    {
+      "FileName": "GlobalSupression.cs",
+      "AllowedUser": [ ],
+      "AllowedGroup": [ "DirectBackendCore" ],
+      "RestrictedUser": [ ],
+      "RestrictedGroup": [ ]
+    },
+  ],
+
+
+}

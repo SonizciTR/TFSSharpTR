@@ -1,0 +1,10 @@
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\TfsSharpTR.Core.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\TfsSharpTR.Core.pdb
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\obj\Debug\TfsSharpTR.Core.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\obj\Debug\TfsSharpTR.Core.pdb
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\Newtonsoft.Json.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\Newtonsoft.Json.xml
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\Microsoft.TeamFoundation.Client.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\Microsoft.TeamFoundation.Common.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\bin\Debug\Microsoft.TeamFoundation.VersionControl.Client.dll
+C:\Kod\TfsSharpTR\TfsSharpTR.Core\obj\Debug\TfsSharpTR.Core.csprojResolveAssemblyReference.cache

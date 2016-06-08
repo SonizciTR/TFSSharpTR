@@ -12,7 +12,7 @@ There is a must have part :
 }
 ```
 
-Other settings are all optional.
+Other settings are all optional. Like "FileControlTask" part below.
 ```
 {
   "PreBuildTasks": [ "FileControlTask" ],
@@ -32,7 +32,7 @@ Other settings are all optional.
 
 ### How to develop your own task
 
-It is very easy. You can ses in "TestTask.cs" file. 
+It is very easy. Look "TestTask.cs" file. 
 
 Add "TfsSharpTR.Core.dll" reference tou your class library. Add a class ("MyTask"), this is your task. Inherit your class from BaseTask<T>. "T" should be inherited from BaseBuildSetting. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
 
@@ -41,12 +41,20 @@ If you want to add your custom setting, it is very easy. Add a class and inherit
 
 ### Libraries Required Externally
 Newtonsoft.Json.dll
+
 Microsoft.TeamFoundation.Client.dll
+
 Microsoft.TeamFoundation.Common.dll
+
 Microsoft.TeamFoundation.VersionControl.Client.dll
+
 Microsoft.TeamFoundation.VersionControl.Common.dll
+
 Microsoft.TeamFoundation.Work.WebApi.dll
+
 Microsoft.VisualStudio.Services.Client.dll
+
 Microsoft.VisualStudio.Services.Common.dll
+
 Microsoft.VisualStudio.Services.WebApi.dll
 

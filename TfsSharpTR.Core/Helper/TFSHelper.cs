@@ -41,5 +41,20 @@ namespace TfsSharpTR.Core.Helper
             Check();
             return logic.Value.GroupsAll();
         }
+
+        public static string UserDomainName
+        {
+            get
+            {
+                Check();
+                return logic.Value.UniqueName;
+            }
+        }
+
+        public static List<string> ChangedFiles()
+        {
+            Check();
+            return logic.Value.GroupsAll();
+        }
     }
 }

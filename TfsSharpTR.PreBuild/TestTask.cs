@@ -28,7 +28,7 @@ namespace TfsSharpTR.PreBuild
             var fMsg = CheckFileOp(folderPath);
             if (!string.IsNullOrEmpty(fMsg))
             {
-                return new TaskStatu(1, "CheckFileOp failed. Ex = " + fMsg);
+                return new TaskStatu("T1", "CheckFileOp failed. Ex = " + fMsg);
             }
 
             try
@@ -38,7 +38,7 @@ namespace TfsSharpTR.PreBuild
             }
             catch (Exception ex)
             {
-                tsk = new TaskStatu(2, "TestTask.Thread start throw exception. Ex = " + ex.ToString());
+                tsk = new TaskStatu("T2", "TestTask.Thread start throw exception. Ex = " + ex.ToString());
             }
             DisplayAllTfsVariables(tfsVariables);
             WriteDetail("This how to use detail method :)", tmrWatch);

@@ -61,6 +61,23 @@ namespace TfsSharpTR.Core.Helper
                 return tfsId;
             }
         }
+        private VersionControlServer VerControlServer
+        {
+            get
+            {
+                return TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
+            }
+        }
+
+        public string UniqueName
+        {
+            get
+            {
+                return TFSIdentity.UniqueName;
+            }
+        }
+
+        
 
         private string ProjectUri
         {
@@ -104,6 +121,16 @@ namespace TfsSharpTR.Core.Helper
             }
 
             return true;
+        }
+
+        public List<string> PendingChangeFiles()
+        {
+            var filesChanged = new List<string>();
+
+            //string shelveName = initSetting.
+            //var data = VerControlServer.QueryShelvedChanges()
+
+            return filesChanged;
         }
     }
 }

@@ -5,8 +5,8 @@
   "FileControlTask": [
     {
       "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ ],
-      "AllowedGroup": [ "DirectBackendCore" ],
+      "AllowedUser": [ "DomainName\\MyUser" ],
+      "AllowedGroup": [ "MyGroupthatAllowed" ],
       "RestrictedUser": [ ],
       "RestrictedGroup": [ ]
     },

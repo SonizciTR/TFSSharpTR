@@ -13,8 +13,8 @@ This project is started for customizing DevOps operation at TFS. Designed for TF
   "FileControlTask": [ // It is a array, You can add as much as you need
     {
       "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ ],
-      "AllowedGroup": [ "DirectBackendCore" ],
+      "AllowedUser": [ "DomainName\\MyUser" ],
+      "AllowedGroup": [ "MyGroupthatAllowed" ],
       "RestrictedUser": [ ],
       "RestrictedGroup": [ ]
     }, 
@@ -47,8 +47,8 @@ Other settings are all optional. Like "FileControlTask" part below.
   "FileControlTask": [
     {
       "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ ],
-      "AllowedGroup": [ "DirectBackendCore" ],
+      "AllowedUser": [ "DomainName\\MyUser" ],
+      "AllowedGroup": [ "MyGroupthatAllowed" ],
       "RestrictedUser": [ ],
       "RestrictedGroup": [ ]
     },

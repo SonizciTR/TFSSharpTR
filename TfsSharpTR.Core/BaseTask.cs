@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core.Common;
+using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Core
@@ -35,22 +36,26 @@ namespace TfsSharpTR.Core
             try
             {
                 Logger.Set(tfsVarRaw);
+
+                var tfsVar = new TfsVariable(tfsVarRaw);
                 var usrVar = new UserVariable<Tsetting>(usrVarRaw);
                 var bsSetting = usrVar.SettingFileData;
+
+                TFSHelper.Initialize(tfsVar);
 
                 if (bsSetting == null)
                     throw new Exception(string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
 
-                var tmpResult = Job(new TfsVariable(tfsVarRaw), usrVar);
-                
-                if(intrDetailContainer.Any() && !tmpResult.Detail.Any())
+                var tmpResult = Job(tfsVar, usrVar);
+
+                if (intrDetailContainer.Any() && !tmpResult.Detail.Any())
                 {
                     tmpResult.Detail = intrDetailContainer;
                 }
 
                 return tmpResult.ToShellStatu(Path.GetFileNameWithoutExtension(dllName) + " -> " + className);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write(ex);
                 throw;
@@ -74,7 +79,7 @@ namespace TfsSharpTR.Core
         public bool WriteDetail(string message, Stopwatch watch = null)
         {
             string msg = string.Empty;
-            if(watch != null)
+            if (watch != null)
             {
                 watch.Stop();
                 msg = string.Format("{0} => {1}. Total Time (ms) : {2}", DateTime.Now, message, watch.Elapsed.TotalMilliseconds);

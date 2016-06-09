@@ -13,13 +13,8 @@ namespace TfsSharpTR.Core.Helper
 {
     public static class TFSHelper
     {
+        private static Lazy<TFSLogic> logic = new Lazy<TFSLogic>(() => new TFSLogic(initSetting));
         private static TfsVariable initSetting = null;
-        private static List<string> grpsUser = null;
-        private static List<string> grpsAll = null;
-        private static TfsTeamProjectCollection teamColl = null;
-        private static IIdentityManagementService idService = null;
-        private static TeamFoundationIdentity tfsId = null;
-        
 
         public static bool Initialize(TfsVariable tfsVar)
         {
@@ -27,85 +22,24 @@ namespace TfsSharpTR.Core.Helper
             return true;
         }
 
-        private static TfsTeamProjectCollection TeamColl
+        public static bool Check()
         {
-            get
-            {
-                if(teamColl == null)
-                {
-                    teamColl = new TfsTeamProjectCollection(new Uri(initSetting.CollectionUri));
-                }
-                return teamColl;
-            }
-        }
-        private static IIdentityManagementService IdentityService
-        {
-            get
-            {
-                if (idService == null)
-                {
-                    idService  = TeamColl.GetService(typeof(IIdentityManagementService)) as IIdentityManagementService;
-                }
-                return idService;
-            }
-        }
-        private static TeamFoundationIdentity TFSIdentity
-        {
-            get
-            {
-                if (tfsId == null)
-                {
-                    tfsId = IdentityService.ReadIdentity(IdentitySearchFactor.DisplayName, 
-                        initSetting.BuildRequestedUser, 
-                        MembershipQuery.None, 
-                        ReadIdentityOptions.None);
-                }
-                return tfsId;
-            }
-        }
+            if (initSetting == null)
+                throw new Exception("TFSHelper not initialized.");
 
-        private static string ProjectUri
-        {
-            get
-            {
-                var vcs = TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
-                var tp = vcs.GetTeamProject(initSetting.TeamProjectName);
-                return tp.ArtifactUri.AbsoluteUri;
-            }
+            return true;
         }
 
         public static List<string> GroupUserJoined()
         {
-            if (grpsUser == null)
-                CollectGroups();
-
-            return grpsUser;
+            Check();
+            return logic.Value.GroupUserJoined();
         }
 
         public static List<string> GroupsAll()
         {
-            if (grpsAll == null)
-                CollectGroups();
-
-            return grpsAll;
-        }
-
-        private static bool CollectGroups()
-        {
-            grpsAll = new List<string>();
-            grpsUser = new List<string>();
-            string projectUri = ProjectUri;
-            TeamFoundationIdentity[] projectGroups = IdentityService.ListApplicationGroups(projectUri, ReadIdentityOptions.None);
-
-            foreach (TeamFoundationIdentity projectGroup in projectGroups)
-            {
-                bool isMem = IdentityService.IsMember(projectGroup.Descriptor, TFSIdentity.Descriptor);
-                if (isMem)
-                    grpsUser.Add(projectGroup.DisplayName);
-                grpsAll.Add(projectGroup.DisplayName);
-            }
-
-            return true;
+            Check();
+            return logic.Value.GroupsAll();
         }
     }
 }

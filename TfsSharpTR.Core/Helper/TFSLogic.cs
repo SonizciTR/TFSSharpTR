@@ -123,12 +123,32 @@ namespace TfsSharpTR.Core.Helper
             return true;
         }
 
-        public List<string> PendingChangeFiles()
+        public List<string> TfsPendingChangeFiles()
         {
             var filesChanged = new List<string>();
 
-            //string shelveName = initSetting.
-            //var data = VerControlServer.QueryShelvedChanges()
+            string shelveName = initSetting.TFVCShelveSet;
+            var shelveDetail = shelveName?.Split(';');
+            if (shelveDetail.Count() != 2)
+                return null;
+
+            var changeGrp = VerControlServer.QueryShelvedChanges(shelveDetail[0], shelveDetail[1]);
+            foreach (var chng in changeGrp)
+            {
+                foreach (var item in chng.PendingChanges)
+                {
+                    filesChanged.Add(item.LocalOrServerItem);
+                }
+            }
+
+            return filesChanged;
+        }
+
+        public List<string> GitPendingChangeFiles()
+        {
+            var filesChanged = new List<string>();
+
+            string shelveName = initSetting.TFVCShelveSet;
 
             return filesChanged;
         }

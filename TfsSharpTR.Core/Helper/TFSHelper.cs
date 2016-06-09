@@ -54,7 +54,12 @@ namespace TfsSharpTR.Core.Helper
         public static List<string> ChangedFiles()
         {
             Check();
-            return logic.Value.GroupsAll();
+            if ((initSetting.RepoProvider == "TfGit") || (initSetting.RepoProvider == "Git"))
+            {
+                return logic.Value.GitPendingChangeFiles();
+            }
+
+            return logic.Value.TfsPendingChangeFiles();
         }
     }
 }

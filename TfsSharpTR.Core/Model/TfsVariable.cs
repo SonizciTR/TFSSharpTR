@@ -82,5 +82,37 @@ namespace TfsSharpTR.Core.Model
                 return Get("SYSTEM_TEAMPROJECT");
             }
         }
+
+        /// <summary>
+        /// Defined if your repository is Team Foundation Version Control.
+        /// 
+        /// If you are running a gated build or a shelveset build, this is set to the name of the shelveset you are building.
+        /// 
+        /// Note: This variable yields a value that is invalid for build use in a build number format
+        /// </summary>
+        public string TFVCShelveSet
+        {
+            get
+            {
+                return Get("BUILD_SOURCETFVCSHELVESET");
+            }
+        }
+
+        /// <summary>
+        /// The type of repository you selected.
+        /// 
+        /// TfGit: TFS Git repository
+        /// TfsVersionControl: Team Foundation Version Control
+        /// Git: Git repository hosted on an external server
+        /// GitHub
+        /// Svn: Subversion
+        /// </summary>
+        public string RepoProvider
+        {
+            get
+            {
+                return Get("BUILD_REPOSITORY_PROVIDER");
+            }
+        }
     }
 }

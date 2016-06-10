@@ -5,79 +5,40 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Core.Helper
 {
-    internal class TFSLogic
+    internal class TFSClientLogic : TFSBaseLogic
     {
-        private static TfsVariable initSetting = null;
+        
         private static List<string> grpsUser = null;
         private static List<string> grpsAll = null;
-        private static TfsTeamProjectCollection teamColl = null;
+        
         private static IIdentityManagementService idService = null;
         private static TeamFoundationIdentity tfsId = null;
 
-        public TFSLogic(TfsVariable tfsVar)
+        public TFSClientLogic(TfsVariable tfsVar) : base(tfsVar)
         {
-            initSetting = tfsVar;
-        }
-
-        private TfsTeamProjectCollection TeamColl
-        {
-            get
-            {
-                if (teamColl == null)
-                {
-                    teamColl = new TfsTeamProjectCollection(new Uri(initSetting.CollectionUri));
-                }
-                return teamColl;
-            }
-        }
-        private IIdentityManagementService IdentityService
-        {
-            get
-            {
-                if (idService == null)
-                {
-                    idService = TeamColl.GetService(typeof(IIdentityManagementService)) as IIdentityManagementService;
-                }
-                return idService;
-            }
-        }
-        private TeamFoundationIdentity TFSIdentity
-        {
-            get
-            {
-                if (tfsId == null)
-                {
-                    tfsId = IdentityService.ReadIdentity(IdentitySearchFactor.DisplayName,
+            idService = TeamColl.GetService(typeof(IIdentityManagementService)) as IIdentityManagementService;
+            tfsId = IdentityService.ReadIdentity(IdentitySearchFactor.DisplayName,
                         initSetting.BuildRequestedUser,
                         MembershipQuery.None,
                         ReadIdentityOptions.None);
-                }
-                return tfsId;
-            }
-        }
-        private VersionControlServer VerControlServer
-        {
-            get
-            {
-                return TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
-            }
-        }
-
-        public string UniqueName
-        {
-            get
-            {
-                return TFSIdentity.UniqueName;
-            }
         }
 
         
+        
+        private IIdentityManagementService IdentityService => idService;
+
+        private TeamFoundationIdentity TFSIdentity => tfsId;
+
+        private VersionControlServer VerControlServer => TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
+
+        public string UniqueName => TFSIdentity.UniqueName;
 
         private string ProjectUri
         {
@@ -144,13 +105,6 @@ namespace TfsSharpTR.Core.Helper
             return filesChanged;
         }
 
-        public List<string> GitPendingChangeFiles()
-        {
-            var filesChanged = new List<string>();
-
-            string shelveName = initSetting.TFVCShelveSet;
-
-            return filesChanged;
-        }
+        
     }
 }

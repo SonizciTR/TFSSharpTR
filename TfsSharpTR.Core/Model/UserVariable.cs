@@ -8,28 +8,29 @@ using System.Threading.Tasks;
 
 namespace TfsSharpTR.Core.Model
 {
+    /// <summary>
+    /// User settings that manage at web build screen
+    /// </summary>
+    /// <typeparam name="Tsetting"></typeparam>
     public class UserVariable<Tsetting> : BaseVariable where Tsetting : BaseBuildSetting
     {
         public UserVariable(Dictionary<string, string> keys) : base(keys)
         {
         }
 
-        public string ActionName
-        {
-            get
-            {
-                return Get("Action");
-            }
-        }
+        /// <summary>
+        /// PreBuild or PostBuild
+        /// </summary>
+        public string ActionName => Get("Action");
 
-        public string SettingFile
-        {
-            get
-            {
-                return Get("SettingFile");
-            }
-        }
-
+        /// <summary>
+        /// Json setting file and Task Libraries will look from this file's folder
+        /// </summary>
+        public string SettingFile => Get("SettingFile");
+        
+        /// <summary>
+        /// Json setting file's all text
+        /// </summary>
         private string SettingFileDataString
         {
             get
@@ -40,6 +41,9 @@ namespace TfsSharpTR.Core.Model
             }
         }
 
+        /// <summary>
+        /// Task's special setting from json file
+        /// </summary>
         public Tsetting SettingFileData
         {
             get
@@ -49,6 +53,20 @@ namespace TfsSharpTR.Core.Model
                     return default(Tsetting);
 
                 return JsonConvert.DeserializeObject<Tsetting>(fData);
+            }
+        }
+
+        /// <summary>
+        /// Task libraries folder
+        /// </summary>
+        public string LibrariesFolder
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SettingFile))
+                    return null;
+
+                return Path.GetDirectoryName(SettingFile) + "\\";
             }
         }
     }

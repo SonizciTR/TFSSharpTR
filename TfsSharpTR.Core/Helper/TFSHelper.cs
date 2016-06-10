@@ -13,7 +13,8 @@ namespace TfsSharpTR.Core.Helper
 {
     public static class TFSHelper
     {
-        private static Lazy<TFSLogic> logic = new Lazy<TFSLogic>(() => new TFSLogic(initSetting));
+        private static Lazy<TFSClientLogic> logicClient = new Lazy<TFSClientLogic>(() => new TFSClientLogic(initSetting));
+        private static Lazy<TFSApiLogic> logicApi = new Lazy<TFSApiLogic>(() => new TFSApiLogic(initSetting));
         private static TfsVariable initSetting = null;
 
         public static bool Initialize(TfsVariable tfsVar)
@@ -33,13 +34,13 @@ namespace TfsSharpTR.Core.Helper
         public static List<string> GroupUserJoined()
         {
             Check();
-            return logic.Value.GroupUserJoined();
+            return logicClient.Value.GroupUserJoined();
         }
 
         public static List<string> GroupsAll()
         {
             Check();
-            return logic.Value.GroupsAll();
+            return logicClient.Value.GroupsAll();
         }
 
         public static string UserDomainName
@@ -47,7 +48,7 @@ namespace TfsSharpTR.Core.Helper
             get
             {
                 Check();
-                return logic.Value.UniqueName;
+                return logicClient.Value.UniqueName;
             }
         }
 
@@ -56,10 +57,10 @@ namespace TfsSharpTR.Core.Helper
             Check();
             if ((initSetting.RepoProvider == "TfGit") || (initSetting.RepoProvider == "Git"))
             {
-                return logic.Value.GitPendingChangeFiles();
+                return logicApi.Value.GitPendingChangeFiles();
             }
 
-            return logic.Value.TfsPendingChangeFiles();
+            return logicClient.Value.TfsPendingChangeFiles();
         }
     }
 }

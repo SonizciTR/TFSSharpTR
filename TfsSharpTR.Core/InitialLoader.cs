@@ -25,7 +25,7 @@ namespace TfsSharpTR.Core
                 if (settUsr.SettingFileData == null)
                     throw new Exception("User Setting File is missing or wrongly formatted.");
 
-                var dlls = GetDllList(settTfs.AgentWorkFolder);
+                var dlls = GetDllList(settUsr.LibrariesFolder);
                 var allTasks = GetAllTasks(dlls, settUsr);
                 return allTasks;
             }

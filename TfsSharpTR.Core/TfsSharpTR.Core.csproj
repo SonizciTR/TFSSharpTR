@@ -71,8 +71,10 @@
     <Compile Include="BaseTask.cs" />
     <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\TfsSharpTRExtension.cs" />
+    <Compile Include="Helper\TFSApiLogic.cs" />
+    <Compile Include="Helper\TFSBaseLogic.cs" />
     <Compile Include="Helper\TFSHelper.cs" />
-    <Compile Include="Helper\TFSLogic.cs" />
+    <Compile Include="Helper\TFSClientLogic.cs" />
     <Compile Include="InitialLoader.cs" />
     <Compile Include="Model\BaseVariable.cs" />
     <Compile Include="Model\BaseBuildSetting.cs" />

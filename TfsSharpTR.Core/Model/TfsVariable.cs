@@ -18,70 +18,32 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// The GUID of the team foundation collection
         /// </summary>
-        public string CollectionId
-        {
-            get
-            {
-                return Get("SYSTEM_COLLECTIONID");
-
-            }
-        }
+        public string CollectionId => Get("SYSTEM_COLLECTIONID");
 
         /// <summary>
         /// The name of the Build Definition the current build belongs to
         /// </summary>
-        public string BuildDefinitionaName
-        {
-            get
-            {
-                return Get("BUILD_DEFINITIONNAME");
-
-            }
-        }
+        public string BuildDefinitionaName => Get("BUILD_DEFINITIONNAME");
 
         /// <summary>
         /// The working directory for this agent. By default $(Agent.RootDirectory)\_work.
         /// </summary>
-        public string AgentWorkFolder
-        {
-            get
-            {
-                return Get("AGENT_WorkFolder");
-            }
-        }
+        public string AgentWorkFolder => Get("AGENT_WorkFolder");
 
         /// <summary>
         /// The URL of the team foundation collection
         /// </summary>
-        public string CollectionUri
-        {
-            get
-            {
-                return Get("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
-            }
-        }
+        public string CollectionUri => Get("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
 
         /// <summary>
         /// This user the build was requested for. In a CI build this will be the user who performed the check-in that triggered the build.
         /// </summary>
-        public string BuildRequestedUser
-        {
-            get
-            {
-                return Get("BUILD_REQUESTEDFOR");
-            }
-        }
+        public string BuildRequestedUser => Get("BUILD_REQUESTEDFOR");
 
         /// <summary>
         /// The name of the team project that this build belongs to
         /// </summary>
-        public string TeamProjectName
-        {
-            get
-            {
-                return Get("SYSTEM_TEAMPROJECT");
-            }
-        }
+        public string TeamProjectName => Get("SYSTEM_TEAMPROJECT");
 
         /// <summary>
         /// Defined if your repository is Team Foundation Version Control.
@@ -90,13 +52,7 @@ namespace TfsSharpTR.Core.Model
         /// 
         /// Note: This variable yields a value that is invalid for build use in a build number format
         /// </summary>
-        public string TFVCShelveSet
-        {
-            get
-            {
-                return Get("BUILD_SOURCETFVCSHELVESET");
-            }
-        }
+        public string TFVCShelveSet => Get("BUILD_SOURCETFVCSHELVESET");
 
         /// <summary>
         /// The type of repository you selected.
@@ -107,12 +63,6 @@ namespace TfsSharpTR.Core.Model
         /// GitHub
         /// Svn: Subversion
         /// </summary>
-        public string RepoProvider
-        {
-            get
-            {
-                return Get("BUILD_REPOSITORY_PROVIDER");
-            }
-        }
+        public string RepoProvider => Get("BUILD_REPOSITORY_PROVIDER");
     }
 }

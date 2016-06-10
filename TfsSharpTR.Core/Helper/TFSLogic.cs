@@ -129,8 +129,8 @@ namespace TfsSharpTR.Core.Helper
 
             string shelveName = initSetting.TFVCShelveSet;
             var shelveDetail = shelveName?.Split(';');
-            if (shelveDetail.Count() != 2)
-                return null;
+            if ((shelveDetail == null) || (shelveDetail.Count() != 2))
+                return new List<string>();
 
             var changeGrp = VerControlServer.QueryShelvedChanges(shelveDetail[0], shelveDetail[1]);
             foreach (var chng in changeGrp)

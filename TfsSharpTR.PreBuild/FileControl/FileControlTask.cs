@@ -19,7 +19,7 @@ namespace TfsSharpTR.PreBuild.FileControl
 
             var filesModified = TFSHelper.ChangedFiles();
             if(!filesModified.Any())
-                return new TaskStatu("No file changed.");
+                return new TaskStatu("No changed file found.");
 
             string adName = TFSHelper.UserDomainName;
             var usrGroups = TFSHelper.GroupUserJoined();

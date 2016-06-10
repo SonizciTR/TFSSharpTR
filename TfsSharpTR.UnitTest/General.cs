@@ -6,9 +6,13 @@ using TfsSharpTR.Core.Model;
 using System.Threading;
 using System.Collections.Generic;
 using TfsSharpTR.Core.Helper;
+using TfsSharpTR.PreBuild.FileControl;
 
 namespace TfsSharpTR.UnitTest
 {
+    /// <summary>
+    /// Actually this class is integration test. These are all for debugging.
+    /// </summary>
     [TestClass]
     public class General
     {
@@ -87,6 +91,20 @@ namespace TfsSharpTR.UnitTest
             var usrGroups = TFSHelper.GroupUserJoined();
 
             Assert.IsTrue(usrGroups.Count > 0);
+        }
+
+        [TestMethod]
+        public void FileControlTask()
+        {
+            var dictTfs = DummyTfsVariable();
+            var dictUsr = DummyUserVariable();
+            var tfs = new TfsVariable(dictTfs);
+            var usr = new UserVariable<FileControlSetting>(dictUsr);
+
+            var tsk = new FileControlTask();
+            var rslt = tsk.Initializer("xFile", "xClass", "xMethod", dictTfs, dictUsr);
+            
+            Assert.IsTrue(rslt.IsSuccess);
         }
     }
 }

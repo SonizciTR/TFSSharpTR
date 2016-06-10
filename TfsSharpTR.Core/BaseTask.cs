@@ -35,6 +35,7 @@ namespace TfsSharpTR.Core
         {
             try
             {
+                Stopwatch watchGeneral = Stopwatch.StartNew();
                 Logger.Set(tfsVarRaw);
 
                 var tfsVar = new TfsVariable(tfsVarRaw);
@@ -46,14 +47,21 @@ namespace TfsSharpTR.Core
                 if (bsSetting == null)
                     throw new Exception(string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
 
+                Stopwatch watchTask = Stopwatch.StartNew();
                 var tmpResult = Job(tfsVar, usrVar);
+                watchTask.Stop();
 
                 if (intrDetailContainer.Any() && !tmpResult.Detail.Any())
                 {
                     tmpResult.Detail = intrDetailContainer;
                 }
 
-                return tmpResult.ToShellStatu(Path.GetFileNameWithoutExtension(dllName) + " -> " + className);
+                var rtnData = tmpResult.ToShellStatu(Path.GetFileNameWithoutExtension(dllName) + " -> " + className);
+                watchGeneral.Stop();
+                rtnData.Msgs.Add(string.Format("*** FINISH > [{0}] task runned/total (ms) : {1}/{2}", 
+                                    className, watchTask.Elapsed.TotalMilliseconds, watchGeneral.Elapsed.TotalMilliseconds));
+
+                return rtnData;
             }
             catch (Exception ex)
             {

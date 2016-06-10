@@ -19,7 +19,7 @@ namespace TfsSharpTR.Core.Helper
     {
         private static TfsVariable SettingTFS = null;
         //https://{instance}/defaultcollection/_apis/git/repositories/{repository}/pullRequests/{pullRequest}?api-version={version}
-        private const string urlFindCommitsFiles = "https://{0}/defaultcollection/_apis/git/repositories/{1}/commits/{2}/changes";
+        private const string urlFindCommitsFiles = "{0}/_apis/git/repositories/{1}/commits/{2}/changes";
 
         public TFSApiLogic(TfsVariable tfsVar) : base(tfsVar)
         {
@@ -42,12 +42,11 @@ namespace TfsSharpTR.Core.Helper
             GitRepositoryService grs = new GitRepositoryService();
             grs.Initialize(TeamColl);
 
-            var gitRepo = grs.QueryRepositories(SettingTFS.RepoName).FirstOrDefault();
+            var gitRepo = grs.QueryRepositories(SettingTFS.TeamProjectName).FirstOrDefault(x => x.Name == SettingTFS.RepoName);
             if (gitRepo == null)
                 return new List<string>();
 
-            string commitId = SettingTFS.BuildSourceVersion;
-            string tmpUrl = string.Format(urlFindCommitsFiles, TeamColl.Name, gitRepo.Name, SettingTFS.BuildSourceVersion);
+            string tmpUrl = string.Format(urlFindCommitsFiles, TeamColl.Uri, gitRepo.Id, SettingTFS.BuildSourceVersion);
             string rawJson = HttpGet(tmpUrl);
             if (string.IsNullOrEmpty(rawJson))
                 return new List<string>();

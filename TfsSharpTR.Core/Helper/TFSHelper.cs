@@ -52,6 +52,11 @@ namespace TfsSharpTR.Core.Helper
             }
         }
 
+        /// <summary>
+        /// Finds changed file of this request.
+        /// There is a DANGER for git. Please look :TFSApiLogic implementation
+        /// </summary>
+        /// <returns></returns>
         public static List<string> ChangedFiles()
         {
             Check();

@@ -35,6 +35,13 @@ namespace TfsSharpTR.Core.Helper
             }
         }
 
+        /// <summary>
+        /// !!! DANGER : if you are using "pull request" and "push" together there is a catch.
+        /// WebApi finds changes between "pull request"s or "push"es.
+        /// Because of this, first you make "pull request" then "push", at last "pull request"; api brings last"pull request" and "push" changes together.
+        /// Like they pulled at the same time.
+        /// </summary>
+        /// <returns></returns>
         public List<string> GitPendingChangeFiles()
         {
             var filesChanged = new List<string>();

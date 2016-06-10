@@ -85,6 +85,9 @@ namespace TfsSharpTR.Core.Model
         /// </summary>
         public string SourceBranch => Get("BUILD_SOURCEBRANCH");
 
+        /// <summary>
+        /// Uses SourceBranch variable and Regex and get value
+        /// </summary>
         public string SourceBranchPullId
         {
             get
@@ -93,7 +96,7 @@ namespace TfsSharpTR.Core.Model
                 if (string.IsNullOrEmpty(tmp))
                     return null;
 
-                return Regex.Replace(tmp, "[^0-9]+", string.Empty); ;
+                return tmp.StartsWith("refs/pull/") ? Regex.Replace(tmp, "[^0-9]+", string.Empty) : null;
             }
         }
 

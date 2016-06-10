@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TfsSharpTR.Core.Model
@@ -64,5 +65,53 @@ namespace TfsSharpTR.Core.Model
         /// Svn: Subversion
         /// </summary>
         public string RepoProvider => Get("BUILD_REPOSITORY_PROVIDER");
+
+        /// <summary>
+        /// The name of the repository.
+        /// </summary>
+        public string RepoName => Get("BUILD_REPOSITORY_NAME");
+
+        /// <summary>
+        /// The branch the build was queued for. Some examples:
+        ///
+        /// Git repo branch: refs/heads/master
+        /// Git repo pull request: refs/pull/1/merge
+        /// TFVC repo branch: $/teamproject/main
+        /// TFVC repo gated check-in: Gated_2016-06-06_05.20.51.4369;username @live.com
+        /// TFVC repo shelveset build: myshelveset; username @live.com
+        ///  When you use this variable in your build number format, the forward slash characters (/) are replaced with underscore characters _).
+        /// 
+        /// Note: In TFVC, if you are running a gated check-in build or manually building a shelveset, you cannot use this variable in your build number format.
+        /// </summary>
+        public string SourceBranch => Get("BUILD_SOURCEBRANCH");
+
+        public string SourceBranchPullId
+        {
+            get
+            {
+                string tmp = SourceBranch;
+                if (string.IsNullOrEmpty(tmp))
+                    return null;
+
+                return Regex.Replace(tmp, "[^0-9]+", string.Empty); ;
+            }
+        }
+
+        /// <summary>
+        /// The URL for the repository. For example:
+        /// 
+        /// Git: https://fabrikamfiber.visualstudio.com/_git/Scripts
+        /// TFVC: https://fabrikamfiber.visualstudio.com/
+        /// </summary>
+        public string RepoUri => Get("BUILD_REPOSITORY_URI");
+
+        /// <summary>
+        /// The latest version control change that is included in this build.
+        /// 
+        /// Git: The commit ID.
+        /// TFVC: the changeset.
+        /// </summary>
+        public string BuildSourceVersion => Get("BUILD_SOURCEVERSION");
+        
     }
 }

@@ -24,6 +24,10 @@ namespace TfsSharpTR.UnitTest
             dict.Add("SYSTEM_TEAMPROJECT", "");
             dict.Add("BUILD_REQUESTEDFOR", "");
             dict.Add("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "");
+            dict.Add("BUILD_SOURCEVERSION", "");
+            dict.Add("BUILD_REPOSITORY_NAME", "");
+            dict.Add("BUILD_REPOSITORY_PROVIDER", "");
+
             return dict;
         }
 

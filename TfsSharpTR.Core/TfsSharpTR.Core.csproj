@@ -36,6 +36,12 @@
     <Reference Include="Microsoft.TeamFoundation.Common">
       <HintPath>..\DLLs\14\Microsoft.TeamFoundation.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Git.Client">
+      <HintPath>..\DLLs\14\Microsoft.TeamFoundation.Git.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi">
+      <HintPath>..\DLLs\14\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
       <HintPath>..\DLLs\14\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>

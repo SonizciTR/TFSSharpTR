@@ -12,5 +12,9 @@
     },
   ],
 
-
+  "StyleCopTask": {
+    "ExcludedFiles": [ "GlobalSupression.cs", "" ],
+    "MaxErrorCount": 0,
+    "TreatWarnAsError": false
+  }
 }

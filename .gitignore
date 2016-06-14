@@ -9,3 +9,5 @@
 /TfsSharpTR.PreBuild/obj/Debug
 /TfsSharpTR.UnitTest
 /.vs
+/TfsSharpTR.StyleCopRelated/bin/Debug
+/TfsSharpTR.StyleCopRelated/obj/Debug

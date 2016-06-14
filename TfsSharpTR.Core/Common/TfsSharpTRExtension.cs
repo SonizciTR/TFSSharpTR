@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,20 @@ namespace TfsSharpTR.Core.Common
             sb.AppendLine("************************************************");
 
             return target;
+        }
+
+        /// <summary>
+        /// Get all files from folder by extensions
+        /// </summary>
+        /// <param name="dir">DirectoryInfo type folder info</param>
+        /// <param name="extensions">Like .exe, .cs,...</param>
+        /// <returns>FileInfo of finded files</returns>
+        public static IEnumerable<FileInfo> GetFilesByExtensions(this DirectoryInfo dir, params string[] extensions)
+        {
+            if (extensions == null)
+                throw new ArgumentNullException("Extensions is missng.");
+            IEnumerable<FileInfo> files = dir.EnumerateFiles();
+            return files.Where(f => extensions.Contains(f.Extension));
         }
     }
 }

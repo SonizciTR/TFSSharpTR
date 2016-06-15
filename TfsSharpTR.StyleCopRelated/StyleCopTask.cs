@@ -11,6 +11,11 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.StyleCopRelated
 {
+    /// <summary>
+    /// This code's StyleCop part looked from Richard Fennell's code. https://github.com/rfennell
+    /// Thanks a lot Richard Fennell.
+    /// https://github.com/rfennell/StyleCopCmdLine/blob/master/source/StyleCopWrapper/Wrapper.cs
+    /// </summary>
     public class StyleCopTask : BaseTask<StyleCopSetting>
     {
         private object _lckObj = new object();
@@ -20,7 +25,7 @@ namespace TfsSharpTR.StyleCopRelated
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
             bool isExclusionExist = (usrVariables.SettingFileData != null) || (usrVariables.SettingFileData.ExcludedFiles != null);
-            string sourceCodePath = "";
+            string sourceCodePath = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + sourceCodePath);
             WriteDetail("Exclusion files : " +
                 (isExclusionExist ? string.Join(", ", usrVariables.SettingFileData.ExcludedFiles) : "None"));

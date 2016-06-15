@@ -3,6 +3,8 @@ TFS Sharp Task Runner for TFS 2015 Web Build
 
 This project is started for customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at build process. Then you will set your setting in a json file. 
 
+I decided th sperate tasks by their dependencies. So you will see different class libraries. If I don't do this, you will need every external libraries included with your packet.
+
 ####Ready Tasks:
 1. FileControlTask : Inside "TfsSharpTR.PreBuild" solution. Git has no file lock feature. Some cases you need some files not to modified or modiefied by some specific users. With this task, just add necessary setting to json file ("FileControlTask" part). It checks automatically.
 ```javascript
@@ -26,7 +28,7 @@ This project is started for customizing DevOps operation at TFS. Designed for TF
 2. Code Analysis
 3. Code Metrics
 4. StyleCop
-5. AutoDeploy
+5. AutoDeploy (For IIS apppool start/stop; there is a big problem if you are deploying to another domain. ServerManager.OpenRemote method uses NTLM authentication only :( . I am looking for a solution )
 6. Code Documentation (thinking to use SandCastle)
 
 ## Setting Json File
@@ -65,7 +67,7 @@ Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirst
 If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add json format to setting file.
 
 
-### Libraries Required Externally
+### TfsSharpTR.Core Library Dependencies
 Newtonsoft.Json.dll
 
 Microsoft.TeamFoundation.Client.dll
@@ -84,3 +86,10 @@ Microsoft.VisualStudio.Services.Common.dll
 
 Microsoft.VisualStudio.Services.WebApi.dll
 
+### TfsSharpTR.StyleCopRelated Library Dependencies
+
+StyleCop.dll
+
+StyleCop.CSharp.dll
+
+StyleCop.CSharp.Rules.dll

@@ -1,7 +1,7 @@
 # TFSSharpTR
 TFS Sharp Task Runner for TFS 2015 Web Build
 
-This project is started for customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at build process. Then you will set your setting in a json file. 
+This project is started for customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at your build process. Then you will set your setting in a json file. 
 
 I decided th sperate tasks by their dependencies. So you will see different class libraries. If I don't do this, you will need every external libraries included with your packet.
 
@@ -64,7 +64,7 @@ It is very easy. Look "TestTask.cs" file.
 
 Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirstTask" etc...), this is your task. Inherit your class from BaseTask<T>. "T" should be inherited from BaseBuildSetting. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
 
-If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add json format to setting file.
+If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add your json format to setting file.
 
 
 ### TfsSharpTR.Core Library Dependencies

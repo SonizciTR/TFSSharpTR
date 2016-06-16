@@ -23,24 +23,9 @@ namespace TfsSharpTR.PreBuild
         {
             Stopwatch tmrWatch = Stopwatch.StartNew();
             TaskStatu tsk = new TaskStatu("TestTask start successfully");
-
-            folderPath = tfsVariables.AgentWorkFolder;
-            var fMsg = CheckFileOp(folderPath);
-            if (!string.IsNullOrEmpty(fMsg))
-            {
-                return new TaskStatu("T1", "CheckFileOp failed. Ex = " + fMsg);
-            }
-
-            try
-            {
-                var thr = new Thread(new ThreadStart(TestPostRun));
-                thr.Start();
-            }
-            catch (Exception ex)
-            {
-                tsk = new TaskStatu("T2", "TestTask.Thread start throw exception. Ex = " + ex.ToString());
-            }
+            
             DisplayAllTfsVariables(tfsVariables);
+
             WriteDetail("This how to use detail method :)", tmrWatch);
             return tsk;
         }
@@ -51,48 +36,6 @@ namespace TfsSharpTR.PreBuild
             {
                 WriteDetail(item.Key + " - " + item.Value);
             }
-        }
-
-        private string CheckFileOp(string path)
-        {
-            try
-            {
-                WrtFile(path, DateTime.Now + " : Initial check.");
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-            return null;
-        }
-
-        private bool WrtFile(string path, string msg)
-        {
-            string fullFile = path + "TfsSharpTaskRunnerTest.log";
-            using (var fs = new FileStream(fullFile, FileMode.Append))
-            {
-                using (var sw = new StreamWriter(fs))
-                {
-                    sw.WriteLine(msg);
-                    sw.Flush();
-                    sw.Close();
-                }
-                fs.Close();
-            }
-            return true;
-        }
-
-        private void TestPostRun()
-        {
-            Thread.Sleep(waitTimeMs);
-
-            for (int i = 0; i < 150; i++)
-            {
-                WrtFile(folderPath, (i + 1) + ". runned. Time = " + DateTime.Now);
-                Thread.Sleep(waitTimeMs);
-            }
-
-            WrtFile(folderPath, "TestPostRun finished. Yuppiii. Time = " + DateTime.Now);
         }
     }
 }

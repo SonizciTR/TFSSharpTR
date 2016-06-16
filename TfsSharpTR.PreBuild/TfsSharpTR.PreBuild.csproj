@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="FileControl\FileControlSetting.cs" />
     <Compile Include="FileControl\FileControlTask.cs" />
+    <Compile Include="TestAsyncTask.cs" />
     <Compile Include="TestTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

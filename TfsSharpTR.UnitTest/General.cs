@@ -125,10 +125,5 @@ namespace TfsSharpTR.UnitTest
 
             Assert.IsTrue(rslt.IsSuccess);
         }
-
-        private object RunTask(FileControlTask fileControlTask)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

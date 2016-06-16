@@ -33,20 +33,22 @@ namespace TfsSharpTR.Core
         /// <returns></returns>
         public ShellStatu Initializer(string dllName, string className, string methodName, Dictionary<string, string> tfsVarRaw, Dictionary<string, string> usrVarRaw)
         {
+            Stopwatch watchGeneral = Stopwatch.StartNew();
+            string taskLongName = string.Empty;
+
             try
             {
-                Stopwatch watchGeneral = Stopwatch.StartNew();
-                Logger.Set(tfsVarRaw);
-
+                taskLongName = Path.GetFileNameWithoutExtension(dllName) + " -> " + className;
                 var tfsVar = new TfsVariable(tfsVarRaw);
                 var usrVar = new UserVariable<Tsetting>(usrVarRaw);
+                Logger.Set(usrVar.LibrariesFolder);
+
                 var bsSetting = usrVar.SettingFileData;
+                if (bsSetting == null)
+                    return new ShellStatu(false, string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
 
                 TFSHelper.Initialize(tfsVar);
-
-                if (bsSetting == null)
-                    throw new Exception(string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
-
+                
                 Stopwatch watchTask = Stopwatch.StartNew();
                 var tmpResult = Job(tfsVar, usrVar);
                 watchTask.Stop();
@@ -56,17 +58,19 @@ namespace TfsSharpTR.Core
                     tmpResult.Detail = intrDetailContainer;
                 }
 
-                var rtnData = tmpResult.ToShellStatu(Path.GetFileNameWithoutExtension(dllName) + " -> " + className);
+                var rtnData = tmpResult == null ? new ShellStatu() : tmpResult.ToShellStatu(taskLongName);
                 watchGeneral.Stop();
                 rtnData.Msgs.Add(string.Format("*** FINISH > [{0}] task runned/total (ms) : {1}/{2}", 
                                     className, watchTask.Elapsed.TotalMilliseconds, watchGeneral.Elapsed.TotalMilliseconds));
+
+                rtnData.Msgs.Add("************************************************");
 
                 return rtnData;
             }
             catch (Exception ex)
             {
                 Logger.Write(ex);
-                throw;
+                return new ShellStatu(false, string.Format("BaseTask.Initializer failed. TaskName = [{0}]. ExDetail = [{1}].", taskLongName, ex));
             }
         }
 

@@ -47,18 +47,11 @@ namespace TfsSharpTR.Core.Common
             return IsLoggingOk;
         }
 
-        public static bool Set(Dictionary<string, string> tfsVariables)
+        public static bool Set(string filePath)
         {
             try
             {
-                if ((tfsVariables == null) || (!tfsVariables.Any()))
-                    return false;
-
-                string tmp = null;
-                if (tfsVariables.TryGetValue("AGENT_WorkFolder", out tmp))
-                {
-                    return Initialize(tmp);
-                }
+                return Initialize(filePath);
             }
             catch(Exception ex)
             {

@@ -13,9 +13,9 @@ namespace TfsSharpTR.Core.Common
         public static ShellStatu ToShellStatu(this TaskStatu source, string taskName)
         {
             var target = new ShellStatu();
+            target.Msgs = new List<string>();
 
             target.IsSuccess = source.IsSuccess;
-            var sb = new StringBuilder();
             string msgGeneral = "[No Msg]";
             if(target.IsSuccess)
             {
@@ -23,20 +23,19 @@ namespace TfsSharpTR.Core.Common
             }
             else
             {
-                msgGeneral = string.Format("[{0}] could not run. Failed. Error Code = [{1}]. Error Msg = [{2}].", taskName, source.Code, source.GeneralMsg);
+                msgGeneral = string.Format("[{0}] failed. Error Code = [{1}]. Error Msg = [{2}].", taskName, source.Code, source.GeneralMsg);
             }
-            sb.AppendLine(msgGeneral);
+            target.Msgs.Add(msgGeneral);
 
             if (source.Detail.Any())
             {
-                sb.AppendLine("---> Details : ");
+                target.Msgs.Add("---> Details : ");
                 foreach (var item in source.Detail)
                 {
-                    sb.AppendLine(item);
+                    target.Msgs.Add(item);
                 }
             }
-            sb.AppendLine("************************************************");
-
+            
             return target;
         }
 

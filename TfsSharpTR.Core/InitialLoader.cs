@@ -36,11 +36,6 @@ namespace TfsSharpTR.Core
             }
         }
 
-        private static TaskList FilterTasks(TaskList allTasks, BaseBuildSetting setting)
-        {
-            throw new NotImplementedException();
-        }
-
         private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<BaseBuildSetting> setting)
         {
             var tasks = new TaskList();

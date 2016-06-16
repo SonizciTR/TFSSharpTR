@@ -7,6 +7,7 @@ using System.Threading;
 using System.Collections.Generic;
 using TfsSharpTR.Core.Helper;
 using TfsSharpTR.PreBuild.FileControl;
+using TfsSharpTR.PreBuild;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -20,7 +21,7 @@ namespace TfsSharpTR.UnitTest
         {
             var fldr = Environment.CurrentDirectory + "\\";
             var dict = new Dictionary<string, string>();
-            dict.Add("AGENT_WorkFolder", fldr);
+            dict.Add("AGENT_WORKFOLDER", fldr);
             dict.Add("SYSTEM_TEAMPROJECT", "");
             dict.Add("BUILD_REQUESTEDFOR", "");
             dict.Add("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "");
@@ -97,18 +98,37 @@ namespace TfsSharpTR.UnitTest
             Assert.IsTrue(usrGroups.Count > 0);
         }
 
-        [TestMethod]
-        public void FileControlTask()
+        private ShellStatu RunTask(Func<string, string, string, Dictionary<string, string>, Dictionary<string, string>, ShellStatu> tsk)
         {
             var dictTfs = DummyTfsVariable();
             var dictUsr = DummyUserVariable();
             var tfs = new TfsVariable(dictTfs);
             var usr = new UserVariable<FileControlSetting>(dictUsr);
 
-            var tsk = new FileControlTask();
-            var rslt = tsk.Initializer("xFile", "xClass", "xMethod", dictTfs, dictUsr);
-            
+            return tsk("xFile", "xClass", "xMethod", dictTfs, dictUsr);
+        }
+
+        [TestMethod]
+        public void TestTask()
+        {
+            var tsk = new TestTask();
+            var rslt = RunTask(tsk.Initializer);
+
             Assert.IsTrue(rslt.IsSuccess);
+        }
+
+        [TestMethod]
+        public void FileControlTask()
+        {
+            var tsk = new FileControlTask();
+            var rslt = RunTask(tsk.Initializer);
+
+            Assert.IsTrue(rslt.IsSuccess);
+        }
+
+        private object RunTask(FileControlTask fileControlTask)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// The working directory for this agent. By default $(Agent.RootDirectory)\_work.
         /// </summary>
-        public string AgentWorkFolder => Get("AGENT_WorkFolder");
+        public string AgentWorkFolder => Get("AGENT_WORKFOLDER");
 
         /// <summary>
         /// The URL of the team foundation collection

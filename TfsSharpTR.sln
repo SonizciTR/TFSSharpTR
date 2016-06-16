@@ -43,6 +43,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StyleCop", "StyleCop", "{F9
 		DLLs\StyleCop\StyleCop.dll = DLLs\StyleCop\StyleCop.dll
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TFSPackage", "TFSPackage", "{1A380358-095F-4E8D-A0F3-49CF09A5763F}"
+	ProjectSection(SolutionItems) = preProject
+		TFSPackage\icon.png = TFSPackage\icon.png
+		TFSPackage\task.json = TFSPackage\task.json
+		TFSPackage\TFSSharpTR.ps1 = TFSPackage\TFSSharpTR.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

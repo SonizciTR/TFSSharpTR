@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TfsSharpTR.Core.Helper;
 using TfsSharpTR.PreBuild.FileControl;
 using TfsSharpTR.PreBuild;
+using System.Linq;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -114,7 +115,8 @@ namespace TfsSharpTR.UnitTest
             var tsk = new TestTask();
             var rslt = RunTask(tsk.Initializer);
 
-            Assert.IsTrue(rslt.IsSuccess);
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
         }
 
         [TestMethod]
@@ -123,7 +125,8 @@ namespace TfsSharpTR.UnitTest
             var tsk = new FileControlTask();
             var rslt = RunTask(tsk.Initializer);
 
-            Assert.IsTrue(rslt.IsSuccess);
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
         }
     }
 }

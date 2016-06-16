@@ -120,6 +120,16 @@ namespace TfsSharpTR.UnitTest
         }
 
         [TestMethod]
+        public void TestAsyncTask()
+        {
+            var tsk = new TestAsyncTask();
+            var rslt = RunTask(tsk.Initializer);
+
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
+        }
+
+        [TestMethod]
         public void FileControlTask()
         {
             var tsk = new FileControlTask();

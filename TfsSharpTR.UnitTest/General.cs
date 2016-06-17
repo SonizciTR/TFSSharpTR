@@ -9,6 +9,7 @@ using TfsSharpTR.Core.Helper;
 using TfsSharpTR.PreBuild.FileControl;
 using TfsSharpTR.PreBuild;
 using System.Linq;
+using TfsSharpTR.StyleCopRelated;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -133,6 +134,16 @@ namespace TfsSharpTR.UnitTest
         public void FileControlTask()
         {
             var tsk = new FileControlTask();
+            var rslt = RunTask(tsk.Initializer);
+
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
+        }
+
+        [TestMethod]
+        public void StyleCopTask()
+        {
+            var tsk = new StyleCopTask();
             var rslt = RunTask(tsk.Initializer);
 
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";

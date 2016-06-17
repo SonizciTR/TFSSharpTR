@@ -24,17 +24,17 @@ namespace TfsSharpTR.StyleCopRelated
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            bool isExclusionExist = (usrVariables.SettingFileData != null) && (usrVariables.SettingFileData.ExcludedFiles != null)
-                                        && (usrVariables.SettingFileData.ExcludedFiles.Any());
+            bool isExclusionExist = (usrVariables.SettingFileData != null) && (usrVariables.SettingFileData.StyleCopTask.ExcludedFiles != null)
+                                        && (usrVariables.SettingFileData.StyleCopTask.ExcludedFiles.Any());
             string sourceCodePath = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + sourceCodePath);
             WriteDetail("Exclusion files : " +
-                (isExclusionExist ? string.Join(", ", usrVariables.SettingFileData.ExcludedFiles) : "None"));
+                (isExclusionExist ? string.Join(", ", usrVariables.SettingFileData.StyleCopTask.ExcludedFiles) : "None"));
 
             var srcFilesAll = Directory.GetFiles(sourceCodePath, "*.cs", SearchOption.AllDirectories).ToList();
             List<string> srcFilestoCheck;
             if (isExclusionExist)
-                srcFilestoCheck = FilterFiles(srcFilesAll, usrVariables.SettingFileData?.ExcludedFiles);
+                srcFilestoCheck = FilterFiles(srcFilesAll, usrVariables.SettingFileData?.StyleCopTask?.ExcludedFiles);
             else
                 srcFilestoCheck = srcFilesAll;
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
@@ -47,7 +47,7 @@ namespace TfsSharpTR.StyleCopRelated
         private bool RunStyleCopRules(List<string> srcFilestoCheck, UserVariable<StyleCopSetting> usrVariables)
         {
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors
-            var console = new StyleCopConsole(usrVariables.SettingFileData.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
+            var console = new StyleCopConsole(usrVariables.SettingFileData.StyleCopTask.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
 
             // make sure the UI is not dispayed on error
             console.Core.DisplayUI = false;
@@ -83,7 +83,7 @@ namespace TfsSharpTR.StyleCopRelated
                 console.ViolationEncountered -= this.OnViolationEncountered;
             }
 
-            return violateError.Count > usrVariables.SettingFileData.MaxErrorCount;
+            return violateError.Count > usrVariables.SettingFileData.StyleCopTask.MaxErrorCount;
         }
 
         private void OnViolationEncountered(object sender, ViolationEventArgs e)

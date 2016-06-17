@@ -31,7 +31,7 @@ namespace TfsSharpTR.UnitTest
             dict.Add("BUILD_SOURCEVERSION", "");
             dict.Add("BUILD_REPOSITORY_NAME", "");
             dict.Add("BUILD_REPOSITORY_PROVIDER", "");
-            dict.Add("BUILD_BINARIESDIRECTORY", "");
+            dict.Add("BUILD_BINARIESDIRECTORY", @"C:\Kod\TestReact");
             
             return dict;
         }

@@ -40,10 +40,11 @@ namespace TfsSharpTR.AutoDeploy
         /// </summary>
         public string BackupFolder { get; set; }
 
+        private const string keyDefaultFilter = "_yyyy.MM.dd.HH.mm.ss";
         /// <summary>
         /// Backup fodler naming. Default is [NameofSourceFolder]_[yyyy.MM.dd.HH.mm.ss]
         /// </summary>
-        public string BackupPostFixNaming { get; set; } = "_yyyy.MM.dd.HH.mm.ss";
+        public string BackupPostFixNaming { get; set; } = keyDefaultFilter;
 
         /// <summary>
         /// Target folder for deployment
@@ -110,13 +111,16 @@ namespace TfsSharpTR.AutoDeploy
         {
             get
             {
+                if (string.IsNullOrEmpty(BackupPostFixNaming))
+                    BackupPostFixNaming = keyDefaultFilter;
                 return DateTime.Now.ToString(BackupPostFixNaming);
             }
         }
 
         public string GetBackupFolder(string sourceFolder)
         {
-            return BackupFolder + "\\" + Path.GetDirectoryName(sourceFolder) + BackupPostFix;
+            var dirName = new DirectoryInfo(sourceFolder).Name;
+            return BackupFolder + "\\" + dirName + BackupPostFix;
         }
     }
 }

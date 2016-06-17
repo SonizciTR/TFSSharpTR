@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,9 @@ namespace TfsSharpTR.AutoDeploy
 {
     internal static class FileOperationHelper
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool CopyFile(string lpExistingFileName, string lpNewFileName, bool bFailIfExists);
+
         public static string TakeBackup(AutoDeploySettingItem setting, string sourceFolder, string backupFolder)
         {
             string nBckupFolder = setting.GetBackupFolder(sourceFolder);
@@ -46,8 +50,9 @@ namespace TfsSharpTR.AutoDeploy
                 // Create the path to the new copy of the file.
                 string temppath = Path.Combine(destDirName, file.Name);
 
-                // Copy the file.
-                file.CopyTo(temppath, overwrite);
+                // Copy the file. Long file path problem
+                //file.CopyTo(temppath, overwrite);
+                CopyFile(file.FullName, temppath, !overwrite);
             }
 
             // If copySubDirs is true, copy the subdirectories.

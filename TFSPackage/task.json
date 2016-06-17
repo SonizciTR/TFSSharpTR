@@ -39,7 +39,7 @@
       "name": "action",
       "type": "pickList",
       "label": "Action",
-      "defaultValue": "Pre Build Task",
+      "defaultValue": "PreBuild",
       "required": true,
       "helpMarkDown": "Action to be performed",
       "options": {
@@ -50,7 +50,8 @@
   ],
   "execution": {
     "PowerShell": {
-      "target": "$(currentDirectory)\\TFSSharpTR.ps1"
+      "target": "$(currentDirectory)\\TFSSharpTR.ps1",
+      "workingDirectory":  "$(currentDirectory)"
     }
   }
 }

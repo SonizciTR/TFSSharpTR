@@ -24,17 +24,20 @@ namespace TfsSharpTR.StyleCopRelated
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            bool isExclusionExist = (usrVariables.SettingFileData != null) && (usrVariables.SettingFileData.StyleCopTask.ExcludedFiles != null)
-                                        && (usrVariables.SettingFileData.StyleCopTask.ExcludedFiles.Any());
+            var setting = usrVariables?.SettingFileData?.StyleCopTask;
+            if (setting == null)
+                return new TaskStatu("SCT02", "No setting loaded.");
+
+            bool isExclusionExist = setting.ExcludedFiles.Any();
             string sourceCodePath = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + sourceCodePath);
             WriteDetail("Exclusion files : " +
-                (isExclusionExist ? string.Join(", ", usrVariables.SettingFileData.StyleCopTask.ExcludedFiles) : "None"));
+                (isExclusionExist ? string.Join(", ", setting.ExcludedFiles) : "None"));
 
             var srcFilesAll = Directory.GetFiles(sourceCodePath, "*.cs", SearchOption.AllDirectories).ToList();
             List<string> srcFilestoCheck;
             if (isExclusionExist)
-                srcFilestoCheck = FilterFiles(srcFilesAll, usrVariables.SettingFileData?.StyleCopTask?.ExcludedFiles);
+                srcFilestoCheck = FilterFiles(srcFilesAll, setting.ExcludedFiles);
             else
                 srcFilestoCheck = srcFilesAll;
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));

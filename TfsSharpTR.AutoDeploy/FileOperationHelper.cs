@@ -11,15 +11,14 @@ namespace TfsSharpTR.AutoDeploy
     {
         public static string TakeBackup(AutoDeploySettingItem setting, string sourceFolder, string backupFolder)
         {
-            string dirSrcName = Path.GetDirectoryName(sourceFolder);
-            string nBckupFolder = dirSrcName + setting.BackupPostFix;
+            string nBckupFolder = setting.GetBackupFolder(sourceFolder);
 
             var err = DirectoryCopy(sourceFolder, nBckupFolder, true);
 
             return err;
         }
 
-        private static string DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        public static string DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs, bool overwrite = true)
         {
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
             DirectoryInfo[] dirs = dir.GetDirectories();
@@ -48,7 +47,7 @@ namespace TfsSharpTR.AutoDeploy
                 string temppath = Path.Combine(destDirName, file.Name);
 
                 // Copy the file.
-                file.CopyTo(temppath, false);
+                file.CopyTo(temppath, overwrite);
             }
 
             // If copySubDirs is true, copy the subdirectories.
@@ -92,6 +91,13 @@ namespace TfsSharpTR.AutoDeploy
 
             }
             return null;
+        }
+
+        public static string RemoveBaseFolder(string folderName, string fullFilePath)
+        {
+            string diffName = fullFilePath.TrimStart(folderName.ToCharArray());
+            diffName = diffName.TrimStart('\\', '/');
+            return diffName;
         }
     }
 }

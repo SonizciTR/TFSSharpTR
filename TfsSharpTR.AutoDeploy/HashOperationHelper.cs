@@ -74,8 +74,7 @@ namespace TfsSharpTR.AutoDeploy
 
             foreach (var file in sourceFiles)
             {
-                string diffName = file.TrimStart(sourceFolder.ToCharArray());
-                diffName = diffName.TrimStart('\\', '/');
+                string diffName = FileOperationHelper.RemoveBaseFolder(sourceFolder, file);
                 byte[] fArray = FileOperationHelper.SafeFileRead(file);
                 if (fArray == null)
                     throw new IOException("Source file could not readed = " + file);

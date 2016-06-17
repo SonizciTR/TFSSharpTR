@@ -26,12 +26,15 @@ namespace TfsSharpTR.AutoDeploy
 
             if (setting.TakeBackup)
             {
+                WriteDetail("Backup started.");
                 var bckMsg = FileOperationHelper.TakeBackup(setting, sourceFolder, setting.BackupFolder);
                 if (!string.IsNullOrEmpty(bckMsg))
                     return new TaskStatu("ADT03", bckMsg);
+                WriteDetail("Backup finished.");
             }
 
             List<string> srcFiles = PrepareFileList(sourceFolder, setting);
+            WriteDetail($"For deploy; {srcFiles.Count} files found.");
 
             bool willImpersonate = !string.IsNullOrEmpty(setting.ImpersonateName);
             bool willIISStopStart = !string.IsNullOrEmpty(setting.AppPoolName) && !string.IsNullOrEmpty(setting.IISServerName);
@@ -40,32 +43,78 @@ namespace TfsSharpTR.AutoDeploy
             if (!string.IsNullOrEmpty(appMsg))
                 return new TaskStatu("ADT04", appMsg);
 
-            string deplMsg = StartDeploy(srcFiles, setting);
+            string deplMsg = StartDeploy(srcFiles, sourceFolder, setting);
             if (!string.IsNullOrEmpty(deplMsg))
+            {
+                string rllMsg = StartRollBack(srcFiles, sourceFolder, setting);
                 return new TaskStatu("ADT05", deplMsg);
+            }
 
             var startMsg = StartIIS(willImpersonate, setting, willIISStopStart);
             if (!string.IsNullOrEmpty(startMsg))
                 return new TaskStatu("ADT06", startMsg);
 
-            return null;
+            return new TaskStatu("AutoDeploy finished successfully.");
+        }
+
+        private string StartRollBack(List<string> srcFiles, string sourceFolder, AutoDeploySettingItem setting)
+        {
+            return FileOperationHelper.DirectoryCopy(setting.GetBackupFolder(sourceFolder), setting.DeployFolder, true);
         }
 
         private string StartIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)
         {
-            throw new NotImplementedException();
+            if (willIISStopStart)
+            {
+                string msStart = IISHelper.AppPoolStart(setting.IISServerName, setting.AppPoolName);
+                if (!string.IsNullOrEmpty(msStart) && setting.MustStopIISAppPool)
+                {
+                    return "AppPool start failed. " + msStart;
+                }
+            }
+
+            return null;
         }
 
-        private string StartDeploy(List<string> srcFiles, AutoDeploySettingItem setting)
+        private string StartDeploy(List<string> sourceFiles, string sourceFolder, AutoDeploySettingItem setting)
         {
-            throw new NotImplementedException();
+            List<string> srcErrors = new List<string>();
+            foreach (var srcFile in sourceFiles)
+            {
+                string dplyFile = "";
+                try
+                {
+                    dplyFile = setting.DeployFolder + "\\" + FileOperationHelper.RemoveBaseFolder(sourceFolder, srcFile);
+                    File.Copy(srcFile, dplyFile, true);
+                }
+                catch(Exception ex)
+                {
+                    srcErrors.Add(srcFile);
+                }
+            }
+            foreach (var srcFile in srcErrors)
+            {
+                string dplyFile = "";
+                try
+                {
+                    dplyFile = setting.DeployFolder + "\\" + FileOperationHelper.RemoveBaseFolder(sourceFolder, srcFile);
+                    File.Copy(srcFile, dplyFile, true);
+                }
+                catch (Exception ex)
+                {
+                    return $"Error while copying [{srcFile}] file to [{dplyFile}]";
+                }
+            }
+            return null;
         }
 
         private string StopIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)
         {
             if (willImpersonate)
             {
-
+                var rsltImp = Impersonator.Change(setting.ImpersonateName, setting.ImpersonatePass, setting.ImpersonateDomain);
+                if (!string.IsNullOrEmpty(rsltImp))
+                    return rsltImp;
             }
 
             if (willIISStopStart)

@@ -49,6 +49,7 @@
     <Compile Include="FileOperationHelper.cs" />
     <Compile Include="HashOperationHelper.cs" />
     <Compile Include="IISHelper.cs" />
+    <Compile Include="Impersonator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

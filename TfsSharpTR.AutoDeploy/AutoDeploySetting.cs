@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace TfsSharpTR.AutoDeploy
         /// <summary>
         /// Backup fodler naming. Default is [NameofSourceFolder]_[yyyy.MM.dd.HH.mm.ss]
         /// </summary>
-        public string BackupPostFixNaming { get; set; } = "yyyy.MM.dd.HH.mm.ss";
+        public string BackupPostFixNaming { get; set; } = "_yyyy.MM.dd.HH.mm.ss";
 
         /// <summary>
         /// Target folder for deployment
@@ -111,6 +112,11 @@ namespace TfsSharpTR.AutoDeploy
             {
                 return DateTime.Now.ToString(BackupPostFixNaming);
             }
+        }
+
+        public string GetBackupFolder(string sourceFolder)
+        {
+            return BackupFolder + "\\" + Path.GetDirectoryName(sourceFolder) + BackupPostFix;
         }
     }
 }

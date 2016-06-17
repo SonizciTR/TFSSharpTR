@@ -17,4 +17,19 @@
     "MaxErrorCount": 0,
     "TreatWarnAsError": false
   }
+
+  "AutoDeployTask": {
+    "Mode": "DIFF",
+    "ExcludedFiles": [ "web.config" ],
+    "TakeBackup": true,
+    "BackupFolder": "C:\\1\\backup",
+    "BackupPostFixNaming": "",
+    "DeployFolder": "C:\\1\\deploy\\website",
+    "MustStopIISAppPool": false,
+    "AppPoolName": "",
+    "IISServerName": "",
+    "ImpersonateName": "",
+    "ImpersonatePass": "",
+    "ImpersonateDomain": ""
+  }
 }

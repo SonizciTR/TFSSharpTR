@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TfsSharpTR.AutoDeploy\TfsSharpTR.AutoDeploy.csproj">
+      <Project>{2706e13d-a6d6-4ef8-b950-bfc1cd9a00e9}</Project>
+      <Name>TfsSharpTR.AutoDeploy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TfsSharpTR.Core\TfsSharpTR.Core.csproj">
       <Project>{90f44cc7-998e-48cd-9ea2-f22aecf51f2c}</Project>
       <Name>TfsSharpTR.Core</Name>

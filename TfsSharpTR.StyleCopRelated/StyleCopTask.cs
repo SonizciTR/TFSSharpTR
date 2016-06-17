@@ -24,7 +24,8 @@ namespace TfsSharpTR.StyleCopRelated
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            bool isExclusionExist = (usrVariables.SettingFileData != null) || (usrVariables.SettingFileData.ExcludedFiles != null);
+            bool isExclusionExist = (usrVariables.SettingFileData != null) && (usrVariables.SettingFileData.ExcludedFiles != null)
+                                        && (usrVariables.SettingFileData.ExcludedFiles.Any());
             string sourceCodePath = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + sourceCodePath);
             WriteDetail("Exclusion files : " +

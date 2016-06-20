@@ -120,7 +120,8 @@ namespace TfsSharpTR.AutoDeploy
                     return $"Error while copying [{srcFile}] file to [{dplyFile}]";
                 }
             }
-            return null;
+
+            return srcErrors.Any() ? "Could not deploy these files : " + string.Join(", ", srcErrors) : null;
         }
 
         private string StopIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)

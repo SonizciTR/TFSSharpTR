@@ -63,14 +63,14 @@ namespace TfsSharpTR.Core
                 rtnData.Msgs.Add(string.Format("*** FINISH > [{0}] task runned/total (ms) : {1}/{2}", 
                                     className, watchTask.Elapsed.TotalMilliseconds, watchGeneral.Elapsed.TotalMilliseconds));
 
-                rtnData.Msgs.Add("************************************************");
+                rtnData.Msgs.Add("-------------------------------------------------------------------------------------------------");
 
                 return rtnData;
             }
             catch (Exception ex)
             {
                 Logger.Write(ex);
-                return new ShellStatu(false, string.Format("BaseTask.Initializer failed. TaskName = [{0}]. ExDetail = [{1}].", taskLongName, ex));
+                return new ShellStatu(false, string.Format("!!! BaseTask.Initializer failed. TaskName = [{0}]. ExDetail = [{1}].", taskLongName, ex));
             }
         }
 
@@ -94,11 +94,11 @@ namespace TfsSharpTR.Core
             if (watch != null)
             {
                 watch.Stop();
-                msg = string.Format("{0} => {1}. Total Time (ms) : {2}", DateTime.Now, message, watch.Elapsed.TotalMilliseconds);
+                msg = string.Format(" - {0} => {1}. Total Time (ms) : {2}", DateTime.Now, message, watch.Elapsed.TotalMilliseconds);
             }
             else
             {
-                msg = string.Format("{0} => {1}.", DateTime.Now, message);
+                msg = string.Format(" - {0} => {1}.", DateTime.Now, message);
             }
 
             intrDetailContainer.Add(msg);

@@ -5,9 +5,11 @@
 /packages
 /TfsSharpTR.Core/bin/Debug
 /TfsSharpTR.Core/obj/Debug
-/TfsSharpTR.PreBuild/bin/Debug
-/TfsSharpTR.PreBuild/obj/Debug
+/TfsSharpTR.PreBuild/bin
+/TfsSharpTR.PreBuild/obj
 /TfsSharpTR.UnitTest
 /.vs
-/TfsSharpTR.StyleCopRelated/bin/Debug
-/TfsSharpTR.StyleCopRelated/obj/Debug
+/TfsSharpTR.StyleCopRelated/bin
+/TfsSharpTR.StyleCopRelated/obj
+/TfsSharpTR.AutoDeploy/bin
+/TfsSharpTR.AutoDeploy/obj

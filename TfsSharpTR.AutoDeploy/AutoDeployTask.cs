@@ -154,7 +154,7 @@ namespace TfsSharpTR.AutoDeploy
 
             if (isDiffDeployment)
             {
-                string oldFile = setting.DeployFolder + KeyHashFileName;
+                string oldFile = setting.DeployFolder + "\\" + KeyHashFileName;
                 if (File.Exists(oldFile))
                 {
                     oldhfData = HashItem.ParseFromFileLineList(FileOperationHelper.SafeFileReadLines(oldFile));
@@ -178,7 +178,7 @@ namespace TfsSharpTR.AutoDeploy
                 if (isOldFile)
                     continue;
 
-                var fullPath = sourceFolder + item.FileName;
+                var fullPath = sourceFolder + "\\" + item.FileName;
                 files.Add(fullPath);
             }
 

@@ -46,8 +46,8 @@ namespace TfsSharpTR.AutoDeploy
             if (sprtd?.Length != 2)
                 return false;
 
-            FileHash = sprtd[0];
-            FileName = sprtd[1];
+            FileName = sprtd[0];
+            FileHash = sprtd[1];
 
             return true;
         }

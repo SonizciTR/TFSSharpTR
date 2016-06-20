@@ -3,8 +3,8 @@
 ################################################################################
 
 /packages
-/TfsSharpTR.Core/bin/Debug
-/TfsSharpTR.Core/obj/Debug
+/TfsSharpTR.Core/bin
+/TfsSharpTR.Core/obj
 /TfsSharpTR.PreBuild/bin
 /TfsSharpTR.PreBuild/obj
 /TfsSharpTR.UnitTest

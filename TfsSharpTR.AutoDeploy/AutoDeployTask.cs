@@ -33,7 +33,8 @@ namespace TfsSharpTR.AutoDeploy
                 WriteDetail("Backup finished.");
             }
 
-            List<string> srcFiles = PrepareFileList(sourceFolder, setting);
+            List<HashItem> fileHashInfo;
+            List<string> srcFiles = PrepareFileList(sourceFolder, setting, out fileHashInfo);
             WriteDetail($"For deploy; {srcFiles.Count} files found.");
 
             bool willImpersonate = !string.IsNullOrEmpty(setting.ImpersonateName);
@@ -49,12 +50,20 @@ namespace TfsSharpTR.AutoDeploy
                 string rllMsg = StartRollBack(srcFiles, sourceFolder, setting);
                 return new TaskStatu("ADT05", deplMsg);
             }
+            string msgWrtHash = WriteNewHashFile(setting, fileHashInfo);
 
             var startMsg = StartIIS(willImpersonate, setting, willIISStopStart);
             if (!string.IsNullOrEmpty(startMsg))
                 return new TaskStatu("ADT06", startMsg);
 
             return new TaskStatu("AutoDeploy finished successfully.");
+        }
+
+        private string WriteNewHashFile(AutoDeploySettingItem setting, List<HashItem> fileHashInfo)
+        {
+            string fileName = setting.DeployFolder + "\\" + KeyHashFileName;
+            File.WriteAllLines(fileName, fileHashInfo.Select(x => x.HashLine).ToArray());
+            return null;
         }
 
         private string StartRollBack(List<string> srcFiles, string sourceFolder, AutoDeploySettingItem setting)
@@ -79,15 +88,21 @@ namespace TfsSharpTR.AutoDeploy
         private string StartDeploy(List<string> sourceFiles, string sourceFolder, AutoDeploySettingItem setting)
         {
             List<string> srcErrors = new List<string>();
+            if (!Directory.Exists(setting.DeployFolder))
+                FileOperationHelper.CreateDirectory(setting.DeployFolder);
+
             foreach (var srcFile in sourceFiles)
             {
                 string dplyFile = "";
                 try
                 {
                     dplyFile = setting.DeployFolder + "\\" + FileOperationHelper.RemoveBaseFolder(sourceFolder, srcFile);
+                    string folder = Path.GetDirectoryName(dplyFile);
+                    if (!Directory.Exists(folder))
+                        FileOperationHelper.CreateDirectory(folder, true);
                     File.Copy(srcFile, dplyFile, true);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     srcErrors.Add(srcFile);
                 }
@@ -129,14 +144,22 @@ namespace TfsSharpTR.AutoDeploy
             return null;
         }
 
-        private List<string> PrepareFileList(string sourceFolder, AutoDeploySettingItem setting)
+        private List<string> PrepareFileList(string sourceFolder, AutoDeploySettingItem setting, out List<HashItem> fileHashInfo)
         {
             bool isDiffDeployment = setting.Mode == AutoDeploySettingItem.KeyDiff;
             var filteredFiles = FindFilesandFilter(sourceFolder, setting);
             var hfNewData = HashOperationHelper.GenerateHashFileStructure(sourceFolder, filteredFiles);
-            List<HashItem> oldhfData = isDiffDeployment ?
-                HashItem.ParseFromFileLineList(FileOperationHelper.SafeFileReadLines(setting.DeployFolder + KeyHashFileName))
-                : new List<HashItem>();
+            fileHashInfo = hfNewData;
+            List<HashItem> oldhfData = new List<HashItem>();
+
+            if (isDiffDeployment)
+            {
+                string oldFile = setting.DeployFolder + KeyHashFileName;
+                if (File.Exists(oldFile))
+                {
+                    oldhfData = HashItem.ParseFromFileLineList(FileOperationHelper.SafeFileReadLines(oldFile));
+                }
+            }
 
             List<string> files = FindDeploymentFiles(sourceFolder, filteredFiles, hfNewData, oldhfData);
 
@@ -181,6 +204,6 @@ namespace TfsSharpTR.AutoDeploy
             else
                 return allFiles;
         }
-        
+
     }
 }

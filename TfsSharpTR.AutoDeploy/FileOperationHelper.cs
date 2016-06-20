@@ -40,6 +40,27 @@ namespace TfsSharpTR.AutoDeploy
             return err;
         }
 
+        public static bool CreateDirectory(string path, bool isRecursive = false)
+        {
+            if (!isRecursive)
+                return Win32Native.CreateDirectory(String.Concat(@"\\?\", path), null);
+
+            var spltd = path.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            string tmp = spltd[0];
+            bool isSucc = true;
+            for (int i = 1; i < spltd.Length; i++)
+            {
+                tmp += ("\\" + spltd[i]);
+                if (!Directory.Exists(tmp))
+                {
+                    isSucc &= CreateDirectory(tmp);
+                    if (!isSucc)
+                        break;
+                }
+            }
+            return isSucc;
+        }
+
         public static string DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs, bool overwrite = true)
         {
             try
@@ -59,7 +80,7 @@ namespace TfsSharpTR.AutoDeploy
                 if (!Directory.Exists(destDirName))
                 {
                     //Directory.CreateDirectory(destDirName);
-                    var isCrtd = Win32Native.CreateDirectory(String.Concat(@"\\?\", destDirName), null);
+                    var isCrtd = CreateDirectory(destDirName);
                     if (!isCrtd)
                         return "Directory could not created. Path = " + destDirName;
                 }

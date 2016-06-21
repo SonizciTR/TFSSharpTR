@@ -27,7 +27,7 @@ namespace TfsSharpTR.Core.Model
         /// Json setting file and Task Libraries will look from this file's folder
         /// </summary>
         public string SettingFile => Get("SettingFile");
-        
+
         /// <summary>
         /// Json setting file's all text
         /// </summary>
@@ -57,9 +57,9 @@ namespace TfsSharpTR.Core.Model
         }
 
         /// <summary>
-        /// Task libraries folder
+        ///  Where is the all the libraries are working. Because Powershell script copying the libraries to a latest location. Task libraries folder.
         /// </summary>
-        public string LibrariesFolder
+        public string WorkingPath
         {
             get
             {

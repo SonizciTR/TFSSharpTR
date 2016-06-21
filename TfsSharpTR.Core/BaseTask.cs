@@ -41,7 +41,7 @@ namespace TfsSharpTR.Core
                 taskLongName = Path.GetFileNameWithoutExtension(dllName) + " -> " + className;
                 var tfsVar = new TfsVariable(tfsVarRaw);
                 var usrVar = new UserVariable<Tsetting>(usrVarRaw);
-                Logger.Set(usrVar.LibrariesFolder);
+                Logger.Set(usrVar.WorkingPath);
 
                 var bsSetting = usrVar.SettingFileData;
                 if (bsSetting == null)

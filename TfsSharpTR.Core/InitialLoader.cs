@@ -19,12 +19,12 @@ namespace TfsSharpTR.Core
             {
                 var settTfs = new TfsVariable(tfsVariables);
                 var settUsr = new UserVariable<BaseBuildSetting>(usrVar);
-                Logger.Set(settUsr.LibrariesFolder);
+                Logger.Set(settUsr.WorkingPath);
 
                 if (settUsr.SettingFileData == null)
                     throw new Exception("User Setting File is missing or wrongly formatted.");
 
-                var dlls = GetDllList(settUsr.LibrariesFolder);
+                var dlls = GetDllList(settUsr.WorkingPath);
                 var allTasks = GetAllTasks(dlls, settUsr);
                 return allTasks;
             }

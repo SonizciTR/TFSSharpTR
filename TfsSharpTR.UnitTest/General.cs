@@ -32,7 +32,8 @@ namespace TfsSharpTR.UnitTest
             dict.Add("BUILD_REPOSITORY_NAME", "");
             dict.Add("BUILD_REPOSITORY_PROVIDER", "");
             dict.Add("BUILD_BINARIESDIRECTORY", @"");
-            dict.Add("BUILD_SOURCESDIRECTORY", @"C:\Kod\TFSSharpTR\");
+            dict.Add("BUILD_SOURCESDIRECTORY", @"");
+            dict.Add("BUILD_REPOSITORY_LOCALPATH", @"");
             
             return dict;
         }
@@ -44,6 +45,7 @@ namespace TfsSharpTR.UnitTest
             var dict = new Dictionary<string, string>();
             dict.Add("SettingFile", jsnSettingFile);
             dict.Add("Action", actionName);
+
             return dict;
         }
 

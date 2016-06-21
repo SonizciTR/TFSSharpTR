@@ -44,13 +44,14 @@ namespace TfsSharpTR.StyleCopRelated
 
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
 
-            bool isRunOk = RunStyleCopRules(srcFilestoCheck, usrVariables);
+            bool isRunOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
 
             return isRunOk ? new TaskStatu("StyleCopTask finished successfully") : new TaskStatu("SCT01", "StyleCopTask failed.");
         }
 
-        private bool RunStyleCopRules(List<string> srcFilestoCheck, UserVariable<StyleCopSetting> usrVariables)
+        private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
+            List<string> addInPaths = new List<string> { usrVariables.WorkingPath };
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors
             var console = new StyleCopConsole(usrVariables.SettingFileData.StyleCopTask.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
 
@@ -58,7 +59,7 @@ namespace TfsSharpTR.StyleCopRelated
             console.Core.DisplayUI = false;
 
             // declare the add-ins to load
-            console.Core.Initialize(null, true);
+            console.Core.Initialize(addInPaths, true);
 
             // Create the configuration.
             Configuration configuration = new Configuration(new string[0]);

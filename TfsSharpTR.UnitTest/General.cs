@@ -32,6 +32,7 @@ namespace TfsSharpTR.UnitTest
             dict.Add("BUILD_REPOSITORY_NAME", "");
             dict.Add("BUILD_REPOSITORY_PROVIDER", "");
             dict.Add("BUILD_BINARIESDIRECTORY", @"");
+            dict.Add("BUILD_SOURCESDIRECTORY", @"");
             
             return dict;
         }

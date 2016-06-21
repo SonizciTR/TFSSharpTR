@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
 using TfsSharpTR.Core.Common;
+using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.AutoDeploy
@@ -69,7 +70,7 @@ namespace TfsSharpTR.AutoDeploy
 
         private string StartRollBack(List<string> srcFiles, string sourceFolder, AutoDeploySettingItem setting)
         {
-            return FileOperationHelper.DirectoryCopy(setting.GetBackupFolder(sourceFolder), setting.DeployFolder, true);
+            return FileHelper.DirectoryCopy(setting.GetBackupFolder(sourceFolder), setting.DeployFolder, true);
         }
 
         private string StartIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)
@@ -90,17 +91,17 @@ namespace TfsSharpTR.AutoDeploy
         {
             List<string> srcErrors = new List<string>();
             if (!Directory.Exists(setting.DeployFolder))
-                FileOperationHelper.CreateDirectory(setting.DeployFolder);
+                FileHelper.CreateDirectory(setting.DeployFolder);
 
             foreach (var srcFile in sourceFiles)
             {
                 string dplyFile = "";
                 try
                 {
-                    dplyFile = setting.DeployFolder + "\\" + FileOperationHelper.RemoveBaseFolder(sourceFolder, srcFile);
+                    dplyFile = setting.DeployFolder + "\\" + FileHelper.RemoveBaseFolder(sourceFolder, srcFile);
                     string folder = Path.GetDirectoryName(dplyFile);
                     if (!Directory.Exists(folder))
-                        FileOperationHelper.CreateDirectory(folder, true);
+                        FileHelper.CreateDirectory(folder, true);
                     File.Copy(srcFile, dplyFile, true);
                 }
                 catch (Exception ex)
@@ -114,7 +115,7 @@ namespace TfsSharpTR.AutoDeploy
                 string dplyFile = "";
                 try
                 {
-                    dplyFile = setting.DeployFolder + "\\" + FileOperationHelper.RemoveBaseFolder(sourceFolder, srcFile);
+                    dplyFile = setting.DeployFolder + "\\" + FileHelper.RemoveBaseFolder(sourceFolder, srcFile);
                     File.Copy(srcFile, dplyFile, true);
                 }
                 catch (Exception ex)
@@ -161,7 +162,7 @@ namespace TfsSharpTR.AutoDeploy
                 string oldFile = setting.DeployFolder + "\\" + KeyHashFileName;
                 if (File.Exists(oldFile))
                 {
-                    oldhfData = HashItem.ParseFromFileLineList(FileOperationHelper.SafeFileReadLines(oldFile));
+                    oldhfData = HashItem.ParseFromFileLineList(FileHelper.SafeFileReadLines(oldFile));
                 }
             }
 

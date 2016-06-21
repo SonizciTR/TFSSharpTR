@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Helper;
 
 namespace TfsSharpTR.AutoDeploy
 {
@@ -74,8 +75,8 @@ namespace TfsSharpTR.AutoDeploy
 
             foreach (var file in sourceFiles)
             {
-                string diffName = FileOperationHelper.RemoveBaseFolder(sourceFolder, file);
-                byte[] fArray = FileOperationHelper.SafeFileRead(file);
+                string diffName = FileHelper.RemoveBaseFolder(sourceFolder, file);
+                byte[] fArray = FileHelper.SafeFileRead(file);
                 if (fArray == null)
                     throw new IOException("Source file could not readed = " + file);
 

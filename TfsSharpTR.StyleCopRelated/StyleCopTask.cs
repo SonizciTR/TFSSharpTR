@@ -20,6 +20,7 @@ namespace TfsSharpTR.StyleCopRelated
     public class StyleCopTask : BaseTask<StyleCopSetting>
     {
         private object _lckObj = new object();
+        private bool IsRunned = false;
         public List<string> violateError { get; set; } = new List<string>();
         public List<string> violateWarn { get; set; } = new List<string>();
 
@@ -45,13 +46,15 @@ namespace TfsSharpTR.StyleCopRelated
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
 
             bool isRunOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
+            if (!IsRunned)
+                return new TaskStatu("SCT03", "StyleCop engine did not runned.");
 
             return isRunOk ? new TaskStatu("StyleCopTask finished successfully") : new TaskStatu("SCT01", "StyleCopTask failed.");
         }
 
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            List<string> addInPaths = new List<string> { usrVariables.WorkingPath };
+            List<string> addInPaths = new List<string> { usrVariables.WorkingPath + "\\" };
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors
             var console = new StyleCopConsole(usrVariables.SettingFileData.StyleCopTask.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
 
@@ -128,19 +131,20 @@ namespace TfsSharpTR.StyleCopRelated
             // Prepend the rule check-id to the message.
             string mRule = string.Concat(e.Violation.Rule.CheckId ?? "NoRuleCheckId", ": ", e.Message);
 
-            lock (this)
+            lock (_lckObj)
             {
+                IsRunned = true;
                 WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, file, e.LineNumber));
             }
         }
 
         private void OnOutputGenerated(object sender, OutputEventArgs e)
         {
-            //Is it really necessery???
-            //lock (_lckObj)
-            //{
-            //    WriteDetail(e.Output.Trim());
-            //}
+            lock (_lckObj)
+            {
+                IsRunned = true;
+                WriteDetail(e.Output.Trim());
+            }
         }
 
         private List<string> FilterFiles(List<string> srcFilesAll, List<string> excludedFiles)

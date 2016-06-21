@@ -34,7 +34,7 @@ namespace TfsSharpTR.UnitTest
             dict.Add("BUILD_BINARIESDIRECTORY", @"");
             dict.Add("BUILD_SOURCESDIRECTORY", @"");
             dict.Add("BUILD_REPOSITORY_LOCALPATH", @"");
-            
+
             return dict;
         }
 
@@ -43,7 +43,7 @@ namespace TfsSharpTR.UnitTest
             string jsnSettingFile = "TestBuildSetting.json";
             var fldr = Environment.CurrentDirectory + "\\";
             var dict = new Dictionary<string, string>();
-            dict.Add("SettingFile", jsnSettingFile);
+            dict.Add("SettingFile", fldr + jsnSettingFile);
             dict.Add("Action", actionName);
 
             return dict;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Common;
 
 namespace TfsSharpTR.AutoDeploy
 {
@@ -115,6 +116,8 @@ namespace TfsSharpTR.AutoDeploy
             }
             catch (Exception ex)
             {
+                Logger.Write(ex);
+
                 return "FileOperationHelper.DirectoryCopy failed. ErrDetail = " + ex.ToString();
             }
 
@@ -129,7 +132,7 @@ namespace TfsSharpTR.AutoDeploy
             }
             catch (Exception ex)
             {
-
+                Logger.Write(ex);
             }
             return null;
         }
@@ -142,7 +145,7 @@ namespace TfsSharpTR.AutoDeploy
             }
             catch (Exception ex)
             {
-
+                Logger.Write(ex);
             }
             return null;
         }

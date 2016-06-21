@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.StyleCopRelated
@@ -40,6 +41,7 @@ namespace TfsSharpTR.StyleCopRelated
                 srcFilestoCheck = FilterFiles(srcFilesAll, setting.ExcludedFiles);
             else
                 srcFilestoCheck = srcFilesAll;
+
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
 
             bool isRunOk = RunStyleCopRules(srcFilestoCheck, usrVariables);
@@ -78,6 +80,10 @@ namespace TfsSharpTR.StyleCopRelated
                 // Analyze the source files
                 CodeProject[] projects = new[] { project };
                 console.Start(projects, true);
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
             }
             finally
             {

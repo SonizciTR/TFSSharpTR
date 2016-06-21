@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Common;
 
 namespace TfsSharpTR.AutoDeploy
 {
@@ -32,6 +33,7 @@ namespace TfsSharpTR.AutoDeploy
             catch (Exception ex)
             {
                 serverManager = null;
+                Logger.Write(ex);
                 return "IISHelper.AppPoolStop failed. Ex = " + ex.ToString();
             }
         }
@@ -59,6 +61,7 @@ namespace TfsSharpTR.AutoDeploy
             catch (Exception ex)
             {
                 serverManager = null;
+                Logger.Write(ex);
                 return "IISHelper.AppPoolStart failed. Ex = " + ex.ToString();
             }
         }

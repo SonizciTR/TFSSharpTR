@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.AutoDeploy
@@ -104,6 +105,7 @@ namespace TfsSharpTR.AutoDeploy
                 }
                 catch (Exception ex)
                 {
+                    Logger.Write(ex);
                     srcErrors.Add(srcFile);
                 }
             }
@@ -117,6 +119,7 @@ namespace TfsSharpTR.AutoDeploy
                 }
                 catch (Exception ex)
                 {
+                    Logger.Write(ex);
                     return $"Error while copying [{srcFile}] file to [{dplyFile}]";
                 }
             }

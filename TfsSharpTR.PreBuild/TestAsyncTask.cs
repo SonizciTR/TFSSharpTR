@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.PreBuild
@@ -36,6 +37,8 @@ namespace TfsSharpTR.PreBuild
             }
             catch (Exception ex)
             {
+                Logger.Write(ex);
+
                 tsk = new TaskStatu("T2", "TestAsyncTask.Job's ThreadStart start throw exception. Ex = " + ex.ToString());
             }
             

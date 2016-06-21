@@ -147,17 +147,18 @@ namespace TfsSharpTR.StyleCopRelated
             if ((excludedFiles == null) || (!excludedFiles.Any()))
                 return srcFilesAll;
 
-            var tmp = new List<string>();
+            var tmpExcluded = excludedFiles.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            var checkGroup = new List<string>();
             foreach (var itmFile in srcFilesAll)
             {
-                bool isMatch = excludedFiles.Any(x => itmFile.EndsWith(itmFile));
+                bool isMatch = tmpExcluded.Any(x => itmFile.EndsWith(x));
 
                 if (isMatch)
                     continue;
 
-                tmp.Add(itmFile);
+                checkGroup.Add(itmFile);
             }
-            return tmp;
+            return checkGroup;
         }
     }
 }

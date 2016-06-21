@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
 using TfsSharpTR.Core.Common;
+using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.StyleCopRelated
@@ -23,20 +24,22 @@ namespace TfsSharpTR.StyleCopRelated
         private bool IsRunned = false;
         public List<string> violateError { get; set; } = new List<string>();
         public List<string> violateWarn { get; set; } = new List<string>();
+        public string SourceBaseFolder { get; set; }
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
             var setting = usrVariables?.SettingFileData?.StyleCopTask;
+            SourceBaseFolder = tfsVariables.BuildSourceDirectory;
             if (setting == null)
                 return new TaskStatu("SCT02", "No setting loaded.");
 
             bool isExclusionExist = setting.ExcludedFiles.Any();
-            string sourceCodePath = tfsVariables.BuildSourceDirectory;
-            WriteDetail("Source Folder : " + sourceCodePath);
+            SourceBaseFolder = tfsVariables.BuildSourceDirectory;
+            WriteDetail("Source Folder : " + SourceBaseFolder);
             WriteDetail("Exclusion files : " +
                 (isExclusionExist ? string.Join(", ", setting.ExcludedFiles) : "None"));
 
-            var srcFilesAll = Directory.GetFiles(sourceCodePath, "*.cs", SearchOption.AllDirectories).ToList();
+            var srcFilesAll = Directory.GetFiles(SourceBaseFolder, "*.cs", SearchOption.AllDirectories).ToList();
             List<string> srcFilestoCheck;
             if (isExclusionExist)
                 srcFilestoCheck = FilterFiles(srcFilesAll, setting.ExcludedFiles);
@@ -134,7 +137,8 @@ namespace TfsSharpTR.StyleCopRelated
             lock (_lckObj)
             {
                 IsRunned = true;
-                WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, file, e.LineNumber));
+                string relPath = FileHelper.RemoveBaseFolder(SourceBaseFolder, file);
+                WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, relPath, e.LineNumber));
             }
         }
 

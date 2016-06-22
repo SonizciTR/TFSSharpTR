@@ -52,7 +52,10 @@ namespace TfsSharpTR.StyleCopRelated
             if (!IsRunned)
                 return new TaskStatu("SCT03", "StyleCop engine did not runned.");
 
-            return isRunOk ? new TaskStatu("StyleCopTask finished successfully") : new TaskStatu("SCT01", "StyleCopTask failed.");
+            if(!isRunOk)
+                return new TaskStatu("SCT01", "StyleCopTask failed.");
+
+            return violateError.Count > setting.MaxErrorCount ? new TaskStatu("SCT04", "There is too much error.") : new TaskStatu("StyleCopTask finished successfully");
         }
 
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)

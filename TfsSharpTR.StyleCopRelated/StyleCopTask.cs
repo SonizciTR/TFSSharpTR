@@ -22,34 +22,34 @@ namespace TfsSharpTR.StyleCopRelated
     {
         private object _lckObj = new object();
         private bool IsRunned = false;
-        private int maxLoggingErrorCount = 50;
+        private StyleCopSetting GlobalSetting = null;
+
         public List<string> violateError { get; set; } = new List<string>();
         public List<string> violateWarn { get; set; } = new List<string>();
         public string SourceBaseFolder { get; set; }
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            var setting = usrVariables?.SettingFileData;
+            GlobalSetting = usrVariables?.SettingFileData;
             SourceBaseFolder = tfsVariables.BuildSourceDirectory;
-            if (setting == null)
+            if (GlobalSetting == null)
                 return new TaskStatu("SCT02", "No setting loaded.");
 
-            bool isExclusionExist = setting.ExcludedFiles.Any();
+            bool isExclusionExist = GlobalSetting.ExcludedFiles.Any();
             SourceBaseFolder = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + SourceBaseFolder);
             WriteDetail("Exclusion files : " +
-                (isExclusionExist ? string.Join(", ", setting.ExcludedFiles) : "None"));
+                (isExclusionExist ? string.Join(", ", GlobalSetting.ExcludedFiles) : "None"));
 
             var srcFilesAll = Directory.GetFiles(SourceBaseFolder, "*.cs", SearchOption.AllDirectories).ToList();
             List<string> srcFilestoCheck;
             if (isExclusionExist)
-                srcFilestoCheck = FilterFiles(srcFilesAll, setting.ExcludedFiles);
+                srcFilestoCheck = FilterFiles(srcFilesAll, GlobalSetting.ExcludedFiles);
             else
                 srcFilestoCheck = srcFilesAll;
 
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
-
-            maxLoggingErrorCount = setting.MaxErrorCount > maxLoggingErrorCount ? setting.MaxErrorCount : maxLoggingErrorCount;
+            
             bool isRunOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
             if (!IsRunned)
                 return new TaskStatu("SCT03", "StyleCop engine did not runned.");
@@ -57,7 +57,7 @@ namespace TfsSharpTR.StyleCopRelated
             if (!isRunOk)
                 return new TaskStatu("SCT01", "StyleCopTask failed.");
 
-            return violateError.Count > setting.MaxErrorCount ? new TaskStatu("SCT04", "There is too much error.") : new TaskStatu("StyleCopTask finished successfully");
+            return violateError.Count > GlobalSetting.MaxErrorCount ? new TaskStatu("SCT04", "There is too much error.") : new TaskStatu("StyleCopTask finished successfully");
         }
 
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
@@ -171,14 +171,14 @@ namespace TfsSharpTR.StyleCopRelated
             {
                 IsRunned = true;
                 ++counter;
-                if (counter < maxLoggingErrorCount)
+                if (counter < GlobalSetting.MaxLogCounttoDisplay)
                 {
                     string relPath = FileHelper.RemoveBaseFolder(SourceBaseFolder, file);
                     WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, relPath, e.LineNumber));
                 }
-                else if(counter == maxLoggingErrorCount)
+                else if(counter == GlobalSetting.MaxLogCounttoDisplay)
                 {
-                    WriteDetail(string.Format("Maximum error logging is exceeded. Max is {0}", maxLoggingErrorCount));
+                    WriteDetail(string.Format("Maximum error logging is exceeded. Max is {0}", GlobalSetting.MaxLogCounttoDisplay));
                 }
             }
         }

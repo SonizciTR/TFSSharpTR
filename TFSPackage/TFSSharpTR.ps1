@@ -100,16 +100,18 @@ try {
 	   foreach($msg in $taskStatus.Msgs){
 			Write-Host($msg)
 	   }
-	   Write-Host "Task is runned successfully : " $taskStatus.IsSuccess
+	   Write-Host "Is $className runned successfully ?: " $taskStatus.IsSuccess
 
 	   if(!$taskStatus.IsSuccess){
 			Throw [System.Exception] "$className has failed. All builds fail."
 	   }
+	   Write-Host "#############################################################################################################################################"
     }
 } 
 catch {
     Write-Host ("Hata: " + $_.Exception.ToString())
 	Throw [System.Exception] $_.Exception
+	Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 }
 finally {
  

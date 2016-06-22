@@ -17,7 +17,8 @@
   "StyleCopTask": {
     "ExcludedFiles": [ "GlobalSupression.cs", "AssemblyInfo.cs" ],
     "MaxErrorCount": 0,
-    "TreatWarnAsError": false
+    "TreatWarnAsError": false,
+    "SettingFile": "Settings.StyleCop"
   },
 
   "AutoDeployTask": {

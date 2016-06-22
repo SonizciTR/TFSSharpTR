@@ -52,7 +52,7 @@ namespace TfsSharpTR.StyleCopRelated
             if (!IsRunned)
                 return new TaskStatu("SCT03", "StyleCop engine did not runned.");
 
-            if(!isRunOk)
+            if (!isRunOk)
                 return new TaskStatu("SCT01", "StyleCopTask failed.");
 
             return violateError.Count > setting.MaxErrorCount ? new TaskStatu("SCT04", "There is too much error.") : new TaskStatu("StyleCopTask finished successfully");
@@ -61,8 +61,10 @@ namespace TfsSharpTR.StyleCopRelated
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
             List<string> addInPaths = new List<string> { usrVariables.WorkingPath + "\\" };
+            string styleSettingFile = FindRuleFile(usrVariables);
+
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors
-            var console = new StyleCopConsole(usrVariables.SettingFileData.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
+            var console = new StyleCopConsole(styleSettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
 
             // make sure the UI is not dispayed on error
             console.Core.DisplayUI = false;
@@ -91,7 +93,7 @@ namespace TfsSharpTR.StyleCopRelated
                 CodeProject[] projects = new[] { project };
                 console.Start(projects, true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write(ex);
             }
@@ -103,6 +105,31 @@ namespace TfsSharpTR.StyleCopRelated
             }
 
             return violateError.Count > usrVariables.SettingFileData.MaxErrorCount;
+        }
+
+        private string FindRuleFile(UserVariable<StyleCopSetting> usrVariables)
+        {
+            string styleSettingFile = string.Empty;
+
+            if (!string.IsNullOrEmpty(usrVariables.SettingFileData.SettingFile))
+            {
+                string onlyFileName = Path.GetFileName(usrVariables.SettingFileData.SettingFile);
+                styleSettingFile = onlyFileName == usrVariables.SettingFileData.SettingFile ?
+                    Path.Combine(usrVariables.WorkingPath, usrVariables.SettingFileData.SettingFile)
+                    : usrVariables.SettingFileData.SettingFile;
+                if (File.Exists(styleSettingFile))
+                    WriteDetail("Custom StyleCop rule file = [" + styleSettingFile + "]");
+                else
+                {
+                    styleSettingFile = string.Empty;
+                    WriteDetail("Custom StyleCop rule assigned but not found in the folder = [" + styleSettingFile + "]");
+                    WriteDetail("Default rules will be runned.");
+                }
+            }
+            else
+                WriteDetail("No Custom StyleCop rule file. Default rules will be runned.");
+
+            return styleSettingFile;
         }
 
         private void OnViolationEncountered(object sender, ViolationEventArgs e)

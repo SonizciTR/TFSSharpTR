@@ -76,7 +76,7 @@ I am assuming you have enough privliges at TFS server.
 3. Run "npm install -g tfx cli"
 4. Run "tfx build tasks upload"
 5. It will ask you a folder path. Give "TFSPackage" folder.
-6. Open TFS web interface and you can add your new build step pre-build and post-build.
+6. Open TFS web interface and you can add TFS Sharp TR, before and after MSBuild.
 7. Do not forget the set "PreBuild" and "PostBuild" comboboxes of TFS Sharp TR
 
 ### TfsSharpTR.Core Library Dependencies

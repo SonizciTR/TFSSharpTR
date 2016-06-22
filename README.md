@@ -1,7 +1,9 @@
 # TFSSharpTR
 TFS Sharp Task Runner for TFS 2015 Web Build
 
-This project is started for customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at your build process. Then you will set your setting in a json file. 
+TFS Sharp Task Runner similer to Gulp or Grunt. It runs C# code with single json config file.
+
+This project is started because of customizing DevOps operation at TFS. Designed for TFS Web Build process. Goal is using C# languages power for custom tasks and give developers isolation from TFS build process. You can easily add as a task at your build process. Then you will set your setting in a json file. 
 
 I decided th sperate tasks by their dependencies. So you will see different class libraries. If I don't do this, you will need every external libraries included with your packet.
 

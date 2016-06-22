@@ -32,8 +32,8 @@ namespace TfsSharpTR.UnitTest
             dict.Add("BUILD_REPOSITORY_NAME", "");
             dict.Add("BUILD_REPOSITORY_PROVIDER", "");
             dict.Add("BUILD_BINARIESDIRECTORY", @"");
-            dict.Add("BUILD_SOURCESDIRECTORY", @"C:\Kod\TFSSharpTR\");
-            dict.Add("BUILD_REPOSITORY_LOCALPATH", @"C:\Kod\TfsSharpTR\TfsSharpTR.UnitTest\bin\Debug");
+            dict.Add("BUILD_SOURCESDIRECTORY", @"");
+            dict.Add("BUILD_REPOSITORY_LOCALPATH", @"");
 
             return dict;
         }

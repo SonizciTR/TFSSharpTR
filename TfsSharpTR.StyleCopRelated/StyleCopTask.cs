@@ -22,6 +22,7 @@ namespace TfsSharpTR.StyleCopRelated
     {
         private object _lckObj = new object();
         private bool IsRunned = false;
+        private int maxLoggingErrorCount = 50;
         public List<string> violateError { get; set; } = new List<string>();
         public List<string> violateWarn { get; set; } = new List<string>();
         public string SourceBaseFolder { get; set; }
@@ -48,6 +49,7 @@ namespace TfsSharpTR.StyleCopRelated
 
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
 
+            maxLoggingErrorCount = setting.MaxErrorCount > maxLoggingErrorCount ? setting.MaxErrorCount : maxLoggingErrorCount;
             bool isRunOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
             if (!IsRunned)
                 return new TaskStatu("SCT03", "StyleCop engine did not runned.");
@@ -132,6 +134,7 @@ namespace TfsSharpTR.StyleCopRelated
             return styleSettingFile;
         }
 
+        private int counter = 0;
         private void OnViolationEncountered(object sender, ViolationEventArgs e)
         {
             string file = string.Empty;
@@ -167,8 +170,16 @@ namespace TfsSharpTR.StyleCopRelated
             lock (_lckObj)
             {
                 IsRunned = true;
-                string relPath = FileHelper.RemoveBaseFolder(SourceBaseFolder, file);
-                WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, relPath, e.LineNumber));
+                ++counter;
+                if (counter < maxLoggingErrorCount)
+                {
+                    string relPath = FileHelper.RemoveBaseFolder(SourceBaseFolder, file);
+                    WriteDetail(string.Format("{0} [{1}] Line {2}", mRule, relPath, e.LineNumber));
+                }
+                else if(counter == maxLoggingErrorCount)
+                {
+                    WriteDetail(string.Format("Maximum error logging is exceeded. Max is {0}", maxLoggingErrorCount));
+                }
             }
         }
 
@@ -177,7 +188,9 @@ namespace TfsSharpTR.StyleCopRelated
             lock (_lckObj)
             {
                 IsRunned = true;
-                WriteDetail(e.Output.Trim());
+                string msg = e.Output.Trim();
+                if (!msg.StartsWith("Pass"))
+                    WriteDetail(msg);
             }
         }
 

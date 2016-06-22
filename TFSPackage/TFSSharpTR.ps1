@@ -8,12 +8,35 @@ param
  
 try {
 	$ErrorActionPreference = "Stop"
-    $destDir = "$env:BUILD_REPOSITORY_LOCALPATH\TFSSharpTR"
+    $destDir = "$env:AGENT_BUILDDIRECTORY\TFSSharpTR"
     
 	if(!(Test-Path -Path $destDir)){
         New-Item -ItemType directory -Path $destDir 
-        Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force} 
     }
+
+	Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force}
+
+	# Depended libraries loading is a problem. This is how i solved
+	Get-ChildItem $destDir | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object
+	{
+        try{
+            if($_.Extension -ne ".dll")
+            {
+               return
+            }
+            
+            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") -OR $_.Name.StartsWith("Microsoft.VisualStudio"))
+            {
+               return
+            }
+
+            Add-Type -Path $_.FullName
+            #Write-Host "Loaded : " $_.FullName
+        }catch {
+           Write-Host "Trying to load failed : " $_.FullName
+        }
+    } 
+	#
 
     $tfsVariables = New-Object 'system.collections.generic.dictionary[string,string]' 
     $tfsVariables["TF_BUILD"] = $env:TF_BUILD  
@@ -60,9 +83,9 @@ try {
 
     Set-Location $destDir
     Add-Type -Path "TfsSharpTR.Core.dll"
-    Write-Host "liste cagrilmadan once"
+    Write-Host "Getting list of tasks."
     $taskList = [TfsSharpTR.Core.InitialLoader]::Get($tfsVariables, $userVariables)
-    Write-Host "liste cagrildiktan sonra"
+    Write-Host "All tasks gathered."
 
     Write-Host $taskList.Count
     foreach($task in $taskList){
@@ -73,21 +96,20 @@ try {
  
        Add-Type -Path $dllName
        $taskObj = New-Object -TypeName $className
-       Write-Host "taskObj type: " $taskObj.GetType()
        $taskStatus = $taskObj.$methodName($dllName, $className, $methodName, $tfsVariables, $userVariables)
        
-	   Write-Host "Task is runned successfully : " $taskStatus.IsSuccess
 	   foreach($msg in $taskStatus.Msgs){
 			Write-Host($msg)
 	   }
+	   Write-Host "Task is runned successfully : " $taskStatus.IsSuccess
 
 	   if(!taskStatus.IsSuccess){
-			Throw [Sytem.Exception] $className " is failed."
+			Throw [Sytem.Exception] "$className is failed. All builds fail."
 	   }
     }
 } 
 catch {
-    Write-Host ("Hata: " + $_.Exception.Message)
+    Write-Host ("Hata: " + $_.Exception.ToString())
 	Throw [Sytem.Exception] $_.Exception
 }
 finally {

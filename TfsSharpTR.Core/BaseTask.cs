@@ -63,7 +63,7 @@ namespace TfsSharpTR.Core
                 rtnData.Msgs.Add(string.Format("*** FINISH > [{0}] task runned/total (ms) : {1}/{2}", 
                                     className, watchTask.Elapsed.TotalMilliseconds, watchGeneral.Elapsed.TotalMilliseconds));
 
-                rtnData.Msgs.Add("-------------------------------------------------------------------------------------------------");
+                rtnData.Msgs.Add("---------------------------------------");
 
                 return rtnData;
             }

@@ -68,6 +68,16 @@ Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirst
 
 If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add your json format to setting file.
 
+## Install
+I am assuming you have enough privliges at TFS server.
+
+1. Install Node to your computer
+2. Open command prompt 
+3. Run "npm install -g tfx cli"
+4. Run "tfx build tasks upload"
+5. It will ask you a folder path. Give "TFSPackage" folder.
+6. Open TFS web interface and you can add your new build step pre-build and post-build.
+7. Do not forget the set "PreBuild" and "PostBuild" comboboxes of TFS Sharp TR
 
 ### TfsSharpTR.Core Library Dependencies
 Newtonsoft.Json.dll

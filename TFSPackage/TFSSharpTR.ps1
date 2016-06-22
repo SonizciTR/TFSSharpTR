@@ -79,7 +79,7 @@ try {
 	   foreach($msg in $taskStatus.Msgs){
 			Write-Host($msg)
 	   }
-	   if(!taskStatus){
+	   if(!taskStatus.IsSuccess){
 			Throw [Sytem.Exception] "Operation not allowed"
 	   }
     }  

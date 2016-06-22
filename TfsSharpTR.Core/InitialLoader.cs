@@ -38,6 +38,7 @@ namespace TfsSharpTR.Core
         private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<BaseBuildSetting> setting)
         {
             var tasks = new TaskList();
+            var tmpSetting = setting.SettingFileData;
 
             foreach (var dll in dllFiles)
             {
@@ -60,11 +61,11 @@ namespace TfsSharpTR.Core
                     bool isExist = false;
                     if (setting.ActionName == "PreBuild")
                     {
-                        isExist = setting.SettingFileData.PreBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
+                        isExist = tmpSetting.PreBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
                     }
                     else if (setting.ActionName == "PostBuild")
                     {
-                        isExist = setting.SettingFileData.PostBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
+                        isExist = tmpSetting.PostBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
                     }
                     
                     if(isExist)

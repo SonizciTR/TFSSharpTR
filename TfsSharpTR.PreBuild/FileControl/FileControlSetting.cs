@@ -10,10 +10,16 @@ namespace TfsSharpTR.PreBuild.FileControl
 {
     public class FileControlSetting : BaseBuildSetting
     {
-        public List<FileControlItem> FileControlTask { get; set; }
+        public override string SettingFileAreaName
+        {
+            get
+            {
+                return "FileControlTask";
+            }
+        }
+        public List<FileControlItem> Files { get; set; }
     }
 
-    
     public class FileControlItem
     {
         /// <summary>

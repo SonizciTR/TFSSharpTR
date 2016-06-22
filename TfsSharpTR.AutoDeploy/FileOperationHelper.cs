@@ -4,7 +4,7 @@ namespace TfsSharpTR.AutoDeploy
 {
     internal static class FileOperationHelper
     {
-        public static string TakeBackup(AutoDeploySettingItem setting, string sourceFolder, string backupFolder)
+        public static string TakeBackup(AutoDeploySetting setting, string sourceFolder, string backupFolder)
         {
             string nBckupFolder = setting.GetBackupFolder(sourceFolder);
 

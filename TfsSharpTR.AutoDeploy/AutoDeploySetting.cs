@@ -10,11 +10,14 @@ namespace TfsSharpTR.AutoDeploy
 {
     public class AutoDeploySetting : BaseBuildSetting
     {
-        public AutoDeploySettingItem AutoDeployTask { get; set; }
-    }
+        public override string SettingFileAreaName
+        {
+            get
+            {
+                return "AutoDeployTask";
+            }
+        }
 
-    public class AutoDeploySettingItem
-    {
         public const string KeyDiff = "DIFF";
         public const string KeyAll = "ALL";
 

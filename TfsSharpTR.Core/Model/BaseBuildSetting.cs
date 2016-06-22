@@ -6,11 +6,25 @@ using System.Threading.Tasks;
 
 namespace TfsSharpTR.Core.Model
 {
+    public abstract class IBaseBuildSetting
+    {
+        public abstract string SettingFileAreaName { get; }
+    }
+
     /// <summary>
     /// Build settings, from Json file
     /// </summary>
-    public class BaseBuildSetting
+    public class BaseBuildSetting : IBaseBuildSetting
     {
+        public const string KeyBaseConfigArea = "Base";
+        public override string SettingFileAreaName
+        {
+            get
+            {
+                return KeyBaseConfigArea;
+            }
+        }
+
         /// <summary>
         /// Which tasks will run at PreBuild
         /// </summary>

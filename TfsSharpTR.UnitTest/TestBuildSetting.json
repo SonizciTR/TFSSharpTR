@@ -2,18 +2,20 @@
   "PreBuildTasks": [ "FileControlTask" ],
   "PostBuildTasks": [ "TestTask" ],
 
-  "FileControlTask": [
-    {
-      "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ "DomainName\\MyUser" ],
-      "AllowedGroup": [ "MyGroupthatAllowed" ],
-      "RestrictedUser": [ ],
-      "RestrictedGroup": [ ]
-    },
-  ],
+  "FileControlTask": {
+    "Files": [
+      {
+        "FileName": "GlobalSupression.cs",
+        "AllowedUser": [ "DomainName\\MyUser" ],
+        "AllowedGroup": [ "MyGroupthatAllowed" ],
+        "RestrictedUser": [ ],
+        "RestrictedGroup": [ ]
+      },
+    ],
+  },
 
   "StyleCopTask": {
-    "ExcludedFiles": [ "GlobalSupression.cs", "" ],
+    "ExcludedFiles": [ "GlobalSupression.cs", "AssemblyInfo.cs" ],
     "MaxErrorCount": 0,
     "TreatWarnAsError": false
   },

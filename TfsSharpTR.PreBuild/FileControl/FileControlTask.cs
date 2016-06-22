@@ -13,7 +13,7 @@ namespace TfsSharpTR.PreBuild.FileControl
     {
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<FileControlSetting> usrVariables)
         {
-            var setting = usrVariables.SettingFileData?.FileControlTask;
+            var setting = usrVariables.SettingFileData;
             if (setting == null)
                 return new TaskStatu("No setting found.");
 
@@ -26,7 +26,7 @@ namespace TfsSharpTR.PreBuild.FileControl
 
             foreach (var file in filesModified)
             {
-                var rule = setting.FirstOrDefault(x => file.EndsWith(x.FileName));
+                var rule = setting.Files.FirstOrDefault(x => file.EndsWith(x.FileName));
 
                 if (rule == null)
                     continue;
@@ -45,7 +45,7 @@ namespace TfsSharpTR.PreBuild.FileControl
                     return new TaskStatu("FC02", string.Format("[{0}} file is restirected for [{1}] group.", file, restrictedGrps[0]));
             }
 
-            return new TaskStatu(string.Format("All changes controlled successfully. FileCount/TotalRule = {0}/{1}.", filesModified.Count, setting.Count));
+            return new TaskStatu(string.Format("All changes controlled successfully. FileCount/TotalRule = {0}/{1}.", filesModified.Count, setting.Files.Count));
         }
     }
 }

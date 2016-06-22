@@ -28,7 +28,7 @@ namespace TfsSharpTR.StyleCopRelated
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            var setting = usrVariables?.SettingFileData?.StyleCopTask;
+            var setting = usrVariables?.SettingFileData;
             SourceBaseFolder = tfsVariables.BuildSourceDirectory;
             if (setting == null)
                 return new TaskStatu("SCT02", "No setting loaded.");
@@ -59,7 +59,7 @@ namespace TfsSharpTR.StyleCopRelated
         {
             List<string> addInPaths = new List<string> { usrVariables.WorkingPath + "\\" };
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors
-            var console = new StyleCopConsole(usrVariables.SettingFileData.StyleCopTask.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
+            var console = new StyleCopConsole(usrVariables.SettingFileData.SettingFile, false, "StyleCopXmlOutputFile.xml", null, false);
 
             // make sure the UI is not dispayed on error
             console.Core.DisplayUI = false;
@@ -99,7 +99,7 @@ namespace TfsSharpTR.StyleCopRelated
                 console.ViolationEncountered -= this.OnViolationEncountered;
             }
 
-            return violateError.Count > usrVariables.SettingFileData.StyleCopTask.MaxErrorCount;
+            return violateError.Count > usrVariables.SettingFileData.MaxErrorCount;
         }
 
         private void OnViolationEncountered(object sender, ViolationEventArgs e)

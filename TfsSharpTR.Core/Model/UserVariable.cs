@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,7 @@ namespace TfsSharpTR.Core.Model
     /// User settings that manage at web build screen
     /// </summary>
     /// <typeparam name="Tsetting"></typeparam>
-    public class UserVariable<Tsetting> : BaseVariable where Tsetting : BaseBuildSetting
+    public class UserVariable<Tsetting> : BaseVariable where Tsetting : BaseBuildSetting, new()
     {
         public UserVariable(Dictionary<string, string> keys) : base(keys)
         {
@@ -51,8 +52,21 @@ namespace TfsSharpTR.Core.Model
                 string fData = SettingFileDataString;
                 if (string.IsNullOrEmpty(fData))
                     return default(Tsetting);
-
-                return JsonConvert.DeserializeObject<Tsetting>(fData);
+                
+                string keyName = new Tsetting().SettingFileAreaName;
+                if (keyName == BaseBuildSetting.KeyBaseConfigArea)
+                {
+                    return JsonConvert.DeserializeObject<Tsetting>(fData);
+                }
+                else
+                {
+                    JObject msg = JObject.Parse(fData);
+                    var tmpPart = msg[keyName];
+                    if (tmpPart == null)
+                        return null;
+                    
+                    return JsonConvert.DeserializeObject<Tsetting>(tmpPart.ToString());
+                }
             }
         }
 

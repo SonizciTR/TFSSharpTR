@@ -18,7 +18,7 @@ namespace TfsSharpTR.AutoDeploy
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<AutoDeploySetting> usrVariables)
         {
             var sourceFolder = tfsVariables.BuildDirectory;
-            var setting = usrVariables?.SettingFileData?.AutoDeployTask;
+            var setting = usrVariables?.SettingFileData;
             if (setting == null)
                 return new TaskStatu("ADT01", "No setting loaded.");
 
@@ -61,19 +61,19 @@ namespace TfsSharpTR.AutoDeploy
             return new TaskStatu("AutoDeploy finished successfully.");
         }
 
-        private string WriteNewHashFile(AutoDeploySettingItem setting, List<HashItem> fileHashInfo)
+        private string WriteNewHashFile(AutoDeploySetting setting, List<HashItem> fileHashInfo)
         {
             string fileName = setting.DeployFolder + "\\" + KeyHashFileName;
             File.WriteAllLines(fileName, fileHashInfo.Select(x => x.HashLine).ToArray());
             return null;
         }
 
-        private string StartRollBack(List<string> srcFiles, string sourceFolder, AutoDeploySettingItem setting)
+        private string StartRollBack(List<string> srcFiles, string sourceFolder, AutoDeploySetting setting)
         {
             return FileHelper.DirectoryCopy(setting.GetBackupFolder(sourceFolder), setting.DeployFolder, true);
         }
 
-        private string StartIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)
+        private string StartIIS(bool willImpersonate, AutoDeploySetting setting, bool willIISStopStart)
         {
             if (willIISStopStart)
             {
@@ -87,7 +87,7 @@ namespace TfsSharpTR.AutoDeploy
             return null;
         }
 
-        private string StartDeploy(List<string> sourceFiles, string sourceFolder, AutoDeploySettingItem setting)
+        private string StartDeploy(List<string> sourceFiles, string sourceFolder, AutoDeploySetting setting)
         {
             List<string> srcErrors = new List<string>();
             if (!Directory.Exists(setting.DeployFolder))
@@ -128,7 +128,7 @@ namespace TfsSharpTR.AutoDeploy
             return srcErrors.Any() ? "Could not deploy these files : " + string.Join(", ", srcErrors) : null;
         }
 
-        private string StopIIS(bool willImpersonate, AutoDeploySettingItem setting, bool willIISStopStart)
+        private string StopIIS(bool willImpersonate, AutoDeploySetting setting, bool willIISStopStart)
         {
             if (willImpersonate)
             {
@@ -149,9 +149,9 @@ namespace TfsSharpTR.AutoDeploy
             return null;
         }
 
-        private List<string> PrepareFileList(string sourceFolder, AutoDeploySettingItem setting, out List<HashItem> fileHashInfo)
+        private List<string> PrepareFileList(string sourceFolder, AutoDeploySetting setting, out List<HashItem> fileHashInfo)
         {
-            bool isDiffDeployment = setting.Mode == AutoDeploySettingItem.KeyDiff;
+            bool isDiffDeployment = setting.Mode == AutoDeploySetting.KeyDiff;
             var filteredFiles = FindFilesandFilter(sourceFolder, setting);
             var hfNewData = HashOperationHelper.GenerateHashFileStructure(sourceFolder, filteredFiles);
             fileHashInfo = hfNewData;
@@ -190,7 +190,7 @@ namespace TfsSharpTR.AutoDeploy
             return files;
         }
 
-        private List<string> FindFilesandFilter(string sourceFolder, AutoDeploySettingItem setting)
+        private List<string> FindFilesandFilter(string sourceFolder, AutoDeploySetting setting)
         {
             var allFiles = Directory.GetFiles(sourceFolder, "*.*", SearchOption.AllDirectories).ToList();
 

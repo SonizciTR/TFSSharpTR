@@ -8,7 +8,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.AutoDeploy
 {
-    public class AutoDeploySetting : BaseBuildSetting
+    public class AutoDeploySetting : IBaseBuildSetting
     {
         public override string SettingFileAreaName
         {

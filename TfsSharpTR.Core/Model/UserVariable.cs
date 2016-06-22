@@ -13,7 +13,7 @@ namespace TfsSharpTR.Core.Model
     /// User settings that manage at web build screen
     /// </summary>
     /// <typeparam name="Tsetting"></typeparam>
-    public class UserVariable<Tsetting> : BaseVariable where Tsetting : BaseBuildSetting, new()
+    public class UserVariable<Tsetting> : BaseVariable where Tsetting : IBaseBuildSetting, new()
     {
         public UserVariable(Dictionary<string, string> keys) : base(keys)
         {

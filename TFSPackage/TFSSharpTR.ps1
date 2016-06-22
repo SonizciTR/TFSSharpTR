@@ -9,10 +9,12 @@ param
 try {
 	$ErrorActionPreference = "Stop"
     $destDir = "$env:BUILD_REPOSITORY_LOCALPATH\TFSSharpTR"
-    if(!(Test-Path -Path $destDir)){
+    
+	if(!(Test-Path -Path $destDir)){
         New-Item -ItemType directory -Path $destDir 
         Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force} 
     }
+
     $tfsVariables = New-Object 'system.collections.generic.dictionary[string,string]' 
     $tfsVariables["TF_BUILD"] = $env:TF_BUILD  
     $tfsVariables["AGENT_WorkFolder"] = $env:AGENT_WORKFOLDER
@@ -67,26 +69,26 @@ try {
        $dllName = $task.DLLName.Trim()
        $className = $task.ClassName.Trim()
        $methodName = $task.MethodName.Trim()      
-       Write-Host "dllName: "$dllName - " className: " $className - " methodName: " $methodName
+       Write-Host "dllName: "$dllName - " className: " $className - " methodName: " $methodName " is starting."
  
        Add-Type -Path $dllName
        $taskObj = New-Object -TypeName $className
        Write-Host "taskObj type: " $taskObj.GetType()
        $taskStatus = $taskObj.$methodName($dllName, $className, $methodName, $tfsVariables, $userVariables)
-       Write-Host "taskStatus type: " $taskStatus.GetType()
-	   Write-Host "task Status: " $taskStatus.IsSuccess
-       #Write-Host "taskStatus: " $taskStatus.Code
+       
+	   Write-Host "Task is runned successfully : " $taskStatus.IsSuccess
 	   foreach($msg in $taskStatus.Msgs){
 			Write-Host($msg)
 	   }
+
 	   if(!taskStatus.IsSuccess){
-			Throw [Sytem.Exception] "Operation not allowed"
+			Throw [Sytem.Exception] $className " is failed."
 	   }
-    }  
- 
+    }
 } 
 catch {
     Write-Host ("Hata: " + $_.Exception.Message)
+	Throw [Sytem.Exception] $_.Exception
 }
 finally {
  

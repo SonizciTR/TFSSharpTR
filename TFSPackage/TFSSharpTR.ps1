@@ -17,8 +17,7 @@ try {
 	Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force}
 
 	# Depended libraries loading is a problem. This is how i solved
-	Get-ChildItem $destDir | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object
-	{
+	Get-ChildItem $destDir | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object {
         try{
             if($_.Extension -ne ".dll")
             {
@@ -103,14 +102,14 @@ try {
 	   }
 	   Write-Host "Task is runned successfully : " $taskStatus.IsSuccess
 
-	   if(!taskStatus.IsSuccess){
-			Throw [Sytem.Exception] "$className is failed. All builds fail."
+	   if(!$taskStatus.IsSuccess){
+			Throw [System.Exception] "$className has failed. All builds fail."
 	   }
     }
 } 
 catch {
     Write-Host ("Hata: " + $_.Exception.ToString())
-	Throw [Sytem.Exception] $_.Exception
+	Throw [System.Exception] $_.Exception
 }
 finally {
  

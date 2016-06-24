@@ -59,7 +59,7 @@ namespace TfsSharpTR.StyleCopRelated
 
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            List<string> addInPaths = new List<string> { usrVariables.WorkingPath + "\\" };
+            List<string> addInPaths = new List<string> { usrVariables.WorkingPath };
             string styleSettingFile = FindRuleFile(usrVariables);
 
             // Create the StyleCop console. But do not initialise the addins as this can cause modal dialogs to be shown on errors

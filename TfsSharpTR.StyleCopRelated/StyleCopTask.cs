@@ -50,14 +50,11 @@ namespace TfsSharpTR.StyleCopRelated
 
             WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
             
-            bool isRunOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
+            bool isResultOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
             if (!IsRunned)
                 return new TaskStatu("SCT03", "StyleCop engine did not runned.");
-
-            if (!isRunOk)
-                return new TaskStatu("SCT01", "StyleCopTask failed.");
-
-            return violateError.Count > GlobalSetting.MaxErrorCount ? new TaskStatu("SCT04", "There is too much error.") : new TaskStatu("StyleCopTask finished successfully");
+            
+            return isResultOk ? new TaskStatu("StyleCopTask finished successfully") : new TaskStatu("SCT04", "There is too much error.");
         }
 
         private bool RunStyleCopRules(List<string> srcFilestoCheck, TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
@@ -106,7 +103,7 @@ namespace TfsSharpTR.StyleCopRelated
                 console.ViolationEncountered -= this.OnViolationEncountered;
             }
 
-            return violateError.Count > usrVariables.SettingFileData.MaxErrorCount;
+            return violateError.Count <= usrVariables.SettingFileData.MaxErrorCount;
         }
 
         private string FindRuleFile(UserVariable<StyleCopSetting> usrVariables)

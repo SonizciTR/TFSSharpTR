@@ -26,7 +26,7 @@ namespace TfsSharpTR.PreBuild.FileControl
         /// <summary>
         /// File Name to control
         /// </summary>
-        public string FileName { get; set; }
+        public List<string> FileNames { get; set; }
 
         /// <summary>
         /// These users allowed to change file
@@ -37,15 +37,5 @@ namespace TfsSharpTR.PreBuild.FileControl
         /// These group members allowed to change file
         /// </summary>
         public List<string> AllowedGroup { get; set; }
-
-        /// <summary>
-        /// These users must not change file
-        /// </summary>
-        public List<string> RestrictedUser { get; set; }
-
-        /// <summary>
-        /// These group members must not change file
-        /// </summary>
-        public List<string> RestrictedGroup { get; set; }
     }
 }

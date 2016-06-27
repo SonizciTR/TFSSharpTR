@@ -5,11 +5,9 @@
   "FileControlTask": {
     "Files": [
       {
-        "FileName": "GlobalSupression.cs",
+        "FileNames": [ "GlobalSupression.cs", "Settings.StyleCop" ],
         "AllowedUser": [ "DomainName\\MyUser" ],
-        "AllowedGroup": [ "MyGroupthatAllowed" ],
-        "RestrictedUser": [ ],
-        "RestrictedGroup": [ ]
+        "AllowedGroup": [ "MyGroupthatAllowed" ]
       },
     ],
   },

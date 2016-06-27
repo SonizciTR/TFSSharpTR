@@ -1,6 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
+using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,13 @@ namespace TfsSharpTR.Core.Helper
         {
             get
             {
-                var vcs = TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
-                var tp = vcs.GetTeamProject(initSetting.TeamProjectName);
-                return tp.ArtifactUri.AbsoluteUri;
+                var iCStructureServ = TeamColl.GetService<ICommonStructureService>();
+                var tmProject = iCStructureServ.ListAllProjects().FirstOrDefault(x => x.Name == initSetting.TeamProjectName);
+                return tmProject?.Uri;
+
+                //var vcs = TeamColl.GetService(typeof(VersionControlServer)) as VersionControlServer;
+                //var tp = vcs.GetTeamProject(initSetting.TeamProjectName);
+                //return tp.ArtifactUri.AbsoluteUri;
             }
         }
 

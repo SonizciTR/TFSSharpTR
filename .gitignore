@@ -7,7 +7,8 @@
 /TfsSharpTR.Core/obj
 /TfsSharpTR.PreBuild/bin
 /TfsSharpTR.PreBuild/obj
-/TfsSharpTR.UnitTest
+/TfsSharpTR.UnitTest/bin
+/TfsSharpTR.UnitTest/obj
 /.vs
 /TfsSharpTR.StyleCopRelated/bin
 /TfsSharpTR.StyleCopRelated/obj

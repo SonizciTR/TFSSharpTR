@@ -26,8 +26,6 @@ namespace TfsSharpTR.Core.Helper
                         ReadIdentityOptions.None);
         }
 
-
-
         private IIdentityManagementService IdentityService => idService;
 
         private TeamFoundationIdentity TFSIdentity => tfsId;
@@ -47,11 +45,6 @@ namespace TfsSharpTR.Core.Helper
         }
 
         public TFSGroup GroupInformartions()
-        {
-            return CollectGroups();
-        }
-
-        private TFSGroup CollectGroups()
         {
             var grpList = new TFSGroup();
             string projectUri = ProjectUri;
@@ -89,7 +82,5 @@ namespace TfsSharpTR.Core.Helper
 
             return filesChanged;
         }
-
-
     }
 }

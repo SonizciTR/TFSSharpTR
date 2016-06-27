@@ -13,16 +13,16 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 {
   "PreBuildTasks": [ "FileControlTask" ], //Must have settings
   "PostBuildTasks": [ "TestTask" ], //Must have settings
-
-  "FileControlTask": [ // It is a array, You can add as much as you need
-    {
-      "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ "DomainName\\MyUser" ],
-      "AllowedGroup": [ "MyGroupthatAllowed" ],
-      "RestrictedUser": [ ],
-      "RestrictedGroup": [ ]
-    }, 
-  ],
+  
+  "FileControlTask": {// It is a array, You can add as much as you need
+    "Files": [
+      {
+        "FileNames": [ "GlobalSupression.cs", "Settings.StyleCop" ],// It is a array, You can add as much as you need
+        "AllowedUser": [ "DomainName\\MyUser" ],
+        "AllowedGroup": [ "MyGroupthatAllowed" ]
+      },
+    ],
+  },
 }
 ```
 
@@ -48,15 +48,15 @@ Other settings are all optional. Like "FileControlTask" part below.
   "PreBuildTasks": [ "FileControlTask" ],
   "PostBuildTasks": [ "TestTask" ],
 
-  "FileControlTask": [
-    {
-      "FileName": "GlobalSupression.cs",
-      "AllowedUser": [ "DomainName\\MyUser" ],
-      "AllowedGroup": [ "MyGroupthatAllowed" ],
-      "RestrictedUser": [ ],
-      "RestrictedGroup": [ ]
-    },
-  ],
+  "FileControlTask": {
+    "Files": [
+      {
+        "FileNames": [ "GlobalSupression.cs", "Settings.StyleCop" ],
+        "AllowedUser": [ "DomainName\\MyUser" ],
+        "AllowedGroup": [ "MyGroupthatAllowed" ]
+      },
+    ],
+  },
 }
 ```
 

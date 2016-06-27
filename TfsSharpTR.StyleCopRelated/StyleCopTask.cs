@@ -90,7 +90,7 @@ namespace TfsSharpTR.StyleCopRelated
 
                 // Analyze the source files
                 CodeProject[] projects = new[] { project };
-                console.Start(projects, true);
+                var startResult = console.Start(projects, true);
             }
             catch (Exception ex)
             {

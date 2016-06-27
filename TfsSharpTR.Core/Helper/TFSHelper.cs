@@ -35,7 +35,7 @@ namespace TfsSharpTR.Core.Helper
         public static List<string> GroupUserJoined()
         {
             Check();
-            if (groupStash != null)
+            if (groupStash == null)
                 groupStash = logicClient.Value.GroupInformartions();
 
             return groupStash.grpsUser;
@@ -44,7 +44,7 @@ namespace TfsSharpTR.Core.Helper
         public static List<string> GroupsAll()
         {
             Check();
-            if (groupStash != null)
+            if (groupStash == null)
                 groupStash = logicClient.Value.GroupInformartions();
 
             return groupStash.grpsAll;

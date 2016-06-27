@@ -16,6 +16,7 @@ namespace TfsSharpTR.Core.Helper
         private static Lazy<TFSClientLogic> logicClient = new Lazy<TFSClientLogic>(() => new TFSClientLogic(initSetting));
         private static Lazy<TFSApiLogic> logicApi = new Lazy<TFSApiLogic>(() => new TFSApiLogic(initSetting));
         private static TfsVariable initSetting = null;
+        private static TFSGroup groupStash = null;
 
         public static bool Initialize(TfsVariable tfsVar)
         {
@@ -34,13 +35,19 @@ namespace TfsSharpTR.Core.Helper
         public static List<string> GroupUserJoined()
         {
             Check();
-            return logicClient.Value.GroupUserJoined();
+            if (groupStash != null)
+                groupStash = logicClient.Value.GroupInformartions();
+
+            return groupStash.grpsUser;
         }
 
         public static List<string> GroupsAll()
         {
             Check();
-            return logicClient.Value.GroupsAll();
+            if (groupStash != null)
+                groupStash = logicClient.Value.GroupInformartions();
+
+            return groupStash.grpsAll;
         }
 
         public static string UserDomainName

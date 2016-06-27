@@ -95,6 +95,7 @@
     <Compile Include="Model\ShellStatu.cs" />
     <Compile Include="Model\TaskItem.cs" />
     <Compile Include="Model\TaskStatu.cs" />
+    <Compile Include="Model\TFSGroup.cs" />
     <Compile Include="Model\TfsVariable.cs" />
     <Compile Include="Model\UserVariable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

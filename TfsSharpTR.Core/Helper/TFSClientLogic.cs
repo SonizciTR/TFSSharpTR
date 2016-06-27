@@ -14,10 +14,6 @@ namespace TfsSharpTR.Core.Helper
 {
     internal class TFSClientLogic : TFSBaseLogic
     {
-        
-        private static List<string> grpsUser = null;
-        private static List<string> grpsAll = null;
-        
         private static IIdentityManagementService idService = null;
         private static TeamFoundationIdentity tfsId = null;
 
@@ -30,8 +26,8 @@ namespace TfsSharpTR.Core.Helper
                         ReadIdentityOptions.None);
         }
 
-        
-        
+
+
         private IIdentityManagementService IdentityService => idService;
 
         private TeamFoundationIdentity TFSIdentity => tfsId;
@@ -50,26 +46,14 @@ namespace TfsSharpTR.Core.Helper
             }
         }
 
-        public List<string> GroupUserJoined()
+        public TFSGroup GroupInformartions()
         {
-            if (grpsUser == null)
-                CollectGroups();
-
-            return grpsUser;
+            return CollectGroups();
         }
 
-        public List<string> GroupsAll()
+        private TFSGroup CollectGroups()
         {
-            if (grpsAll == null)
-                CollectGroups();
-
-            return grpsAll;
-        }
-
-        private bool CollectGroups()
-        {
-            grpsAll = new List<string>();
-            grpsUser = new List<string>();
+            var grpList = new TFSGroup();
             string projectUri = ProjectUri;
             TeamFoundationIdentity[] projectGroups = IdentityService.ListApplicationGroups(projectUri, ReadIdentityOptions.None);
 
@@ -77,11 +61,12 @@ namespace TfsSharpTR.Core.Helper
             {
                 bool isMem = IdentityService.IsMember(projectGroup.Descriptor, TFSIdentity.Descriptor);
                 if (isMem)
-                    grpsUser.Add(projectGroup.DisplayName);
-                grpsAll.Add(projectGroup.DisplayName);
+                    grpList.grpsUser.Add(projectGroup.DisplayName);
+
+                grpList.grpsAll.Add(projectGroup.DisplayName);
             }
 
-            return true;
+            return grpList;
         }
 
         public List<string> TfsPendingChangeFiles()
@@ -105,6 +90,6 @@ namespace TfsSharpTR.Core.Helper
             return filesChanged;
         }
 
-        
+
     }
 }

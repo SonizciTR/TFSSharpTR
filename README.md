@@ -79,7 +79,7 @@ I am assuming you have enough privliges at TFS server.
 6. Open TFS web interface and you can add TFS Sharp TR, before and after MSBuild.
 7. Do not forget the set "PreBuild" and "PostBuild" comboboxes of TFS Sharp TR
 
-### TfsSharpTR.Core Library Dependencies
+### TfsSharpTR.Core Library and Dependencies
 Newtonsoft.Json.dll
 
 Microsoft.TeamFoundation.Client.dll
@@ -98,10 +98,15 @@ Microsoft.VisualStudio.Services.Common.dll
 
 Microsoft.VisualStudio.Services.WebApi.dll
 
-### TfsSharpTR.StyleCopRelated Library Dependencies
+### TfsSharpTR.StyleCopRelated Library and Dependencies
 
+There is a catch here. If you want to check SA1650 rule, you should run powershell x86 mode. 2 more files needed too.
+
+#### Normally :
 StyleCop.dll
-
 StyleCop.CSharp.dll
-
 StyleCop.CSharp.Rules.dll
+
+#### For SA1650 :
+mssp7en.dll
+mssp7en.lex

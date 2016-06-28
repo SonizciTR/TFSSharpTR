@@ -17,7 +17,10 @@ try {
 	Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force}
 
 	# Depended libraries loading is a problem. This is how i solved
+	Write-Host "PreRun Assembly Load Started."
+
 	Get-ChildItem $destDir | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object {
+		$tmpLibFullPath = $_.FullName
         try{
             if($_.Extension -ne ".dll")
             {
@@ -32,9 +35,11 @@ try {
             Add-Type -Path $_.FullName
             #Write-Host "Loaded : " $_.FullName
         }catch {
-           Write-Host "Trying to load failed : " $_.FullName
+           Write-Host "Trying to load failed : " $tmpLibFullPath ". ExDetail = " $_.Exception.ToString()
         }
     } 
+
+	Write-Host "PreRun Assembly Load Finished."
 	#
 
     $tfsVariables = New-Object 'system.collections.generic.dictionary[string,string]' 

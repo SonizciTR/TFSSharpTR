@@ -27,7 +27,7 @@ try {
                return
             }
             
-            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") -OR $_.Name.StartsWith("Microsoft.VisualStudio"))
+            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") -OR $_.Name.StartsWith("Microsoft.VisualStudio") -OR $_.Name.StartsWith("mssp7en"))
             {
                return
             }

@@ -48,7 +48,7 @@ namespace TfsSharpTR.StyleCopRelated
             else
                 srcFilestoCheck = srcFilesAll;
 
-            WriteDetail(string.Format("File Count (All/Check) : {0}/{1}", srcFilesAll.Count, srcFilestoCheck.Count));
+            WriteDetail(string.Format("File Count (Check/All) : {0}/{1}", srcFilestoCheck.Count, srcFilesAll.Count));
             
             bool isResultOk = RunStyleCopRules(srcFilestoCheck, tfsVariables, usrVariables);
             if (!IsRunned)

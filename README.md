@@ -80,22 +80,14 @@ I am assuming you have enough privliges at TFS server.
 7. Do not forget the set "PreBuild" and "PostBuild" comboboxes of TFS Sharp TR
 
 ### TfsSharpTR.Core Library and Dependencies
-Newtonsoft.Json.dll
-
-Microsoft.TeamFoundation.Client.dll
-
-Microsoft.TeamFoundation.Common.dll
-
-Microsoft.TeamFoundation.VersionControl.Client.dll
-
-Microsoft.TeamFoundation.VersionControl.Common.dll
-
-Microsoft.TeamFoundation.Work.WebApi.dll
-
-Microsoft.VisualStudio.Services.Client.dll
-
-Microsoft.VisualStudio.Services.Common.dll
-
+Newtonsoft.Json.dll <br />
+Microsoft.TeamFoundation.Client.dll <br />
+Microsoft.TeamFoundation.Common.dll <br />
+Microsoft.TeamFoundation.VersionControl.Client.dll <br />
+Microsoft.TeamFoundation.VersionControl.Common.dll <br />
+Microsoft.TeamFoundation.Work.WebApi.dll <br />
+Microsoft.VisualStudio.Services.Client.dll <br />
+Microsoft.VisualStudio.Services.Common.dll <br />
 Microsoft.VisualStudio.Services.WebApi.dll
 
 ### TfsSharpTR.StyleCopRelated Library and Dependencies

@@ -103,10 +103,10 @@ Microsoft.VisualStudio.Services.WebApi.dll
 There is a catch here. If you want to check SA1650 rule, you should run powershell x86 mode. 2 more files needed too.
 
 #### Normally :
-StyleCop.dll__
-StyleCop.CSharp.dll__
+StyleCop.dll <br />
+StyleCop.CSharp.dll <br />
 StyleCop.CSharp.Rules.dll
 
 #### For SA1650 :
-mssp7en.dll__
+mssp7en.dll<br />
 mssp7en.lex

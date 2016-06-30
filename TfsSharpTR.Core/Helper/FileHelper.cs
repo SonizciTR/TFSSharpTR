@@ -143,7 +143,7 @@ namespace TfsSharpTR.Core.Helper
 
         public static string RemoveBaseFolder(string folderName, string fullFilePath)
         {
-            string diffName = fullFilePath.TrimStart(folderName.ToCharArray());
+            string diffName = fullFilePath.Replace(folderName, "").TrimStart('/', '\\');
             diffName = diffName.TrimStart('\\', '/');
             return diffName;
         }

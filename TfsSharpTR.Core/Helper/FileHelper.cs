@@ -35,22 +35,17 @@ namespace TfsSharpTR.Core.Helper
         public static bool CreateDirectory(string path, bool isRecursive = false)
         {
             if (!isRecursive)
-                return Win32Native.CreateDirectory(String.Concat(@"\\?\", path), null);
+                return Win32Native.CreateDirectory(string.Concat(@"\\?\", path), null);
 
-            var spltd = path.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            string tmp = spltd[0];
-            bool isSucc = true;
-            for (int i = 1; i < spltd.Length; i++)
+            var tmpDir = new DirectoryInfo(path);
+            if(Directory.Exists(tmpDir.Parent.FullName))
             {
-                tmp += ("\\" + spltd[i]);
-                if (!Directory.Exists(tmp))
-                {
-                    isSucc &= CreateDirectory(tmp);
-                    if (!isSucc)
-                        break;
-                }
+                return Win32Native.CreateDirectory(string.Concat(@"\\?\", path), null);
             }
-            return isSucc;
+            else
+            {
+                return CreateDirectory(tmpDir.Parent.FullName);
+            }
         }
 
         public static string DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs, bool overwrite = true)

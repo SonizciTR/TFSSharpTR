@@ -11,7 +11,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.AutoDeploy
 {
-    public class AutoDeployTask : BaseTask<AutoDeploySetting>
+    public class ReferenceEnforecerTask : BaseTask<AutoDeploySetting>
     {
         public const string KeyHashFileName = "HashDeployment.log";
 

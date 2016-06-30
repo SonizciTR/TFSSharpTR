@@ -2,6 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+/.vs
 /packages
 /TfsSharpTR.Core/bin
 /TfsSharpTR.Core/obj
@@ -9,8 +10,9 @@
 /TfsSharpTR.PreBuild/obj
 /TfsSharpTR.UnitTest/bin
 /TfsSharpTR.UnitTest/obj
-/.vs
 /TfsSharpTR.StyleCopRelated/bin
 /TfsSharpTR.StyleCopRelated/obj
 /TfsSharpTR.AutoDeploy/bin
 /TfsSharpTR.AutoDeploy/obj
+/TfsSharpTR.Roslyn/bin
+/TfsSharpTR.Roslyn/obj

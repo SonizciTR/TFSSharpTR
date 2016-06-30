@@ -79,6 +79,10 @@
       <Project>{014c83e4-c296-4b25-9a34-242f60c5da05}</Project>
       <Name>TfsSharpTR.PreBuild</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TfsSharpTR.Roslyn\TfsSharpTR.Roslyn.csproj">
+      <Project>{7ebff48a-bb0e-478e-a729-1a3018b360c4}</Project>
+      <Name>TfsSharpTR.Roslyn</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TfsSharpTR.StyleCopRelated\TfsSharpTR.StyleCopRelated.csproj">
       <Project>{fe43ea85-9b62-4098-ba5b-f80038a7aebd}</Project>
       <Name>TfsSharpTR.StyleCopRelated</Name>

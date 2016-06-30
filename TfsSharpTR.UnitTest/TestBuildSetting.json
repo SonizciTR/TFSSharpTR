@@ -33,5 +33,14 @@
     "ImpersonateName": "",
     "ImpersonatePass": "",
     "ImpersonateDomain": ""
+  },
+
+  "AnalyzerEnforcerTask": {
+    "References": [
+      {
+        "DLLName": "",
+        "DLLPath": ""
+      }
+    ]
   }
 }

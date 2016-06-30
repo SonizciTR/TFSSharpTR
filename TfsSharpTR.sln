@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TFSPackage", "TFSPackage", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsSharpTR.AutoDeploy", "TfsSharpTR.AutoDeploy\TfsSharpTR.AutoDeploy.csproj", "{2706E13D-A6D6-4EF8-B950-BFC1CD9A00E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsSharpTR.Roslyn", "TfsSharpTR.Roslyn\TfsSharpTR.Roslyn.csproj", "{7EBFF48A-BB0E-478E-A729-1A3018B360C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{2706E13D-A6D6-4EF8-B950-BFC1CD9A00E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2706E13D-A6D6-4EF8-B950-BFC1CD9A00E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2706E13D-A6D6-4EF8-B950-BFC1CD9A00E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EBFF48A-BB0E-478E-A729-1A3018B360C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBFF48A-BB0E-478E-A729-1A3018B360C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBFF48A-BB0E-478E-A729-1A3018B360C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBFF48A-BB0E-478E-A729-1A3018B360C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

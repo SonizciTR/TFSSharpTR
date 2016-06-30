@@ -11,6 +11,7 @@ using TfsSharpTR.PreBuild;
 using System.Linq;
 using TfsSharpTR.StyleCopRelated;
 using TfsSharpTR.AutoDeploy;
+using TfsSharpTR.Roslyn.Enforcer;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -158,7 +159,7 @@ namespace TfsSharpTR.UnitTest
         [TestMethod]
         public void AutoDeployTask()
         {
-            var tsk = new ReferenceEnforecerTask();
+            var tsk = new AutoDeployTask();
             var rslt = RunTask(tsk.Initializer);
 
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
@@ -166,9 +167,9 @@ namespace TfsSharpTR.UnitTest
         }
 
         [TestMethod]
-        public void ReferenceEnforecerTask()
+        public void AnalyzerEnforcerTask()
         {
-            var tsk = new ReferenceEnforecerTask();
+            var tsk = new AnalyzerEnforcerTask();
             var rslt = RunTask(tsk.Initializer);
 
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";

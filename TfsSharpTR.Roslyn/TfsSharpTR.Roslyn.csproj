@@ -34,6 +34,9 @@
     <Reference Include="Microsoft.CodeAnalysis">
       <HintPath>..\DLLs\Roslyn\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>..\DLLs\Roslyn\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
       <HintPath>..\DLLs\Roslyn\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
     </Reference>
@@ -60,6 +63,9 @@
       <HintPath>..\DLLs\Roslyn\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\DLLs\Roslyn\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />

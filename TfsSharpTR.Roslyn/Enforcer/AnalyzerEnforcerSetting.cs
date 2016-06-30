@@ -31,5 +31,15 @@ namespace TfsSharpTR.Roslyn.Enforcer
         /// If DLLName not exit in csproj file, DLL will be added from this path
         /// </summary>
         public string DLLPath { get; set; }
+
+        /// <summary>
+        /// This projects will exclude from adding process
+        /// </summary>
+        public List<string> ExcludedProjects { get; set; }
+
+        /// <summary>
+        /// This solutions will not be checked
+        /// </summary>
+        public List<string> ExcludedSolutions { get; set; }
     }
 }

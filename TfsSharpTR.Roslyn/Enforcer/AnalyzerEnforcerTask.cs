@@ -34,14 +34,22 @@ namespace TfsSharpTR.Roslyn.Enforcer
 
             foreach (var slnItem in slnFiles)
             {
+                var slnName = Path.GetFileNameWithoutExtension(slnItem);
+                if (IsSolutionExcluded(setting, slnName))
+                    continue;
+
                 var solution = workspace.OpenSolutionAsync(slnItem).Result;
+                
                 
                 foreach (var libItem in setting.References)
                 {
-                    AnalyzerReference analyzer = new AnalyzerFileReference(libItem.DLLPath, FromFileLoader.Instance);
+                    var analyzer = new AnalyzerFileReference(libItem.DLLPath, FromFileLoader.Instance);
 
                     foreach (var project in solution.Projects)
                     {
+                        if (IsProjectExcluded(setting, project.Name))
+                            continue;
+
                         bool analyzerExists = false;
                         foreach (var analyzerReference in project.AnalyzerReferences)
                         {
@@ -64,6 +72,28 @@ namespace TfsSharpTR.Roslyn.Enforcer
             }
 
             return new TaskStatu("Enforce finished successfully.");
+        }
+
+        private bool IsSolutionExcluded(AnalyzerEnforcerSetting setting, string slnName)
+        {
+            foreach (var item in setting.References)
+            {
+                if (item.ExcludedSolutions.Any(x => x == slnName))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool IsProjectExcluded(AnalyzerEnforcerSetting setting, string prjctName)
+        {
+            foreach (var item in setting.References)
+            {
+                if (item.ExcludedProjects.Any(x => x == prjctName))
+                    return true;
+            }
+
+            return false;
         }
 
         private string CheckSetting(UserVariable<AnalyzerEnforcerSetting> usrVariables)

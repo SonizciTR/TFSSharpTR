@@ -41,10 +41,12 @@ namespace TfsSharpTR.Roslyn.Metrics
                         return new TaskStatu("CM03", string.Format("No solution found in [{0}] solution", slnName));
                     WriteDetail(string.Format("Calculating metrics for [{0}] solution", slnName));
                     var metricBag = GetSolutionMetric(projects, solution);
+                    if (metricBag == null)
+                        return new TaskStatu("CM04", "CodeMetric failed due to an project build or style error.");
 
                     var checkResult = CheckMetric(metricBag, setting, slnName);
                     if (!string.IsNullOrEmpty(checkResult))
-                        return new TaskStatu("CM04", checkResult);
+                        return new TaskStatu("CM05", checkResult);
                 }
             }
 
@@ -191,7 +193,8 @@ namespace TfsSharpTR.Roslyn.Metrics
                 }
                 catch(Exception ex)
                 {
-                    WriteDetail(string.Format("ERROR : [{0}] project has errors. Could not be processed.", prj.Name));
+                    WriteDetail(string.Format("ERROR : [{0}] project has errors. Could not be processed. Check with SyleCop SA1603 error", prj.Name));
+                    return null;
                 }
             }
 

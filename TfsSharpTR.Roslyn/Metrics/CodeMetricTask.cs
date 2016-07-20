@@ -57,7 +57,7 @@ namespace TfsSharpTR.Roslyn.Metrics
             {   
                 foreach (var itmSolution in itmGroup.Metric)
                 {
-                    string nameSln = itmGroup.ProjectName + "." + itmSolution.Name;
+                    string nameSln = itmSolution.Name;
 
                     CheckNameSpaceRules(itmSolution, setting, nameSln);
                     if (logCounter > setting.MaxLogCount)
@@ -91,63 +91,74 @@ namespace TfsSharpTR.Roslyn.Metrics
 
         private void CheckMemberRules(IMemberMetric itmMember, CodeMetricSetting setting, string nameMember)
         {
-            if (IsExceed(itmMember.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
+            if (IsMaxExceed(itmMember.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
                 WrtLog("Cyclomatic Complexity", nameMember, itmMember.CyclomaticComplexity, setting.MaxCyclomaticComplexity);
 
-            if (IsExceed(itmMember.LinesOfCode, setting.MaxLinesofCodeforMembers))
+            if (IsMaxExceed(itmMember.LinesOfCode, setting.MaxLinesofCodeforMembers))
                 WrtLog("Lines of Code", nameMember, itmMember.LinesOfCode, setting.MaxLinesofCodeforMembers);
             
-            if (IsExceed(itmMember.MaintainabilityIndex, setting.MinMaintainabilityIndex))
+            if (IsMinExceed(itmMember.MaintainabilityIndex, setting.MinMaintainabilityIndex))
                 WrtLog("Maintainability Index", nameMember, (int)itmMember.MaintainabilityIndex, setting.MinMaintainabilityIndex);
 
-            if (IsExceed(itmMember.NumberOfParameters, setting.MaxNumberOfParameters))
+            if (IsMaxExceed(itmMember.NumberOfParameters, setting.MaxNumberOfParameters))
                 WrtLog("Number of Parameters", nameMember, itmMember.NumberOfParameters, setting.MaxNumberOfParameters);
         }
 
         private void CheckClassRules(ITypeMetric itmClass, CodeMetricSetting setting, string nameClass)
         {
-            if (IsExceed(itmClass.ClassCoupling, setting.MaxClassCoupling))
+            if (IsMaxExceed(itmClass.ClassCoupling, setting.MaxClassCoupling))
                 WrtLog("Class Coupling", nameClass, itmClass.ClassCoupling, setting.MaxClassCoupling);
 
-            if (IsExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
+            if (IsMaxExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
                 WrtLog("Cyclomatic Complexity", nameClass, itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity);
 
-            if (IsExceed(itmClass.DepthOfInheritance, setting.MaxDepthofInheritence))
+            if (IsMaxExceed(itmClass.DepthOfInheritance, setting.MaxDepthofInheritence))
                 WrtLog("Depth of Inheritence", nameClass, itmClass.DepthOfInheritance, setting.MaxDepthofInheritence);
 
-            if (IsExceed(itmClass.EfferentCoupling, setting.MaxEfferentCoupling))
+            if (IsMaxExceed(itmClass.EfferentCoupling, setting.MaxEfferentCoupling))
                 WrtLog("Efferent Coupling", nameClass, itmClass.EfferentCoupling, setting.MaxEfferentCoupling);
             
-            if (IsExceed(itmClass.LinesOfCode, setting.MaxLinesofCodeforClass))
+            if (IsMaxExceed(itmClass.LinesOfCode, setting.MaxLinesofCodeforClass))
                 WrtLog("Lines of Code", nameClass, itmClass.LinesOfCode, setting.MaxLinesofCodeforClass);
 
             int mainIndx = (int)itmClass.MaintainabilityIndex;
-            if (IsExceed(mainIndx, setting.MinMaintainabilityIndex))
+            if (IsMinExceed(mainIndx, setting.MinMaintainabilityIndex))
                 WrtLog("Maintainability Index", nameClass, mainIndx, setting.MinMaintainabilityIndex);
         }
 
         private void CheckNameSpaceRules(INamespaceMetric itmClass, CodeMetricSetting setting, string nameClss)
         {
-            if (IsExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
+            if (IsMaxExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
                 WrtLog("Cyclomatic Complexity", nameClss, itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity);
 
-            if (IsExceed(itmClass.DepthOfInheritance, setting.MaxDepthofInheritence))
+            if (IsMaxExceed(itmClass.DepthOfInheritance, setting.MaxDepthofInheritence))
                 WrtLog("Depth of Inheritance", nameClss, itmClass.DepthOfInheritance, setting.MaxDepthofInheritence);
 
             int mainIndx = (int)itmClass.MaintainabilityIndex;
-            if (IsExceed(itmClass.MaintainabilityIndex, mainIndx))
+            if (IsMinExceed(itmClass.MaintainabilityIndex, setting.MinMaintainabilityIndex))
                 WrtLog("Maintainability Index", nameClss, mainIndx, setting.MinMaintainabilityIndex);
         }
 
-        private bool IsExceed(double metricValue, int maxValue)
+        private bool IsMaxExceed(double metricValue, int maxValue)
         {
             int tmpMetric = (int)metricValue;
-            return IsExceed(tmpMetric, maxValue);
+            return IsMaxExceed(tmpMetric, maxValue);
         }
 
-        private bool IsExceed(int metricValue, int maxValue)
+        private bool IsMaxExceed(int metricValue, int maxValue)
         {
             return (maxValue > 0) && (metricValue > maxValue);
+        }
+
+        private bool IsMinExceed(double metricValue, int minValue)
+        {
+            int tmpMetric = (int)metricValue;
+            return IsMinExceed(tmpMetric, minValue);
+        }
+
+        private bool IsMinExceed(int metricValue, int minValue)
+        {
+            return (minValue > 0) && (metricValue < minValue);
         }
 
         private bool WrtLog(string ruleName, string source, int metricValue, int maxValue)

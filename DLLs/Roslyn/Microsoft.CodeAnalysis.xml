@@ -65,21 +65,6 @@
             <exception cref="T:System.IO.IOException">If the file at <paramref name="assemblyPath"/> does not exist or cannot be accessed.</exception>
             <exception cref="T:System.BadImageFormatException">If the file is not an assembly or is somehow corrupted.</exception>
         </member>
-        <member name="T:Roslyn.Utilities.EmptyComparer">
-            <summary>
-            Very cheap trivial comparer that never matches the keys,
-            should only be used in empty dictionaries.
-            </summary>
-        </member>
-        <member name="T:Roslyn.Utilities.StringOrdinalComparer">
-            <summary>
-            Compares string based upon their ordinal equality.
-            We use this comparer for string identifiers because it does exactly what we need and nothing more
-            The StringComparer.Ordinal as implemented by StringComparer is more complex to support 
-            case sensitive and insensitive compares depending on flags.
-            It also defers to the default string hash function that might not be the best for our scenarios.
-            </summary>
-        </member>
         <member name="T:Roslyn.Utilities.JsonWriter">
             <summary>
             A simple, forward-only JSON writer to avoid adding dependencies to the compiler.
@@ -89,7 +74,7 @@
             to balance array/object start/end, to only write key-value pairs to objects and
             elements to arrays, etc.
             
-            Takes ownership of the given <see cref="T:System.IO.TextWriter" /> at construction and handles its disposal.
+            Takes ownership of the given StreamWriter at construction and handles its disposal.
             </summary>
         </member>
         <member name="T:Roslyn.Utilities.SetWithInsertionOrder`1">
@@ -1898,13 +1883,12 @@
             A linked list of instances for each syntax tree is created (almost always of length one).
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CodeGen.SequencePointList.GetSequencePoints(Microsoft.CodeAnalysis.CodeGen.DebugDocumentProvider,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.Cci.SequencePoint})">
+        <member name="M:Microsoft.CodeAnalysis.CodeGen.SequencePointList.GetSequencePoints(Microsoft.CodeAnalysis.CodeGen.DebugDocumentProvider)">
             <summary>
             Get all the sequence points, possibly mapping them using #line/ExternalSource directives, and mapping
             file names to debug documents with the given mapping function.
             </summary>
             <param name="documentProvider">Function that maps file paths to CCI debug documents</param>
-            <param name="builder">where sequence points should be deposited</param>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CodeGen.SequencePointList.OffsetAndSpan">
             <summary>
@@ -2103,46 +2087,1217 @@
             the ordinal of a synthesized variable. If it could it would need to be assigned a different kind or associated with a different declarator node.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult">
+        <member name="T:Microsoft.CodeAnalysis.AssemblyIdentityMap`1">
             <summary>
-            Stores the results of analyzer execution:
-            1. Local and non-local diagnostics, per-analyzer.
-            2. Analyzer execution times, if requested.
+            Implements a map from an assembly identity to a value. The map allows to look up the value by an identity
+            that either exactly matches the original identity key, or corresponds to a key with the lowest version among identities
+            with higher version than the requested identity key.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.Analyzers">
+        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor">
             <summary>
-            Analyzers corresponding to this analysis result.
+            Represents a <see cref="T:Microsoft.CodeAnalysis.IOperation"/> visitor that visits only the single IOperation
+            passed into its Visit method.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.SyntaxDiagnostics">
+        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor`2">
             <summary>
-            Syntax diagnostics reported by the <see cref="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.Analyzers"/>.
+            Represents a <see cref="T:Microsoft.CodeAnalysis.IOperation"/> visitor that visits only the single IOperation
+            passed into its Visit method with an additional argument of the type specified by the 
+            <typeparamref name="TArgument"/> parameter and produces a value of the type specified by 
+            the <typeparamref name="TResult"/> parameter.
+            </summary>
+            <typeparam name="TArgument">
+            The type of the additional argument passed to this visitor's Visit method.
+            </typeparam>
+            <typeparam name="TResult">
+            The type of the return value of this visitor's Visit method.
+            </typeparam>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationWalker">
+            <summary>
+            Represents a <see cref="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor"/> that descends an entire <see cref="T:Microsoft.CodeAnalysis.IOperation"/> tree
+            visiting each IOperation and its child IOperation nodes in depth-first order.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.SemanticDiagnostics">
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasArgumentsExpression.ArgumentsInParameterOrder">
             <summary>
-            Semantic diagnostics reported by the <see cref="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.Analyzers"/>.
+            Arguments of the invocation, excluding the instance argument. Arguments are in parameter order,
+            and params/ParamArray arguments have been collected into arrays. Default values are supplied for
+            optional arguments missing in source.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.CompilationDiagnostics">
+        <member name="M:Microsoft.CodeAnalysis.Semantics.IHasArgumentsExpression.GetArgumentMatchingParameter(Microsoft.CodeAnalysis.IParameterSymbol)">
             <summary>
-            Compilation diagnostics reported by the <see cref="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.Analyzers"/>.
+            Find the argument supplied for a given parameter of the target method.
+            </summary>
+            <param name="parameter">Parameter of the target method.</param>
+            <returns>Argument corresponding to the parameter.</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IInvocationExpression">
+            <summary>
+            Represents a C# or VB method invocation.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.AnalyzerTelemetryInfo">
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.TargetMethod">
             <summary>
-            Analyzer telemetry info (register action counts and execution times).
+            Method to be invoked.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.GetAllDiagnostics(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer)">
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.Instance">
             <summary>
-            Gets all the diagnostics reported by the given <paramref name="analyzer"/>.
+            'This' or 'Me' instance to be supplied to the method, or null if the method is static.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.GetAllDiagnostics">
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.IsVirtual">
             <summary>
-            Gets all the diagnostics reported by all the <see cref="P:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult.Analyzers"/>.
+            True if the invocation uses a virtual mechanism, and false otherwise.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.ArgumentsInSourceOrder">
+            <summary>
+            Arguments of the invocation, excluding the instance argument. Arguments are in the order specified in source,
+            and params/ParamArray arguments have been collected into arrays. Arguments are not present
+            unless supplied in source.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IArgument">
+            <summary>
+            Represents an argument in a method invocation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.ArgumentKind">
+            <summary>
+            Kind of argument.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.Parameter">
+            <summary>
+            Parameter the argument matches.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.Value">
+            <summary>
+            Value supplied for the argument.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.InConversion">
+            <summary>
+            Conversion applied to the argument value passing it into the target method. Applicable only to VB Reference arguments.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.OutConversion">
+            <summary>
+            Conversion applied to the argument value after the invocation. Applicable only to VB Reference arguments.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ArgumentKind">
+            <summary>
+            Kinds of arguments.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.Positional">
+            <summary>
+            Argument is specified positionally and matches the parameter of the same ordinality.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.Named">
+            <summary>
+            Argument is specified by name and matches the parameter of the same name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.ParamArray">
+            <summary>
+            Argument becomes an element of an array that matches a trailing C# params or VB ParamArray parameter.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.DefaultValue">
+            <summary>
+            Argument was omitted in source but has a default value supplied automatically.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression">
+            <summary>
+            Represents a reference to an array element.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression.ArrayReference">
+            <summary>
+            Array to be indexed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression.Indices">
+            <summary>
+            Indices that specify an individual element.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IPointerIndirectionReferenceExpression">
+            <summary>
+            Represents a reference through a pointer.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IPointerIndirectionReferenceExpression.Pointer">
+            <summary>
+            Pointer to be dereferenced.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILocalReferenceExpression">
+            <summary>
+            Represents a reference to a declared local variable.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILocalReferenceExpression.Local">
+            <summary>
+            Referenced local variable.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IParameterReferenceExpression">
+            <summary>
+            Represents a reference to a parameter.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IParameterReferenceExpression.Parameter">
+            <summary>
+            Referenced parameter.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression">
+            <summary>
+            Represents a reference to a local variable synthesized by language analysis.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression.SyntheticLocalKind">
+            <summary>
+            Kind of the synthetic local.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression.ContainingStatement">
+            <summary>
+            Statement defining the lifetime of the synthetic local.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind">
+            <summary>
+            Kinds of synthetic local references.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind.ForLoopStepValue">
+            <summary>
+            Created to capture the step value of a VB for loop.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind.ForLoopLimitValue">
+            <summary>
+            Created to capture the limit value of a VB for loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IInstanceReferenceExpression">
+            <summary>
+            Represents a C# this or base expression, or a VB Me, MyClass, or MyBase expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IInstanceReferenceExpression.InstanceReferenceKind">
+            
+             <summary>
+             Kind of instance reference.
+             </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.Implicit">
+            <summary>Indicates an implicit this or Me expression.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.Explicit">
+            <summary>Indicates an explicit this or Me expression.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.BaseClass">
+            <summary>Indicates an explicit base or MyBase expression.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.ThisClass">
+            <summary>Indicates an explicit MyClass expression.</summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression">
+            <summary>
+            Represents a reference to a member of a class, struct, or interface.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression.Instance">
+            <summary>
+            Instance of the type. Null if the reference is to a static/shared member.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression.Member">
+            <summary>
+            Referenced member.  
+            </summary>  
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IFieldReferenceExpression">
+            <summary>
+            Represents a reference to a field.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IFieldReferenceExpression.Field">
+            <summary>
+            Referenced field.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression">
+            <summary>
+            Represents a reference to a method other than as the target of an invocation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression.Method">
+            <summary>
+            Referenced method.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression.IsVirtual">
+            <summary>
+            Indicates whether the reference uses virtual semantics.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IPropertyReferenceExpression">
+            <summary>
+            Represents a reference to a property.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IPropertyReferenceExpression.Property">
+            <summary>
+            Referenced property.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IIndexedPropertyReferenceExpression">
+            <summary>
+            Represents a reference to an indexed property.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IEventReferenceExpression">
+            <summary>
+            Represents a reference to an event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventReferenceExpression.Event">
+            <summary>
+            Referenced event.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression">
+            <summary>
+            Represents a binding of an event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.Event">
+            <summary>
+            Event being bound.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.EventInstance">
+            <summary>
+            Instance used to refer to the event being bound.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.HandlerValue">
+            <summary>
+            Handler supplied for the event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.Adds">
+            <summary>
+            True for adding a binding, false for removing one.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression">
+            <summary>
+            Represents an expression that includes a ? or ?. conditional access instance expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression.ConditionalValue">
+            <summary>
+            Expression to be evaluated if the conditional instance is non null.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression.ConditionalInstance">
+            <summary>
+            Expresson that is conditionally accessed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalAccessInstanceExpression">
+            <summary>
+            Represents the value of a conditionally-accessed expression within an expression containing a conditional access.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IPlaceholderExpression">
+            <summary>
+            Represents a general placeholder when no more specific kind of placeholder is available.
+            A placeholder is an expression whose meaning is inferred from context.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression">
+            <summary>
+            Represents a unary, binary, relational, or conversion operation that can use an operator method.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression.UsesOperatorMethod">
+            <summary>
+            True if and only if the operation is performed by an operator method.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression.OperatorMethod">
+            <summary>
+            Operation method used by the operation, null if the operation does not use an operator method.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression">
+            <summary>
+            Represents an operation with one operand.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression.UnaryOperationKind">
+            <summary>
+            Kind of unary operation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression.Operand">
+            <summary>
+            Single operand.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.UnaryOperationKind">
+            <summary>
+            Kinds of unary operations.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression">
+            <summary>
+            Represents an operation with two operands that produces a result with the same type as at least one of the operands.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.BinaryOperationKind">
+            <summary>
+            Kind of binary operation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.LeftOperand">
+            <summary>
+            Left operand.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.RightOperand">
+            <summary>
+            Right operand.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.BinaryOperationKind">
+            <summary>
+            Kinds of binary operations.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleUnaryOperationKind(Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression)">
+            <summary>
+            Get unary operation kind independent of data type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleUnaryOperationKind(Microsoft.CodeAnalysis.Semantics.IIncrementExpression)">
+            <summary>
+            Get unary operation kind independent of data type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetUnaryOperandKind(Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression)">
+            <summary>
+            Get unary operand kind.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetUnaryOperandKind(Microsoft.CodeAnalysis.Semantics.IIncrementExpression)">
+            <summary>
+            Get unary operand kind.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleBinaryOperationKind(Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression)">
+            <summary>
+            Get binary operation kind independent of data type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleBinaryOperationKind(Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression)">
+            <summary>
+            Get binary operation kind independent of data type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetBinaryOperandsKind(Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression)">
+            <summary>
+            Get binary operand kinds.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetBinaryOperandsKind(Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression)">
+            <summary>
+            Get binary operand kinds.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IConversionExpression">
+            <summary>
+            Represents a conversion operation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.Operand">
+            <summary>
+            Value to be converted.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.ConversionKind">
+            <summary>
+            Kind of conversion.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.IsExplicit">
+            <summary>
+            True if and only if the conversion is indicated explicity by a cast operation in the source code.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ConversionKind">
+            <summary>
+            Kinds of conversions.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Cast">
+            <summary>
+            Conversion is defined by the underlying type system and throws an exception if it fails.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.TryCast">
+            <summary>
+            Conversion is defined by the underlying type system and produces a null result if it fails.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Basic">
+            <summary>
+            Conversion has VB-specific semantics.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.CSharp">
+            <summary>
+            Conversion has C#-specific semantics.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.OperatorMethod">
+            <summary>
+            Conversion is implemented by a conversion operator method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Invalid">
+            <summary>
+            Conversion is invalid.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression">
+            <summary>
+            Represents a C# ?: or VB If expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.Condition">
+            <summary>
+            Condition to be tested.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.IfTrueValue">
+            <summary>
+            Value evaluated if the Condition is true.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.IfFalseValue">
+            <summary>
+            Value evaluated if the Condition is false.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression">
+            <summary>
+            Represents a null-coalescing expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression.PrimaryOperand">
+            <summary>
+            Value to be unconditionally evaluated.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression.SecondaryOperand">
+            <summary>
+            Value to be evaluated if Primary evaluates to null/Nothing.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression">
+            <summary>
+            Represents an expression that tests if a value is of a specific type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression.Operand">
+            <summary>
+            Value to test.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression.IsType">
+            <summary>
+            Type for which to test.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ITypeOperationExpression">
+            <summary>
+            Represents an expression operating on a type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ITypeOperationExpression.TypeOperand">
+            <summary>
+            Type operand.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISizeOfExpression">
+            <summary>
+            Represents a SizeOf expression.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ITypeOfExpression">
+            <summary>
+            Represents a TypeOf expression.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILambdaExpression">
+            <summary>
+            Represents a lambda expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILambdaExpression.Signature">
+            <summary>
+            Signature of the lambda.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILambdaExpression.Body">
+            <summary>
+            Body of the lambda.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILiteralExpression">
+            <summary>
+            Represents a textual literal numeric, string, etc. expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILiteralExpression.Text">
+            <summary>
+            Textual representation of the literal.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IAwaitExpression">
+            <summary>
+            Represents an await expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IAwaitExpression.AwaitedValue">
+            <summary>
+            Value to be awaited.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IAddressOfExpression">
+            <summary>
+            Represents an expression that creates a pointer value by taking the address of a reference.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IAddressOfExpression.Reference">
+            <summary>
+            Addressed reference.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression">
+            <summary>
+            Represents a new/New expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression.Constructor">
+            <summary>
+            Constructor to be invoked on the created instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression.MemberInitializers">
+            <summary>
+            Explicitly-specified member initializers.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISymbolInitializer">
+            <summary>
+            Represents an initializer for a field, property, or parameter.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IFieldInitializer">
+            <summary>
+            Represents an initialization of a field.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IFieldInitializer.InitializedFields">
+            <summary>
+            Initialized fields. There can be multiple fields for Visual Basic fields declared with As New.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IPropertyInitializer">
+            <summary>
+            Represents an initialization of a property.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IPropertyInitializer.InitializedProperty">
+            <summary>
+            Set method used to initialize the property.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IParameterInitializer">
+            <summary>
+            Represents an initialization of a parameter at the point of declaration.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IParameterInitializer.Parameter">
+            <summary>
+            Initialized parameter.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression">
+            <summary>
+            Represents the creation of an array instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.ElementType">
+            <summary>
+            Element type of the created array instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.DimensionSizes">
+            <summary>
+            Sizes of the dimensions of the created array instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.Initializer">
+            <summary>
+            Values of elements of the created array instance.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayInitializer">
+            <summary>
+            Represents the initialization of an array instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayInitializer.ElementValues">
+            <summary>
+            Values to initialize array elements.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression">
+            <summary>
+            Represents an assignment expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression.Target">
+            <summary>
+            Target of the assignment.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression.Value">
+            <summary>
+            Value to be assigned to the target of the assignment.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression">
+            <summary>
+            Represents an assignment expression that includes a binary operation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression.BinaryOperationKind">
+            <summary>
+            Kind of binary operation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IIncrementExpression">
+            <summary>
+            Represents an increment expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIncrementExpression.IncrementOperationKind">
+            <summary>
+            Kind of increment.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IParenthesizedExpression">
+            <summary>
+            Represents a parenthesized expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IParenthesizedExpression.Operand">
+            <summary>
+            Operand enclosed in parentheses.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression">
+            <summary>
+            Represents a late-bound reference to a member of a class or struct.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression.Instance">
+            <summary>
+            Instance used to bind the member reference.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression.MemberName">
+            <summary>
+            Name of the member.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IOmittedArgumentExpression">
+            <summary>
+            Represents an argument value that has been omitted in an invocation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IBlockStatement">
+            <summary>
+            Represents a block scope.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBlockStatement.Statements">
+            <summary>
+            Statements contained within the block.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBlockStatement.Locals">
+            <summary>
+            Local declarations contained within the block.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IVariableDeclarationStatement">
+            <summary>
+            Represents a local variable declaration statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclarationStatement.Variables">
+            <summary>
+            Variables declared by the statement.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration">
+            <summary>
+            Represents a local variable declaration.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration.Variable">
+            <summary>
+            Variable declared by the declaration.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration.InitialValue">
+            <summary>
+            Initializer of the variable.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISwitchStatement">
+            <summary>
+            Represents a C# switch or VB Select Case statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchStatement.Value">
+            <summary>
+            Value to be switched upon.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchStatement.Cases">
+            <summary>
+            Cases of the switch.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISwitchCase">
+            <summary>
+            Represents a C# case or VB Case statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchCase.Clauses">
+            <summary>
+            Clauses of the case. For C# there is one clause per case, but for VB there can be multiple.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchCase.Body">
+            <summary>
+            Statements of the case.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ICaseClause">
+            <summary>
+            Represents a clause of a C# case or a VB Case.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICaseClause.CaseKind">
+            <summary>
+            Kind of the clause.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.CaseKind">
+            <summary>
+            Kinds of cases.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.SingleValue">
+            <summary>
+            Indicates case x in C# or Case x in VB.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Relational">
+            <summary>
+            Indicates Case Is op x in VB.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Range">
+            <summary>
+            Indicates Case x To Y in VB.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Default">
+            <summary>
+            Indicates default in C# or Case Else in VB.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause">
+            <summary>
+            Represents case x in C# or Case x in VB.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause.Value">
+            <summary>
+            Case value.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause.Equality">
+            <summary>
+            Relational operator used to compare the switch value with the case value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause">
+            <summary>
+            Represents Case Is op x in VB.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause.Value">
+            <summary>
+            Case value.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause.Relation">
+            <summary>
+            Relational operator used to compare the switch value with the case value. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause">
+            <summary>
+            Represents Case x To y in VB.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause.MinimumValue">
+            <summary>
+            Minimum value of the case range.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause.MaximumValue">
+            <summary>
+            Maximum value of the case range.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IIfStatement">
+            <summary>
+            Represents an if statement in C# or an If statement in VB.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.Condition">
+            <summary>
+            Condition of the if statement. For C# there is naturally one clause per if, but for VB If statements with multiple clauses are rewritten to have only one.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.IfTrueStatement">
+            <summary>
+            Statement executed if the condition is true.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.IfFalseStatement">
+            <summary>
+            Statement executed if the condition is false.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILoopStatement">
+            <summary>
+            Represents a C# while, for, foreach, or do statement, or a VB While, For, For Each, or Do statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILoopStatement.LoopKind">
+            <summary>
+            Kind of the loop.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILoopStatement.Body">
+            <summary>
+            Body of the loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.LoopKind">
+            <summary>
+            Kinds of loops.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.WhileUntil">
+            <summary>
+            Indicates a C# while or do loop, or a VB While or Do loop.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.For">
+            <summary>
+            Indicates a C# for loop or a VB For loop.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.ForEach">
+            <summary>
+            Indicates a C# foreach loop or a VB For Each loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IForWhileUntilLoopStatement">
+            <summary>
+            Represents a C# while, for, or do statement, or a VB While, For, or Do statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForWhileUntilLoopStatement.Condition">
+            <summary>
+            Condition of the loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement">
+            <summary>
+            Represents a C# while or do statement, or a VB While or Do statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement.IsTopTest">
+            <summary>
+            True if the loop test executes at the top of the loop; false if the loop test executes at the bottom of the loop.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement.IsWhile">
+            <summary>
+            True if the loop is a while loop; false if the loop is an until loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IForLoopStatement">
+            <summary>
+            Represents a C# for statement or a VB For statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.Before">
+            <summary>
+            Statements to execute before entry to the loop. For C# these come from the first clause of the for statement. For VB these initialize the index variable of the For statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.AtLoopBottom">
+            <summary>
+            Statements to execute at the bottom of the loop. For C# these come from the third clause of the for statement. For VB these increment the index variable of the For statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.Locals">
+            <summary>
+            Declarations local to the loop.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement">
+            <summary>
+            Represents a C# foreach statement or a VB For Each staement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement.IterationVariable">
+            <summary>
+            Iteration variable of the loop.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement.Collection">
+            <summary>
+            Collection value over which the loop iterates.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILabelStatement">
+            <summary>
+            Represents a C# or VB label statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILabelStatement.Label">
+            <summary>
+             Label that can be the target of branches.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILabelStatement.LabeledStatement">
+            <summary>
+            Statement that has been labeled.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IBranchStatement">
+            <summary>
+            Represents a C# goto, break, or continue statement, or a VB GoTo, Exit ***, or Continue *** statement
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBranchStatement.Target">
+            <summary>
+            Label that is the target of the branch.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IBranchStatement.BranchKind">
+            <summary>
+            Kind of the branch.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IThrowStatement">
+            <summary>
+            Represents a C# throw or a VB Throw statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IThrowStatement.ThrownObject">
+            <summary>
+            Value to be thrown.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IReturnStatement">
+            <summary>
+            Represents a C# return or a VB Return statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IReturnStatement.ReturnedValue">
+            <summary>
+            Value to be returned.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ILockStatement">
+            <summary>
+            Represents a C# lock or a VB SyncLock statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILockStatement.LockedObject">
+            <summary>
+            Value to be locked.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ILockStatement.Body">
+            <summary>
+            Body of the lock, to be executed while holding the lock.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ITryStatement">
+            <summary>
+            Represents a C# try or a VB Try statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.Body">
+            <summary>
+            Body of the try, over which the handlers are active.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.Catches">
+            <summary>
+            Catch clauses of the try.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.FinallyHandler">
+            <summary>
+            Finally handler of the try.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.ICatchClause">
+            <summary>
+            Represents a C# catch or VB Catch clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.Handler">
+            <summary>
+            Body of the exception handler.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.CaughtType">
+            <summary>
+            Type of exception to be handled.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.Filter">
+            <summary>
+            Filter expression to be executed to determine whether to handle the exception.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.ExceptionLocal">
+            <summary>
+            Symbol for the local catch variable bound to the caught exception.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IUsingStatement">
+            <summary>
+            Represents a C# using or VB Using statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Body">
+            <summary>
+            Body of the using, over which the resources of the using are maintained.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Declaration">
+            <summary>
+            Declaration introduced by the using statement. Null if the using statement does not declare any variables.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Value">
+            <summary>
+            Resource held by the using. Can be null if Declaration is not null.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IFixedStatement">
+            <summary>
+            Represents a C# fixed staement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IFixedStatement.Variables">
+            <summary>
+            Variables to be fixed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IFixedStatement.Body">
+            <summary>
+            Body of the fixed, over which the variables are fixed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IExpressionStatement">
+            <summary>
+            Represents a C# or VB statement that consists solely of an expression.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IExpressionStatement.Expression">
+            <summary>
+            Expression of the statement.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IWithStatement">
+            <summary>
+            Represents a VB With statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IWithStatement.Body">
+            <summary>
+            Body of the with.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Semantics.IWithStatement.Value">
+            <summary>
+            Value to whose members leading-dot-qualified references within the with body bind.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IEmptyStatement">
+            <summary>
+            Reprsents an empty statement.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IStopStatement">
+            <summary>
+            Represents a VB Stop statement.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IEndStatement">
+            <summary>
+            Represents a VB End statemnt.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Semantics.IInvalidStatement">
+            <summary>
+            Represents a syntactically or semantically invalid C# or VB statement.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Diagnostics.SyntaxTreeValueProvider`1">
@@ -2246,11 +3401,6 @@
         <member name="F:Microsoft.CodeAnalysis.Diagnostics.AnalyzerDriver._lazyGeneratedCodeFilesMap">
             <summary>
             Lazily populated dictionary indicating whether a source file is a generated code file or not - we populate it lazily to avoid realizing all syntax trees in the compilation upfront.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Diagnostics.AnalyzerDriver._lazyGeneratedCodeSymbolsMap">
-            <summary>
-            Lazily populated dictionary from tree to declared symbols with GeneratedCodeAttribute.
             </summary>
         </member>
         <member name="F:Microsoft.CodeAnalysis.Diagnostics.AnalyzerDriver._generatedCodeAttribute">
@@ -2389,7 +3539,7 @@
             Otherwise, returns null.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisResultBuilder">
+        <member name="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult">
             <summary>
             Stores the results of analyzer execution:
             1. Local and non-local diagnostics, per-analyzer.
@@ -3323,11 +4473,11 @@
             2. Per-analyzer set of pending compilation events, symbols, declarations, etc. Each of these pending entities has a <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisState.AnalyzerStateData"/> state object to track partial analysis.
             </summary>
         </member>
-        <member name="F:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers._analysisResultBuilder">
+        <member name="F:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers._analysisResult">
             <summary>
-            Builder for storing current, possibly partial, analysis results:
-            1. Diagnostics reported by analyzers.
-            2. AnalyzerTelemetryInfo.
+            Cache of the current analysis results:
+            1. Local and non-local diagnostics.
+            2. Analyzer execution times, if <see cref="P:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzersOptions.LogAnalyzerExecutionTime"/> is true.
             </summary>
         </member>
         <member name="F:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers._exceptionDiagnostics">
@@ -3353,7 +4503,7 @@
             Map from active tasks computing tree diagnostics to their token number.
             </summary>
         </member>
-        <member name="F:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers._eventQueuePool">
+        <member name="F:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.s_eventQueuePool">
             <summary>
             Pool of event queues to serve each diagnostics request.
             </summary>
@@ -3411,18 +4561,6 @@
             Returns diagnostics produced by given <paramref name="analyzers"/>.
             </summary>
             <param name="analyzers">Analyzers whose diagnostics are required. All the given analyzers must be from the analyzers passed into the constructor of <see cref="T:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers"/>.</param>
-            <param name="cancellationToken">Cancellation token.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.GetAnalysisResultAsync(System.Threading.CancellationToken)">
-            <summary>
-            Executes all <see cref="P:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.Analyzers"/> and returns the corresponding <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult"/> with all diagnostics and telemetry info.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.GetAnalysisResultAsync(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer},System.Threading.CancellationToken)">
-            <summary>
-            Executes the given <paramref name="analyzers"/> and returns the corresponding <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalysisResult"/> with all diagnostics and telemetry info.
-            </summary>
-            <param name="analyzers">Analyzers whose analysis results are required. All the given analyzers must be from the analyzers passed into the constructor of <see cref="T:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers"/>.</param>
             <param name="cancellationToken">Cancellation token.</param>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.GetAllDiagnosticsAsync">
@@ -3497,15 +4635,6 @@
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.GetEffectiveDiagnostics(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.Diagnostic},Microsoft.CodeAnalysis.Compilation)">
-            <summary>
-            Given a set of compiler or <see cref="T:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer"/> generated <paramref name="diagnostics"/>, returns the effective diagnostics after applying the below filters:
-            1) <see cref="P:Microsoft.CodeAnalysis.CompilationOptions.SpecificDiagnosticOptions"/> specified for the given <paramref name="compilation"/>.
-            2) <see cref="P:Microsoft.CodeAnalysis.CompilationOptions.GeneralDiagnosticOption"/> specified for the given <paramref name="compilation"/>.
-            3) Diagnostic suppression through applied <see cref="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"/>.
-            4) Pragma directives for the given <paramref name="compilation"/>.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationWithAnalyzers.GetEffectiveDiagnostics(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostic},Microsoft.CodeAnalysis.Compilation)">
             <summary>
             Given a set of compiler or <see cref="T:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer"/> generated <paramref name="diagnostics"/>, returns the effective diagnostics after applying the below filters:
             1) <see cref="P:Microsoft.CodeAnalysis.CompilationOptions.SpecificDiagnosticOptions"/> specified for the given <paramref name="compilation"/>.
@@ -3629,7 +4758,7 @@
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalysisContext.RegisterSymbolAction(System.Action{Microsoft.CodeAnalysis.Diagnostics.SymbolAnalysisContext},Microsoft.CodeAnalysis.SymbolKind[])">
             <summary>
-            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.
+            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.>
             A symbol action reports <see cref="T:Microsoft.CodeAnalysis.Diagnostic"/>s about <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>s.
             </summary>
             <param name="action">Action to be executed for an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>.</param>
@@ -3637,7 +4766,7 @@
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalysisContext.RegisterSymbolAction(System.Action{Microsoft.CodeAnalysis.Diagnostics.SymbolAnalysisContext},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.SymbolKind})">
             <summary>
-            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.
+            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.>
             A symbol action reports <see cref="T:Microsoft.CodeAnalysis.Diagnostic"/>s about <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>s.
             </summary>
             <param name="action">Action to be executed for an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>.</param>
@@ -3835,7 +4964,7 @@
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalysisContext.RegisterSymbolAction(System.Action{Microsoft.CodeAnalysis.Diagnostics.SymbolAnalysisContext},Microsoft.CodeAnalysis.SymbolKind[])">
             <summary>
-            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.
+            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.>
             A symbol action reports <see cref="T:Microsoft.CodeAnalysis.Diagnostic"/>s about <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>s.
             </summary>
             <param name="action">Action to be executed for an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>.</param>
@@ -3843,7 +4972,7 @@
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalysisContext.RegisterSymbolAction(System.Action{Microsoft.CodeAnalysis.Diagnostics.SymbolAnalysisContext},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.SymbolKind})">
             <summary>
-            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.
+            Register an action to be executed at completion of semantic analysis of an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/> with an appropriate Kind.>
             A symbol action reports <see cref="T:Microsoft.CodeAnalysis.Diagnostic"/>s about <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>s.
             </summary>
             <param name="action">Action to be executed for an <see cref="T:Microsoft.CodeAnalysis.ISymbol"/>.</param>
@@ -4474,1549 +5603,6 @@
             <param name="firstLanguage">One language to which the analyzer applies.</param>
             <param name="additionalLanguages">Additional languages to which the analyzer applies. See <see cref="T:Microsoft.CodeAnalysis.LanguageNames"/>.</param>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.AssemblyIdentityMap`1">
-            <summary>
-            Implements a map from an assembly identity to a value. The map allows to look up the value by an identity
-            that either exactly matches the original identity key, or corresponds to a key with the lowest version among identities
-            with higher version than the requested identity key.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor">
-            <summary>
-            Represents a <see cref="T:Microsoft.CodeAnalysis.IOperation"/> visitor that visits only the single IOperation
-            passed into its Visit method.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor`2">
-            <summary>
-            Represents a <see cref="T:Microsoft.CodeAnalysis.IOperation"/> visitor that visits only the single IOperation
-            passed into its Visit method with an additional argument of the type specified by the 
-            <typeparamref name="TArgument"/> parameter and produces a value of the type specified by 
-            the <typeparamref name="TResult"/> parameter.
-            </summary>
-            <typeparam name="TArgument">
-            The type of the additional argument passed to this visitor's Visit method.
-            </typeparam>
-            <typeparam name="TResult">
-            The type of the return value of this visitor's Visit method.
-            </typeparam>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.OperationWalker">
-            <summary>
-            Represents a <see cref="T:Microsoft.CodeAnalysis.Semantics.OperationVisitor"/> that descends an entire <see cref="T:Microsoft.CodeAnalysis.IOperation"/> tree
-            visiting each IOperation and its child IOperation nodes in depth-first order.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IHasArgumentsExpression">
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasArgumentsExpression.ArgumentsInParameterOrder">
-            <summary>
-            Arguments of the invocation, excluding the instance argument. Arguments are in parameter order,
-            and params/ParamArray arguments have been collected into arrays. Default values are supplied for
-            optional arguments missing in source.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.IHasArgumentsExpression.GetArgumentMatchingParameter(Microsoft.CodeAnalysis.IParameterSymbol)">
-            <summary>
-            Find the argument supplied for a given parameter of the target method.
-            </summary>
-            <param name="parameter">Parameter of the target method.</param>
-            <returns>Argument corresponding to the parameter.</returns>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IInvocationExpression">
-            <summary>
-            Represents a C# or VB method invocation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.TargetMethod">
-            <summary>
-            Method to be invoked.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.Instance">
-            <summary>
-            'This' or 'Me' instance to be supplied to the method, or null if the method is static.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.IsVirtual">
-            <summary>
-            True if the invocation uses a virtual mechanism, and false otherwise.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IInvocationExpression.ArgumentsInSourceOrder">
-            <summary>
-            Arguments of the invocation, excluding the instance argument. Arguments are in the order specified in source,
-            and params/ParamArray arguments have been collected into arrays. Arguments are not present
-            unless supplied in source.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IArgument">
-            <summary>
-            Represents an argument in a method invocation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.ArgumentKind">
-            <summary>
-            Kind of argument.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.Parameter">
-            <summary>
-            Parameter the argument matches.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.Value">
-            <summary>
-            Value supplied for the argument.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.InConversion">
-            <summary>
-            Conversion applied to the argument value passing it into the target method. Applicable only to VB Reference arguments.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArgument.OutConversion">
-            <summary>
-            Conversion applied to the argument value after the invocation. Applicable only to VB Reference arguments.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ArgumentKind">
-            <summary>
-            Kinds of arguments.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.Positional">
-            <summary>
-            Argument is specified positionally and matches the parameter of the same ordinality.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.Named">
-            <summary>
-            Argument is specified by name and matches the parameter of the same name.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.ParamArray">
-            <summary>
-            Argument becomes an element of an array that matches a trailing C# params or VB ParamArray parameter.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ArgumentKind.DefaultValue">
-            <summary>
-            Argument was omitted in source but has a default value supplied automatically.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression">
-            <summary>
-            Represents a reference to an array element.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression.ArrayReference">
-            <summary>
-            Array to be indexed.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayElementReferenceExpression.Indices">
-            <summary>
-            Indices that specify an individual element.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IPointerIndirectionReferenceExpression">
-            <summary>
-            Represents a reference through a pointer.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IPointerIndirectionReferenceExpression.Pointer">
-            <summary>
-            Pointer to be dereferenced.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILocalReferenceExpression">
-            <summary>
-            Represents a reference to a declared local variable.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILocalReferenceExpression.Local">
-            <summary>
-            Referenced local variable.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IParameterReferenceExpression">
-            <summary>
-            Represents a reference to a parameter.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IParameterReferenceExpression.Parameter">
-            <summary>
-            Referenced parameter.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression">
-            <summary>
-            Represents a reference to a local variable synthesized by language analysis.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression.SyntheticLocalKind">
-            <summary>
-            Kind of the synthetic local.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISyntheticLocalReferenceExpression.ContainingStatement">
-            <summary>
-            Statement defining the lifetime of the synthetic local.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind">
-            <summary>
-            Kinds of synthetic local references.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind.ForLoopStepValue">
-            <summary>
-            Created to capture the step value of a VB for loop.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.SyntheticLocalKind.ForLoopLimitValue">
-            <summary>
-            Created to capture the limit value of a VB for loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IInstanceReferenceExpression">
-            <summary>
-            Represents a C# this or base expression, or a VB Me, MyClass, or MyBase expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IInstanceReferenceExpression.InstanceReferenceKind">
-            
-             <summary>
-             Kind of instance reference.
-             </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.Implicit">
-            <summary>Indicates an implicit this or Me expression.</summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.Explicit">
-            <summary>Indicates an explicit this or Me expression.</summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.BaseClass">
-            <summary>Indicates an explicit base or MyBase expression.</summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.InstanceReferenceKind.ThisClass">
-            <summary>Indicates an explicit MyClass expression.</summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression">
-            <summary>
-            Represents a reference to a member of a class, struct, or interface.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression.Instance">
-            <summary>
-            Instance of the type. Null if the reference is to a static/shared member.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IMemberReferenceExpression.Member">
-            <summary>
-            Referenced member.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IFieldReferenceExpression">
-            <summary>
-            Represents a reference to a field.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IFieldReferenceExpression.Field">
-            <summary>
-            Referenced field.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression">
-            <summary>
-            Represents a reference to a method other than as the target of an invocation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression.Method">
-            <summary>
-            Referenced method.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IMethodBindingExpression.IsVirtual">
-            <summary>
-            Indicates whether the reference uses virtual semantics.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IPropertyReferenceExpression">
-            <summary>
-            Represents a reference to a property.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IPropertyReferenceExpression.Property">
-            <summary>
-            Referenced property.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IIndexedPropertyReferenceExpression">
-            <summary>
-            Represents a reference to an indexed property.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IEventReferenceExpression">
-            <summary>
-            Represents a reference to an event.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventReferenceExpression.Event">
-            <summary>
-            Referenced event.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression">
-            <summary>
-            Represents a binding of an event.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.Event">
-            <summary>
-            Event being bound.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.EventInstance">
-            <summary>
-            Instance used to refer to the event being bound.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.HandlerValue">
-            <summary>
-            Handler supplied for the event.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IEventAssignmentExpression.Adds">
-            <summary>
-            True for adding a binding, false for removing one.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression">
-            <summary>
-            Represents an expression that includes a ? or ?. conditional access instance expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression.ConditionalValue">
-            <summary>
-            Expression to be evaluated if the conditional instance is non null.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalAccessExpression.ConditionalInstance">
-            <summary>
-            Expresson that is conditionally accessed.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalAccessInstanceExpression">
-            <summary>
-            Represents the value of a conditionally-accessed expression within an expression containing a conditional access.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IPlaceholderExpression">
-            <summary>
-            Represents a general placeholder when no more specific kind of placeholder is available.
-            A placeholder is an expression whose meaning is inferred from context.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression">
-            <summary>
-            Represents a unary, binary, relational, or conversion operation that can use an operator method.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression.UsesOperatorMethod">
-            <summary>
-            True if and only if the operation is performed by an operator method.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IHasOperatorMethodExpression.OperatorMethod">
-            <summary>
-            Operation method used by the operation, null if the operation does not use an operator method.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression">
-            <summary>
-            Represents an operation with one operand.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression.UnaryOperationKind">
-            <summary>
-            Kind of unary operation.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression.Operand">
-            <summary>
-            Single operand.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.UnaryOperationKind">
-            <summary>
-            Kinds of unary operations.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression">
-            <summary>
-            Represents an operation with two operands that produces a result with the same type as at least one of the operands.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.BinaryOperationKind">
-            <summary>
-            Kind of binary operation.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.LeftOperand">
-            <summary>
-            Left operand.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression.RightOperand">
-            <summary>
-            Right operand.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.BinaryOperationKind">
-            <summary>
-            Kinds of binary operations.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleUnaryOperationKind(Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression)">
-            <summary>
-            Get unary operation kind independent of data type.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleUnaryOperationKind(Microsoft.CodeAnalysis.Semantics.IIncrementExpression)">
-            <summary>
-            Get unary operation kind independent of data type.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetUnaryOperandKind(Microsoft.CodeAnalysis.Semantics.IUnaryOperatorExpression)">
-            <summary>
-            Get unary operand kind.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetUnaryOperandKind(Microsoft.CodeAnalysis.Semantics.IIncrementExpression)">
-            <summary>
-            Get unary operand kind.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleBinaryOperationKind(Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression)">
-            <summary>
-            Get binary operation kind independent of data type.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetSimpleBinaryOperationKind(Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression)">
-            <summary>
-            Get binary operation kind independent of data type.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetBinaryOperandsKind(Microsoft.CodeAnalysis.Semantics.IBinaryOperatorExpression)">
-            <summary>
-            Get binary operand kinds.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Semantics.UnaryAndBinaryOperationExtensions.GetBinaryOperandsKind(Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression)">
-            <summary>
-            Get binary operand kinds.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IConversionExpression">
-            <summary>
-            Represents a conversion operation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.Operand">
-            <summary>
-            Value to be converted.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.ConversionKind">
-            <summary>
-            Kind of conversion.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConversionExpression.IsExplicit">
-            <summary>
-            True if and only if the conversion is indicated explicity by a cast operation in the source code.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ConversionKind">
-            <summary>
-            Kinds of conversions.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Cast">
-            <summary>
-            Conversion is defined by the underlying type system and throws an exception if it fails.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.TryCast">
-            <summary>
-            Conversion is defined by the underlying type system and produces a null result if it fails.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Basic">
-            <summary>
-            Conversion has VB-specific semantics.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.CSharp">
-            <summary>
-            Conversion has C#-specific semantics.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.OperatorMethod">
-            <summary>
-            Conversion is implemented by a conversion operator method.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.ConversionKind.Invalid">
-            <summary>
-            Conversion is invalid.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression">
-            <summary>
-            Represents a C# ?: or VB If expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.Condition">
-            <summary>
-            Condition to be tested.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.IfTrueValue">
-            <summary>
-            Value evaluated if the Condition is true.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IConditionalChoiceExpression.IfFalseValue">
-            <summary>
-            Value evaluated if the Condition is false.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression">
-            <summary>
-            Represents a null-coalescing expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression.PrimaryOperand">
-            <summary>
-            Value to be unconditionally evaluated.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.INullCoalescingExpression.SecondaryOperand">
-            <summary>
-            Value to be evaluated if Primary evaluates to null/Nothing.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression">
-            <summary>
-            Represents an expression that tests if a value is of a specific type.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression.Operand">
-            <summary>
-            Value to test.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIsTypeExpression.IsType">
-            <summary>
-            Type for which to test.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ITypeOperationExpression">
-            <summary>
-            Represents an expression operating on a type.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ITypeOperationExpression.TypeOperand">
-            <summary>
-            Type operand.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISizeOfExpression">
-            <summary>
-            Represents a SizeOf expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ITypeOfExpression">
-            <summary>
-            Represents a TypeOf expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILambdaExpression">
-            <summary>
-            Represents a lambda expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILambdaExpression.Signature">
-            <summary>
-            Signature of the lambda.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILambdaExpression.Body">
-            <summary>
-            Body of the lambda.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILiteralExpression">
-            <summary>
-            Represents a textual literal numeric, string, etc. expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILiteralExpression.Text">
-            <summary>
-            Textual representation of the literal.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IAwaitExpression">
-            <summary>
-            Represents an await expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IAwaitExpression.AwaitedValue">
-            <summary>
-            Value to be awaited.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IAddressOfExpression">
-            <summary>
-            Represents an expression that creates a pointer value by taking the address of a reference.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IAddressOfExpression.Reference">
-            <summary>
-            Addressed reference.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression">
-            <summary>
-            Represents a new/New expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression.Constructor">
-            <summary>
-            Constructor to be invoked on the created instance.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IObjectCreationExpression.MemberInitializers">
-            <summary>
-            Explicitly-specified member initializers.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISymbolInitializer">
-            <summary>
-            Represents an initializer for a field, property, or parameter.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IFieldInitializer">
-            <summary>
-            Represents an initialization of a field.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IFieldInitializer.InitializedFields">
-            <summary>
-            Initialized fields. There can be multiple fields for Visual Basic fields declared with As New.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IPropertyInitializer">
-            <summary>
-            Represents an initialization of a property.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IPropertyInitializer.InitializedProperty">
-            <summary>
-            Set method used to initialize the property.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IParameterInitializer">
-            <summary>
-            Represents an initialization of a parameter at the point of declaration.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IParameterInitializer.Parameter">
-            <summary>
-            Initialized parameter.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression">
-            <summary>
-            Represents the creation of an array instance.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.ElementType">
-            <summary>
-            Element type of the created array instance.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.DimensionSizes">
-            <summary>
-            Sizes of the dimensions of the created array instance.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayCreationExpression.Initializer">
-            <summary>
-            Values of elements of the created array instance.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IArrayInitializer">
-            <summary>
-            Represents the initialization of an array instance.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IArrayInitializer.ElementValues">
-            <summary>
-            Values to initialize array elements.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression">
-            <summary>
-            Represents an assignment expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression.Target">
-            <summary>
-            Target of the assignment.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IAssignmentExpression.Value">
-            <summary>
-            Value to be assigned to the target of the assignment.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression">
-            <summary>
-            Represents an assignment expression that includes a binary operation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICompoundAssignmentExpression.BinaryOperationKind">
-            <summary>
-            Kind of binary operation.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IIncrementExpression">
-            <summary>
-            Represents an increment expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIncrementExpression.IncrementOperationKind">
-            <summary>
-            Kind of increment.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IParenthesizedExpression">
-            <summary>
-            Represents a parenthesized expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IParenthesizedExpression.Operand">
-            <summary>
-            Operand enclosed in parentheses.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression">
-            <summary>
-            Represents a late-bound reference to a member of a class or struct.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression.Instance">
-            <summary>
-            Instance used to bind the member reference.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILateBoundMemberReferenceExpression.MemberName">
-            <summary>
-            Name of the member.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IOmittedArgumentExpression">
-            <summary>
-            Represents an argument value that has been omitted in an invocation.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IUnboundLambdaExpression">
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IDefaultValueExpression">
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ITypeParameterObjectCreationExpression">
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IInvalidExpression">
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IBlockStatement">
-            <summary>
-            Represents a block scope.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBlockStatement.Statements">
-            <summary>
-            Statements contained within the block.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBlockStatement.Locals">
-            <summary>
-            Local declarations contained within the block.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IVariableDeclarationStatement">
-            <summary>
-            Represents a local variable declaration statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclarationStatement.Variables">
-            <summary>
-            Variables declared by the statement.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration">
-            <summary>
-            Represents a local variable declaration.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration.Variable">
-            <summary>
-            Variable declared by the declaration.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IVariableDeclaration.InitialValue">
-            <summary>
-            Initializer of the variable.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISwitchStatement">
-            <summary>
-            Represents a C# switch or VB Select Case statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchStatement.Value">
-            <summary>
-            Value to be switched upon.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchStatement.Cases">
-            <summary>
-            Cases of the switch.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISwitchCase">
-            <summary>
-            Represents a C# case or VB Case statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchCase.Clauses">
-            <summary>
-            Clauses of the case. For C# there is one clause per case, but for VB there can be multiple.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISwitchCase.Body">
-            <summary>
-            Statements of the case.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ICaseClause">
-            <summary>
-            Represents a clause of a C# case or a VB Case.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICaseClause.CaseKind">
-            <summary>
-            Kind of the clause.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.CaseKind">
-            <summary>
-            Kinds of cases.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.SingleValue">
-            <summary>
-            Indicates case x in C# or Case x in VB.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Relational">
-            <summary>
-            Indicates Case Is op x in VB.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Range">
-            <summary>
-            Indicates Case x To Y in VB.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.CaseKind.Default">
-            <summary>
-            Indicates default in C# or Case Else in VB.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause">
-            <summary>
-            Represents case x in C# or Case x in VB.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause.Value">
-            <summary>
-            Case value.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ISingleValueCaseClause.Equality">
-            <summary>
-            Relational operator used to compare the switch value with the case value.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause">
-            <summary>
-            Represents Case Is op x in VB.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause.Value">
-            <summary>
-            Case value.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IRelationalCaseClause.Relation">
-            <summary>
-            Relational operator used to compare the switch value with the case value.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause">
-            <summary>
-            Represents Case x To y in VB.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause.MinimumValue">
-            <summary>
-            Minimum value of the case range.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IRangeCaseClause.MaximumValue">
-            <summary>
-            Maximum value of the case range.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IIfStatement">
-            <summary>
-            Represents an if statement in C# or an If statement in VB.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.Condition">
-            <summary>
-            Condition of the if statement. For C# there is naturally one clause per if, but for VB If statements with multiple clauses are rewritten to have only one.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.IfTrueStatement">
-            <summary>
-            Statement executed if the condition is true.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IIfStatement.IfFalseStatement">
-            <summary>
-            Statement executed if the condition is false.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILoopStatement">
-            <summary>
-            Represents a C# while, for, foreach, or do statement, or a VB While, For, For Each, or Do statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILoopStatement.LoopKind">
-            <summary>
-            Kind of the loop.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILoopStatement.Body">
-            <summary>
-            Body of the loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.LoopKind">
-            <summary>
-            Kinds of loops.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.WhileUntil">
-            <summary>
-            Indicates a C# while or do loop, or a VB While or Do loop.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.For">
-            <summary>
-            Indicates a C# for loop or a VB For loop.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Semantics.LoopKind.ForEach">
-            <summary>
-            Indicates a C# foreach loop or a VB For Each loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IForWhileUntilLoopStatement">
-            <summary>
-            Represents a C# while, for, or do statement, or a VB While, For, or Do statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForWhileUntilLoopStatement.Condition">
-            <summary>
-            Condition of the loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement">
-            <summary>
-            Represents a C# while or do statement, or a VB While or Do statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement.IsTopTest">
-            <summary>
-            True if the loop test executes at the top of the loop; false if the loop test executes at the bottom of the loop.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IWhileUntilLoopStatement.IsWhile">
-            <summary>
-            True if the loop is a while loop; false if the loop is an until loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IForLoopStatement">
-            <summary>
-            Represents a C# for statement or a VB For statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.Before">
-            <summary>
-            Statements to execute before entry to the loop. For C# these come from the first clause of the for statement. For VB these initialize the index variable of the For statement.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.AtLoopBottom">
-            <summary>
-            Statements to execute at the bottom of the loop. For C# these come from the third clause of the for statement. For VB these increment the index variable of the For statement.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForLoopStatement.Locals">
-            <summary>
-            Declarations local to the loop.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement">
-            <summary>
-            Represents a C# foreach statement or a VB For Each staement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement.IterationVariable">
-            <summary>
-            Iteration variable of the loop.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IForEachLoopStatement.Collection">
-            <summary>
-            Collection value over which the loop iterates.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILabelStatement">
-            <summary>
-            Represents a C# or VB label statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILabelStatement.Label">
-            <summary>
-             Label that can be the target of branches.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILabelStatement.LabeledStatement">
-            <summary>
-            Statement that has been labeled.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IBranchStatement">
-            <summary>
-            Represents a C# goto, break, or continue statement, or a VB GoTo, Exit ***, or Continue *** statement
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBranchStatement.Target">
-            <summary>
-            Label that is the target of the branch.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IBranchStatement.BranchKind">
-            <summary>
-            Kind of the branch.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IThrowStatement">
-            <summary>
-            Represents a C# throw or a VB Throw statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IThrowStatement.ThrownObject">
-            <summary>
-            Value to be thrown.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IReturnStatement">
-            <summary>
-            Represents a C# return or a VB Return statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IReturnStatement.ReturnedValue">
-            <summary>
-            Value to be returned.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ILockStatement">
-            <summary>
-            Represents a C# lock or a VB SyncLock statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILockStatement.LockedObject">
-            <summary>
-            Value to be locked.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ILockStatement.Body">
-            <summary>
-            Body of the lock, to be executed while holding the lock.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ITryStatement">
-            <summary>
-            Represents a C# try or a VB Try statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.Body">
-            <summary>
-            Body of the try, over which the handlers are active.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.Catches">
-            <summary>
-            Catch clauses of the try.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ITryStatement.FinallyHandler">
-            <summary>
-            Finally handler of the try.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.ICatchClause">
-            <summary>
-            Represents a C# catch or VB Catch clause.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.Handler">
-            <summary>
-            Body of the exception handler.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.CaughtType">
-            <summary>
-            Type of exception to be handled.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.Filter">
-            <summary>
-            Filter expression to be executed to determine whether to handle the exception.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.ICatchClause.ExceptionLocal">
-            <summary>
-            Symbol for the local catch variable bound to the caught exception.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IUsingStatement">
-            <summary>
-            Represents a C# using or VB Using statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Body">
-            <summary>
-            Body of the using, over which the resources of the using are maintained.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Declaration">
-            <summary>
-            Declaration introduced by the using statement. Null if the using statement does not declare any variables.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IUsingStatement.Value">
-            <summary>
-            Resource held by the using. Can be null if Declaration is not null.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IFixedStatement">
-            <summary>
-            Represents a C# fixed staement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IFixedStatement.Variables">
-            <summary>
-            Variables to be fixed.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IFixedStatement.Body">
-            <summary>
-            Body of the fixed, over which the variables are fixed.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IExpressionStatement">
-            <summary>
-            Represents a C# or VB statement that consists solely of an expression.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IExpressionStatement.Expression">
-            <summary>
-            Expression of the statement.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IWithStatement">
-            <summary>
-            Represents a VB With statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IWithStatement.Body">
-            <summary>
-            Body of the with.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Semantics.IWithStatement.Value">
-            <summary>
-            Value to whose members leading-dot-qualified references within the with body bind.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IEmptyStatement">
-            <summary>
-            Reprsents an empty statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IStopStatement">
-            <summary>
-            Represents a VB Stop statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IEndStatement">
-            <summary>
-            Represents a VB End statemnt.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Semantics.IInvalidStatement">
-            <summary>
-            Represents a syntactically or semantically invalid C# or VB statement.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.RealParser">
             <summary>
             A set of utilities for converting from a decimal floating-point literal string to its IEEE float
@@ -6242,15 +5828,6 @@
             </summary>
             <remarks>
             Can be either a PUBLICKEYBLOB or PRIVATEKEYBLOB. The BLOB must /// be unencrypted.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ISourceAssemblySymbol">
-            <summary>
-            Represents a source assembly symbol exposed by the compiler.
-            </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
             </remarks>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ICompilationUnitSyntax">
@@ -7467,11 +7044,6 @@
               Looks up a localized string similar to Compilation options must not have errors..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CodeAnalysisResources.CompilationReferencesAssembliesWithDifferentAutoGeneratedVersion">
-            <summary>
-              Looks up a localized string similar to The compilation references multiple assemblies whose versions only differ in auto-generated build and/or revision numbers..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CodeAnalysisResources.CompilerAnalyzerFailure">
             <summary>
               Looks up a localized string similar to Analyzer Failure.
@@ -7929,14 +7501,9 @@
               Looks up a localized string similar to struct.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CodeAnalysisResources.SymWriterNotAvailable">
-            <summary>
-              Looks up a localized string similar to Windows PDB writer is not available -- could not find Microsoft.DiaSymReader.Native.{0}.dll.
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CodeAnalysisResources.SymWriterNotDeterministic">
             <summary>
-              Looks up a localized string similar to Windows PDB writer doesn&apos;t support deterministic compilation -- could not find Microsoft.DiaSymReader.Native.{0}.dll.
+              Looks up a localized string similar to SymWriter doesn&apos;t support deterministic compilation.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CodeAnalysisResources.TypeMustBeASubclassOfSyntaxAnnotation">
@@ -8157,16 +7724,39 @@
         </member>
         <member name="T:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2">
             <summary>
-            A MultiDictionary that allows only adding, and preserves the order of values added to the 
-            dictionary. Thread-safe for reading, but not for adding.
+            A MultiDictionary that allows only adding, and 
+            preserves the order of values added to the dictionary.
+            Thread-safe for reading, but not for adding.
             </summary>
             <remarks>
             Always uses the default comparer.
             </remarks>
         </member>
+        <member name="F:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2._dictionary">
+            <summary>
+            Each value is either a single V or an <see cref="T:Microsoft.CodeAnalysis.ArrayBuilder`1"/>.
+            Null when the dictionary is empty.
+            Don't access the field directly.
+            </summary>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.Add(`0,`1)">
             <summary>
             Add a value to the dictionary.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.AddRange(`0,System.Collections.Immutable.ImmutableArray{`1})">
+            <summary>
+            Add multiple values to the dictionary.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.GetCountForKey(`0)">
+            <summary>
+            Get the number of values associated with a key.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.ContainsKey(`0)">
+            <summary>
+            Returns true if one or more items with given key have been added.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.Item(`0)">
@@ -8178,12 +7768,6 @@
         <member name="P:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.Keys">
             <summary>
             Get a collection of all the keys.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Collections.OrderPreservingMultiDictionary`2.ValueSet._value">
-            <summary>
-            Each value is either a single V or an <see cref="T:Microsoft.CodeAnalysis.ArrayBuilder`1"/>.
-            Never null.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Collections.PooledStringBuilder">
@@ -8901,61 +8485,12 @@
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ErrorLogger">
-             <summary>
-             Used for logging all compiler diagnostics into a given <see cref="T:System.IO.Stream"/>.
-             This logger is responsible for closing the given stream on <see cref="M:Microsoft.CodeAnalysis.ErrorLogger.Dispose"/>.
-             It is incorrect to use the logger concurrently from multiple threads.
-            
-             The log format is SARIF (Static Analysis Results Interchange Format)
-             https://sarifweb.azurewebsites.net
-             https://github.com/sarif-standard/sarif-spec
-             </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ErrorLogger.DiagnosticDescriptorSet">
-             <summary>
-             Represents a distinct set of <see cref="T:Microsoft.CodeAnalysis.DiagnosticDescriptor"/>s and provides unique string keys 
-             to distinguish them.
-            
-             The first <see cref="T:Microsoft.CodeAnalysis.DiagnosticDescriptor"/> added with a given <see cref="P:Microsoft.CodeAnalysis.DiagnosticDescriptor.Id"/>
-             value is given that value as its unique key. Subsequent adds with the same ID will have .NNN
-             apppended to their with an auto-incremented numeric value.
-             </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ErrorLogger.DiagnosticDescriptorSet.Count">
             <summary>
-            The total number of descriptors in the set.
+            Used for logging all compiler diagnostics into a given <see cref="T:System.IO.Stream"/>.
+            This logger is responsible for closing the given stream on <see cref="M:Microsoft.CodeAnalysis.ErrorLogger.Dispose"/>.
+            The log format is SARIF (Static Analysis Results Interchange Format)
+            https://github.com/sarif-standard/sarif-spec
             </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.ErrorLogger.DiagnosticDescriptorSet.Add(Microsoft.CodeAnalysis.DiagnosticDescriptor)">
-            <summary>
-            Adds a descriptor to the set if not already present.
-            </summary>
-            <returns>
-            The unique key assigned to the given descriptor.
-            </returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.ErrorLogger.DiagnosticDescriptorSet.ToSortedList">
-            <summary>
-            Converts the set to a list of (key, descriptor) pairs sorted by key.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ErrorLogger.DiagnosticDescriptorSet.Comparer">
-             <summary>
-             Compares descriptors by the values that we write to the log and nothing else.
-            
-             We cannot just use <see cref="T:Microsoft.CodeAnalysis.DiagnosticDescriptor"/>'s built-in implementation
-             of <see cref="T:System.IEquatable`1"/> for two reasons:
-            
-             1. <see cref="P:Microsoft.CodeAnalysis.DiagnosticDescriptor.MessageFormat"/> is part of that built-in 
-                equatability, but we do not write it out, and so descriptors differing only
-                by MessageFormat (common) would lead to duplicate rule metadata entries in
-                the log.
-            
-             2. <see cref="P:Microsoft.CodeAnalysis.DiagnosticDescriptor.CustomTags"/> is *not* part of that built-in
-                equatability, but we do write them out, and so descriptors differening only
-                by CustomTags (rare) would cause only one set of tags to be reported in the
-                log.
-             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.TouchedFileLogger">
             <summary>
@@ -9694,7 +9229,6 @@
         </member>
         <member name="M:Microsoft.CodeAnalysis.DesktopStrongNameProvider.SignAssembly(Microsoft.CodeAnalysis.StrongNameKeys,System.IO.Stream,System.IO.Stream)">
             <exception cref="T:System.IO.IOException"></exception>
-            <exception cref="T:Microsoft.CodeAnalysis.DesktopStrongNameProvider.ClrStrongNameMissingException"></exception>
         </member>
         <member name="M:Microsoft.CodeAnalysis.DesktopStrongNameProvider.Sign(System.String,System.String)">
             <exception cref="T:System.IO.IOException"/>
@@ -10000,8 +9534,6 @@
             <param name="module">The metadata of the module before editing.</param>
             <param name="debugInformationProvider">
             A function that for a method handle returns Edit and Continue debug information emitted by the compiler into the PDB.
-            The function shall throw <see cref="T:System.IO.InvalidDataException"/> if the debug information can't be read for the specified method.
-            This exception is caught and converted to an emit diagnostic. Other exceptions are passed through.
             </param>
             <returns>An <see cref="T:Microsoft.CodeAnalysis.Emit.EmitBaseline"/> for the module.</returns>
             <remarks>
@@ -10045,9 +9577,8 @@
         </member>
         <member name="F:Microsoft.CodeAnalysis.Emit.EmitBaseline.DebugInformationProvider">
             <summary>
-            Reads EnC debug information of a method from the initial baseline PDB.
-            The function shall throw <see cref="T:System.IO.InvalidDataException"/> if the debug information can't be read for the specified method.
-            This exception is caught and converted to an emit diagnostic. Other exceptions are passed through.
+            Local variable names for methods from metadata,
+            indexed by method row.
             </summary>
         </member>
         <member name="F:Microsoft.CodeAnalysis.Emit.SymbolChange.None">
@@ -10995,10 +10526,6 @@
             <summary>
             Root type for representing the abstract semantics of C# and VB statements and expressions.
             </summary>
-            <remarks>
-            This interface is reserved for implementation by its associated APIs. We reserve the right to
-            change it in the future.
-            </remarks>
         </member>
         <member name="P:Microsoft.CodeAnalysis.IOperation.Kind">
             <summary>
@@ -12411,9 +11938,9 @@
             get the entire prefix (e.g., "error CS0219: Warning as Error:" for C# or "error BC42024:" for VB) used on error messages.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CommonMessageProvider.GetErrorDisplayString(Microsoft.CodeAnalysis.ISymbol)">
+        <member name="M:Microsoft.CodeAnalysis.CommonMessageProvider.ConvertSymbolToString(System.Int32,Microsoft.CodeAnalysis.ISymbol)">
             <summary>
-            Convert given symbol to string representation.
+            convert given symbol to string representation based on given error code
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CommonMessageProvider.GetIdForErrorCode(System.Int32)">
@@ -15585,7 +15112,7 @@
             <exception cref="T:System.BadImageFormatException">When an invalid module name is encountered.</exception>
             <exception cref="T:System.ObjectDisposedException">Module has been disposed.</exception>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.ModuleMetadata.GetMetadataReader">
+        <member name="P:Microsoft.CodeAnalysis.ModuleMetadata.MetadataReader">
             <summary>
             Returns the metadata reader.
             </summary>
@@ -15685,20 +15212,11 @@
              
              The calling <see cref="T:Microsoft.CodeAnalysis.Compilation"/> doesn't take ownership of the <see cref="T:Microsoft.CodeAnalysis.Metadata"/> objects returned by this method.
              The implementation needs to retrieve the object from a provider that manages their lifetime (such as metadata cache).
-             The <see cref="T:Microsoft.CodeAnalysis.Metadata"/> object is kept alive by the <see cref="T:Microsoft.CodeAnalysis.Compilation"/> that called <see cref="M:Microsoft.CodeAnalysis.PortableExecutableReference.GetMetadataNoCopy"/>
+             The <see cref="T:Microsoft.CodeAnalysis.Metadata"/> object is kept alive by the <see cref="T:Microsoft.CodeAnalysis.Compilation"/> that called <see cref="M:Microsoft.CodeAnalysis.PortableExecutableReference.GetMetadata"/>
              and by all compilations created from it via calls to With- factory methods on <see cref="T:Microsoft.CodeAnalysis.Compilation"/>, 
              other than <see cref="M:Microsoft.CodeAnalysis.Compilation.WithReferences(Microsoft.CodeAnalysis.MetadataReference[])"/> overloads. A compilation created using 
-             <see cref="M:Microsoft.CodeAnalysis.Compilation.WithReferences(Microsoft.CodeAnalysis.MetadataReference[])"/> will call to <see cref="M:Microsoft.CodeAnalysis.PortableExecutableReference.GetMetadataNoCopy"/> again.
+             <see cref="M:Microsoft.CodeAnalysis.Compilation.WithReferences(Microsoft.CodeAnalysis.MetadataReference[])"/> will call to <see cref="M:Microsoft.CodeAnalysis.PortableExecutableReference.GetMetadata"/> again.
              </remarks>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.PortableExecutableReference.GetMetadata">
-            <summary>
-            Returns a copy of the <see cref="T:Microsoft.CodeAnalysis.Metadata"/> object this <see cref="T:Microsoft.CodeAnalysis.PortableExecutableReference"/>
-            contains.  This copy does not need to be <see cref="M:System.IDisposable.Dispose"/>d.
-            </summary>
-            <exception cref="T:System.BadImageFormatException">If the PE image format is invalid.</exception>
-            <exception cref="T:System.IO.IOException">The metadata image content can't be read.</exception>
-            <exception cref="T:System.IO.FileNotFoundException">The metadata image is stored in a file that can't be found.</exception>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ReferenceDirective">
             <summary>
@@ -17956,11 +17474,6 @@
         <member name="P:Microsoft.CodeAnalysis.Symbols.CommonAnonymousTypeManager.AreTemplatesSealed">
             <summary>
             Collection of anonymous type templates is sealed 
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Symbols.IMethodSymbolInternal.IsIterator">
-            <summary>
-            True if the method is a source method implemented as an iterator.
             </summary>
         </member>
         <member name="F:Microsoft.CodeAnalysis.AttributeUsageInfo.Default">
@@ -24100,7 +23613,7 @@
             Parses a version string of the form "major [ '.' minor [ '.' build [ '.' revision ] ] ]".
             </summary>
             <param name="s">The version string to parse.</param>
-            <param name="version">If parsing succeeds, the parsed version. Otherwise a version that represents as much of the input as could be parsed successfully.</param>
+            <param name="version">If parsing succeeds, the parsed version. Null otherwise.</param>
             <returns>True when parsing succeeds completely (i.e. every character in the string was consumed), false otherwise.</returns>
         </member>
         <member name="M:Microsoft.CodeAnalysis.VersionHelper.TryParseAssemblyVersion(System.String,System.Boolean,System.Version@)">
@@ -24111,12 +23624,12 @@
             <param name="s">The version string to parse.</param>
             <param name="allowWildcard">Indicates whether or not a wildcard is accepted as the terminal component.</param>
             <param name="version">
-            If parsing succeeded, the parsed version. Otherwise a version instance with all parts set to zero.
+            If parsing succeeded, the parsed version. Null otherwise.
             If <paramref name="s"/> contains * the version build and/or revision numbers are set to <see cref="F:System.UInt16.MaxValue"/>.
             </param>
             <returns>True when parsing succeeds completely (i.e. every character in the string was consumed), false otherwise.</returns>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.VersionHelper.TryParse(System.String,System.Boolean,System.UInt16,System.Boolean,System.Version@)">
+        <member name="M:Microsoft.CodeAnalysis.VersionHelper.TryParse(System.String,System.Boolean,System.UInt16,System.Version@)">
             <summary>
             Parses a version string of the form "major [ '.' minor [ '.' ( '*' | ( build [ '.' ( '*' | revision ) ] ) ) ] ]"
             as accepted by System.Reflection.AssemblyVersionAttribute.
@@ -24124,9 +23637,8 @@
             <param name="s">The version string to parse.</param>
             <param name="allowWildcard">Indicates whether or not we're parsing an assembly version string. If so, wildcards are accepted and each component must be less than 65535.</param>
             <param name="maxValue">The maximum value that a version component may have.</param>
-            <param name="allowPartialParse">Allow the parsing of version elements where invalid characters exist. e.g. 1.2.2a.1</param>
             <param name="version">
-            If parsing succeeded, the parsed version. When <paramref name="allowPartialParse"/> is true a version with values up to the first invalid character set. Otherwise a version with all parts set to zero.
+            If parsing succeeded, the parsed version. Null otherwise. 
             If <paramref name="s"/> contains * and wildcard is allowed the version build and/or revision numbers are set to <see cref="F:System.UInt16.MaxValue"/>.
             </param>
             <returns>True when parsing succeeds completely (i.e. every character in the string was consumed), false otherwise.</returns>
@@ -24530,13 +24042,6 @@
             <summary>
             Sorts strings such that a string is followed immediately by all strings
             that are a suffix of it.  
-            </summary>
-        </member>
-        <member name="T:Microsoft.Cci.MetadataWriter.ImportScopeEqualityComparer">
-            <summary>
-            Import scopes are associated with binders (in C#) and thus multiple instances might be created for a single set of imports.
-            We consider scopes with the same parent and the same imports the same.
-            Internal for testing.
             </summary>
         </member>
         <member name="F:Microsoft.Cci.MetadataWriter.NameLengthLimit">
@@ -26556,7 +26061,6 @@
         <member name="M:Microsoft.Cci.IImportScope.GetUsedNamespaces">
             <summary>
             Zero or more used namespaces. These correspond to using directives in C# or Imports syntax in VB.
-            Multiple invocations return the same array instance.
             </summary>
         </member>
         <member name="P:Microsoft.Cci.IImportScope.Parent">

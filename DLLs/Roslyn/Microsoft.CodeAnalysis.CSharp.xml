@@ -140,8 +140,7 @@
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Binder.ImportChain">
             <summary>
-            The imports for all containing namespace declarations (innermost-to-outermost, including global),
-            or null if there are none.
+            The Imports for all containing namespace declarations (innermost-to-outermost, including global).
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Binder.ContainingType">
@@ -1460,18 +1459,10 @@
             Walk up from an XML syntax node (attribute or tag) to the enclosing documentation comment trivia.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.BinderFactory.GetBinder(Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode,Microsoft.CodeAnalysis.CSharp.Symbol)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.BinderFactory.GetBinder(Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
             <summary>
-            Return binder for binding at node.
-            <paramref name="memberDeclarationOpt"/> and <paramref name="memberOpt"/>
-            are optional syntax and symbol for the member containing <paramref name="node"/>.
-            If provided, the <see cref="T:Microsoft.CodeAnalysis.CSharp.BinderFactory.BinderFactoryVisitor"/> will use the member symbol rather
-            than looking up the member in the containing type, allowing this method to be called
-            while calculating the member list.
+            Note, there is no guarantee that the factory always gives back the same binder instance for the same <param name="node"/>.
             </summary>
-            <remarks>
-            Note, there is no guarantee that the factory always gives back the same binder instance for the same node.
-            </remarks>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.BinderFactory.GetImportsBinder(Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode,System.Boolean)">
             <summary>
@@ -4377,12 +4368,6 @@
             dynamic types.
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.CSharpCompilation.CanEmitBoolean">
-            <summary>
-            Returns whether the compilation has the Boolean type and if it's good.
-            </summary>
-            <returns>Returns true if Boolean is present and healthy.</returns>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpCompilation.EnableEnumArrayBlockInitialization">
             <summary>
@@ -7663,15 +7648,6 @@
             If this symbol has no type members with this name and arity,
             returns an empty ImmutableArray. Never returns null.</returns>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.NamedTypeSymbol.GetInstanceFieldsAndEvents">
-            <summary>
-            Get all instance field and event members.
-            </summary>
-            <remarks>
-            For source symbols may be called while calculating
-            <see cref="M:Microsoft.CodeAnalysis.CSharp.Symbols.NamespaceOrTypeSymbol.GetMembersUnordered"/>.
-            </remarks>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Symbols.NamedTypeSymbol.DeclaredAccessibility">
             <summary>
             Get this accessibility that was declared on this symbol. For symbols that do not have
@@ -10302,6 +10278,11 @@
             Represents a label in method body
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.Symbols.LabelSymbol.Name">
+            <summary>
+            Gets the name of this label
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Symbols.LabelSymbol.IsExtern">
             <summary>
             Returns false because label can't be defined externally.
@@ -10805,7 +10786,7 @@
             namespaces. Any sub-namespaces with the same names are also merged if they have two or more
             instances.
             
-            Merged namespaces are used to merge the symbols from multiple metadata modules and the
+            Merged namespaces are used to merged the symbols from multiple metadata modules and the
             source "module" into a single symbol tree that represents all the available symbols. The
             compiler resolves names against this merged set of symbols.
             
@@ -12728,6 +12709,14 @@
             The implementation part is not listed among the "members" of the enclosing type.
             </summary>
         </member>
+        <member name="F:Microsoft.CodeAnalysis.CSharp.Symbols.SourceMemberMethodSymbol._constraintClauseBinder">
+            <summary>
+            A binder to use for binding generic constraints. The field is only non-null while the .ctor
+            is executing, and allows constraints to be bound before the method is added to the
+            containing type. (Until the method symbol has been added to the container, we cannot
+            get a binder for the method without triggering a recursive attempt to bind the method.)
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Symbols.SourceMemberMethodSymbol.OtherPartOfPartial">
             <summary>
             If this is a partial implementation part returns the definition part and vice versa.
@@ -13322,7 +13311,7 @@
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Symbols.SynthesizedFieldSymbolBase">
             <summary>
-            Represents a compiler generated field or captured variable.
+            Represents a compiler generated field.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Symbols.SynthesizedGlobalMethodSymbol">
@@ -16835,11 +16824,6 @@
               Looks up a localized string similar to Member &apos;{0}&apos; added during the current debug session can only be accessed from within its declaring assembly &apos;{1}&apos;..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_EncUpdateFailedMissingAttribute">
-            <summary>
-              Looks up a localized string similar to Cannot update &apos;{0}&apos;; attribute &apos;{1}&apos; is missing..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_EndifDirectiveExpected">
             <summary>
               Looks up a localized string similar to #endif directive expected.
@@ -18580,11 +18564,6 @@
               Looks up a localized string similar to The return type of operator True or False must be bool.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_OptionMustBeAbsolutePath">
-            <summary>
-              Looks up a localized string similar to Option &apos;{0}&apos; must be an absolute path..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_OutAttrOnRefParam">
             <summary>
               Looks up a localized string similar to Cannot specify only Out attribute on a ref parameter. Use both In and Out attributes, or neither..
@@ -18803,11 +18782,6 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_PermissionSetAttributeInvalidFile">
             <summary>
               Looks up a localized string similar to Unable to resolve file path &apos;{0}&apos; specified for the named argument &apos;{1}&apos; for PermissionSet attribute.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_PeWritingFailure">
-            <summary>
-              Looks up a localized string similar to An error occurred while writing the output file: {0}.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_PointerInAsOrIs">
@@ -20468,16 +20442,6 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.WRN_AsyncLacksAwaits_Title">
             <summary>
               Looks up a localized string similar to Async method lacks &apos;await&apos; operators and will run synchronously.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.WRN_AttributeIgnoredWhenPublicSigning">
-            <summary>
-              Looks up a localized string similar to Attribute &apos;{0}&apos; is ignored when public signing is specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.WRN_AttributeIgnoredWhenPublicSigning_Title">
-            <summary>
-              Looks up a localized string similar to Attribute is ignored when public signing is specified..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.WRN_AttributeLocationOnBadDeclaration">
@@ -23595,11 +23559,6 @@
             Rewrite an async method into a state machine type.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.AsyncRewriter.VerifyPresenceOfRequiredAPIs">
-            <returns>
-            Returns true if all types and members we need are present and good
-            </returns>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.AsyncStateMachine">
             <summary>
             The class that represents a translated async method.
@@ -23774,16 +23733,6 @@
         <member name="M:Microsoft.CodeAnalysis.CSharp.IteratorRewriter.Rewrite(Microsoft.CodeAnalysis.CSharp.BoundStatement,Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Int32,Microsoft.CodeAnalysis.CodeGen.VariableSlotAllocator,Microsoft.CodeAnalysis.CSharp.TypeCompilationState,Microsoft.CodeAnalysis.DiagnosticBag,Microsoft.CodeAnalysis.CSharp.IteratorStateMachine@)">
             <summary>
             Rewrite an iterator method into a state machine class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.IteratorRewriter.VerifyPresenceOfRequiredAPIs">
-            <returns>
-            Returns true if all types and members we need are present and good
-            </returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.IteratorRewriter.EnsureSpecialPropertyGetter(Microsoft.CodeAnalysis.SpecialMember,Microsoft.CodeAnalysis.DiagnosticBag)">
-            <summary>
-            Check that the property and its getter exist and collect any use-site errors.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.IteratorStateMachine">

@@ -22,13 +22,13 @@ namespace TfsSharpTR.Roslyn.Metrics
         {
             var setting = usrVariables.SettingFileData;
             if (setting == null)
-                return new TaskStatu("CM01", "No setting found.");
+                return new TaskStatu("CM01", "No setting found");
 
             string buildPath = tfsVariables.BuildSourceDirectory;
             var solutionsPath = SolutionHelper.FindSolutionFiles(buildPath);
 
             if (!solutionsPath.Any())
-                return new TaskStatu("CM02", "No solution file found.");
+                return new TaskStatu("CM02", "No solution file found");
 
             foreach (var slnPath in solutionsPath)
             {
@@ -38,8 +38,8 @@ namespace TfsSharpTR.Roslyn.Metrics
                     var slnName = Path.GetFileName(slnPath);
                     var projects = solution.Projects.ToList();
                     if(!projects.Any())
-                        return new TaskStatu("CM03", string.Format("No solution found in [{0}] solution.", slnName));
-                    WriteDetail(string.Format("Calculating metrics for [{0}] solution.", slnName));
+                        return new TaskStatu("CM03", string.Format("No solution found in [{0}] solution", slnName));
+                    WriteDetail(string.Format("Calculating metrics for [{0}] solution", slnName));
                     var metricBag = GetSolutionMetric(projects, solution);
 
                     var checkResult = CheckMetric(metricBag, setting, slnName);
@@ -128,8 +128,9 @@ namespace TfsSharpTR.Roslyn.Metrics
 
         private void CheckNameSpaceRules(INamespaceMetric itmClass, CodeMetricSetting setting, string nameClss)
         {
-            if (IsMaxExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
-                WrtLog("Cyclomatic Complexity", nameClss, itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity);
+            //Cheking namespaces CyclomaticComplexity is seems ridiculous
+            //if (IsMaxExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
+            //    WrtLog("Cyclomatic Complexity", nameClss, itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity);
 
             if (IsMaxExceed(itmClass.DepthOfInheritance, setting.MaxDepthofInheritence))
                 WrtLog("Depth of Inheritance", nameClss, itmClass.DepthOfInheritance, setting.MaxDepthofInheritence);
@@ -163,7 +164,7 @@ namespace TfsSharpTR.Roslyn.Metrics
 
         private bool WrtLog(string ruleName, string source, int metricValue, int maxValue)
         {
-            return WrtLog(string.Format("{0} is exceed by {1}. Value / Max is {2} / {3}.", ruleName, source, metricValue, maxValue));
+            return WrtLog(string.Format("{0} is exceed by [{1}]. Value/Limit is {2}/{3}", ruleName, source, metricValue, maxValue));
         }
 
         private bool WrtLog(string msg)

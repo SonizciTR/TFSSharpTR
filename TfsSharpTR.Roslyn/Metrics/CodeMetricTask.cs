@@ -77,6 +77,9 @@ namespace TfsSharpTR.Roslyn.Metrics
                             string nameMember = nameClass + "." + itmMember.Name;
                             CheckMemberRules(itmMember, setting, nameMember);
                         }
+
+                        if (logCounter > setting.MaxLogCount)
+                            return "Maximum log count reached.";
                     }
                 }
                 if (logCounter > setting.MaxLogCount)
@@ -93,7 +96,7 @@ namespace TfsSharpTR.Roslyn.Metrics
 
             if (IsExceed(itmMember.LinesOfCode, setting.MaxLinesofCodeforMembers))
                 WrtLog("Lines of Code", nameMember, itmMember.LinesOfCode, setting.MaxLinesofCodeforMembers);
-
+            
             if (IsExceed(itmMember.MaintainabilityIndex, setting.MinMaintainabilityIndex))
                 WrtLog("Maintainability Index", nameMember, (int)itmMember.MaintainabilityIndex, setting.MinMaintainabilityIndex);
 
@@ -123,17 +126,6 @@ namespace TfsSharpTR.Roslyn.Metrics
                 WrtLog("Maintainability Index", nameClass, mainIndx, setting.MinMaintainabilityIndex);
         }
 
-        private bool IsExceed(double metricValue, int maxValue)
-        {
-            int tmpMetric = (int)metricValue;
-            return IsExceed(tmpMetric, maxValue);
-        }
-
-        private bool IsExceed(int metricValue, int maxValue)
-        {
-            return (maxValue > 0) && (metricValue > maxValue); 
-        }
-
         private void CheckNameSpaceRules(INamespaceMetric itmClass, CodeMetricSetting setting, string nameClss)
         {
             if (IsExceed(itmClass.CyclomaticComplexity, setting.MaxCyclomaticComplexity))
@@ -147,10 +139,22 @@ namespace TfsSharpTR.Roslyn.Metrics
                 WrtLog("Maintainability Index", nameClss, mainIndx, setting.MinMaintainabilityIndex);
         }
 
+        private bool IsExceed(double metricValue, int maxValue)
+        {
+            int tmpMetric = (int)metricValue;
+            return IsExceed(tmpMetric, maxValue);
+        }
+
+        private bool IsExceed(int metricValue, int maxValue)
+        {
+            return (maxValue > 0) && (metricValue > maxValue);
+        }
+
         private bool WrtLog(string ruleName, string source, int metricValue, int maxValue)
         {
             return WrtLog(string.Format("{0} is exceed by {1}. Value / Max is {2} / {3}.", ruleName, source, metricValue, maxValue));
         }
+
         private bool WrtLog(string msg)
         {
             ++logCounter;

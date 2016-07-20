@@ -12,6 +12,7 @@ using System.Linq;
 using TfsSharpTR.StyleCopRelated;
 using TfsSharpTR.AutoDeploy;
 using TfsSharpTR.Roslyn.Enforcer;
+using TfsSharpTR.Roslyn.Metrics;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -19,7 +20,7 @@ namespace TfsSharpTR.UnitTest
     /// Actually this class is integration test. These are all for debugging.
     /// </summary>
     [TestClass]
-    public class General
+    public class IntegrationTest
     {
         private static Dictionary<string, string> DummyTfsVariable()
         {
@@ -170,6 +171,16 @@ namespace TfsSharpTR.UnitTest
         public void AnalyzerEnforcerTask()
         {
             var tsk = new AnalyzerEnforcerTask();
+            var rslt = RunTask(tsk.Initializer);
+
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
+        }
+
+        [TestMethod]
+        public void CodeMetricTask()
+        {
+            var tsk = new CodeMetricTask();
             var rslt = RunTask(tsk.Initializer);
 
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";

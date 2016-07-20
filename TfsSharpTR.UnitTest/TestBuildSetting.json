@@ -42,5 +42,18 @@
         "DLLPath": ""
       }
     ]
+  },
+
+  "CodeMetric": {
+    "MaxLogCount": 50,
+    "MaxCouplingComplexity": 40,
+    "MaxClassCoupling": 80,
+    "MaxCyclomaticComplexity": 40,
+    "MaxDepthofInheritence": 7,
+    "MaxLinesofCodeforClass": 1000,
+    "MaxLinesofCodeforMembers": 40,
+    "MinMaintainabilityIndex": 40,
+    "MaxEfferentCoupling": 5,
+    "MaxNumberOfParameters": 5  
   }
 }

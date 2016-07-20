@@ -183,9 +183,16 @@ namespace TfsSharpTR.Roslyn.Metrics
                 var tmpProject = new MetricProject();
                 tmpProject.ProjectName = prj.Name;
                 tmpProject.AssemblyName = prj.AssemblyName;
-                tmpProject.Metric = (metricCalculator.Calculate(prj, solution).Result).ToList();
-                
-                depo.Add(tmpProject);
+                try
+                {
+                    tmpProject.Metric = (metricCalculator.Calculate(prj, solution).Result).ToList();
+
+                    depo.Add(tmpProject);
+                }
+                catch(Exception ex)
+                {
+                    WriteDetail(string.Format("ERROR : [{0}] project has errors. Could not be processed.", prj.Name));
+                }
             }
 
             return depo;

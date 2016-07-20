@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
+using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 using TfsSharpTR.Roslyn.Enforcer;
 
@@ -26,7 +27,7 @@ namespace TfsSharpTR.Roslyn.Enforcer
             if (!string.IsNullOrEmpty(settingOkMsg))
                 return new TaskStatu("RET01", settingOkMsg);
             string buildPath = tfsVariables.BuildSourceDirectory;
-            string[] slnFiles = FindSolutionFiles(buildPath);
+            string[] slnFiles = SolutionHelper.FindSolutionFiles(buildPath);
             if ((slnFiles == null) || (!slnFiles.Any()))
                 return new TaskStatu("RET02", "No solution file found.");
 
@@ -112,11 +113,6 @@ namespace TfsSharpTR.Roslyn.Enforcer
             }
 
             return null;
-        }
-
-        private string[] FindSolutionFiles(string buildPath)
-        {
-            return Directory.GetFiles(buildPath, "*.sln", SearchOption.AllDirectories);
         }
     }
 }

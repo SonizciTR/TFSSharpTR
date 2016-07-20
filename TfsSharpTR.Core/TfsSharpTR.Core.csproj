@@ -85,6 +85,7 @@
     <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\TfsSharpTRExtension.cs" />
     <Compile Include="Helper\FileHelper.cs" />
+    <Compile Include="Helper\SolutionHelper.cs" />
     <Compile Include="Helper\TFSApiLogic.cs" />
     <Compile Include="Helper\TFSBaseLogic.cs" />
     <Compile Include="Helper\TFSHelper.cs" />

@@ -19,7 +19,7 @@ try {
 	# Depended libraries loading is a problem. This is how i solved
 	Write-Host "PreRun Assembly Load Started."
 
-	Get-ChildItem $destDir | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object {
+	Get-ChildItem $destDir -Filter *.dll | Sort @{Expression={$_.Name.Replace($_.Extension, "")};}  | ForEach-Object {
 		$tmpLibFullPath = $_.FullName
         try{
             if($_.Extension -ne ".dll")

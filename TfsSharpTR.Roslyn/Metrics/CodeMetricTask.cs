@@ -193,7 +193,8 @@ namespace TfsSharpTR.Roslyn.Metrics
                 }
                 catch(Exception ex)
                 {
-                    WriteDetail(string.Format("ERROR : [{0}] project has errors. Could not be processed. Check with SyleCop SA1603 error", prj.Name));
+                    string errMsg = string.Format("ERROR : [{0}] project has errors. Could not be processed. Check your project with SyleCop. Correct SA1603 error. ErrorDetail = {1}", prj.Name, ex.ToString());
+                    WriteDetail(errMsg);
                     return null;
                 }
             }

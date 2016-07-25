@@ -14,7 +14,11 @@ try {
         New-Item -ItemType directory -Path $destDir 
     }
 
+	try{
 	Get-ChildItem $sharpTRLibraryFolder | ForEach-Object {Copy-Item -Path $_.FullName -Destination "$destDir" -Force}
+	}catch {
+       Write-Host "Overrite copy failed = " $_.Exception.ToString()
+    }
 
 	# Depended libraries loading is a problem. This is how i solved
 	Write-Host "PreRun Assembly Load Started."

@@ -86,11 +86,11 @@ namespace TfsSharpTR.Roslyn.Metrics
         /// Maximum allowed Efferent Coupling
         /// Efferent Coupling is the number of code elemnts that it uses
         /// </summary>
-        public int MaxEfferentCoupling { get; internal set; }
+        public int MaxEfferentCoupling { get; set; }
 
         /// <summary>
         /// Maximum allowed number of parameters for a class member
         /// </summary>
-        public int MaxNumberOfParameters { get; internal set; }
+        public int MaxNumberOfParameters { get; set; }
     }
 }

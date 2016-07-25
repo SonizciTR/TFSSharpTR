@@ -46,13 +46,18 @@
 
   "CodeMetric": {
     "MaxLogCount": 50,
-    "MaxCouplingComplexity": 40,
-    "MaxClassCoupling": 80,
-    "MaxCyclomaticComplexity": 40,
-    "MaxDepthofInheritence": 7,
+    "MaxCouplingComplexityforMember": 40,
+    "MaxCouplingComplexityforClass": 40,
+    "MaxClassCouplingforMember": 80,
+    "MaxClassCouplingforClass": 80,
+    "MaxCyclomaticComplexityforMember": 40,
+    "MaxCyclomaticComplexityforClass": 40,
+    "MaxDepthofInheritenceforClass": 7,
+    "MaxDepthofInheritenceforMember": 7,
     "MaxLinesofCodeforClass": 1000,
     "MaxLinesofCodeforMembers": 40,
-    "MinMaintainabilityIndex": 40,
+    "MinMaintainabilityIndexforMember": 40,
+    "MinMaintainabilityIndexforClass": 40,
     "MaxEfferentCoupling": 5,
     "MaxNumberOfParameters": 5  
   }

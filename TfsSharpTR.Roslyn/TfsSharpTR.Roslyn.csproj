@@ -93,6 +93,7 @@
     <Compile Include="Metrics\CodeMetricSetting.cs" />
     <Compile Include="Metrics\CodeMetricTask.cs" />
     <Compile Include="Metrics\MetricProject.cs" />
+    <Compile Include="Metrics\MetricSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

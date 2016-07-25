@@ -23,24 +23,44 @@ namespace TfsSharpTR.Roslyn.Metrics
         public int MaxLogCount { get; set; }
 
         /// <summary>
-        /// Maximum allowed Coupling Complexity
+        /// Maximum allowed Coupling Complexity for Member
         /// </summary>
-        public int MaxCouplingComplexity { get; set; }
+        public int MaxCouplingComplexityforMember { get; set; }
 
         /// <summary>
-        /// Maximum allowed Class Coupling
+        /// Maximum allowed Coupling Complexity for Class
         /// </summary>
-        public int MaxClassCoupling { get; set; }
+        public int MaxCouplingComplexityforClass { get; set; }
 
         /// <summary>
-        /// Maximum allowed Cyclomatic Complexity
+        /// Maximum allowed Class Coupling for Member
         /// </summary>
-        public int MaxCyclomaticComplexity { get; set; }
+        public int MaxClassCouplingforMember { get; set; }
 
         /// <summary>
-        /// Maximum allowed Depth of Inheritence
+        /// Maximum allowed Class Coupling for Class
         /// </summary>
-        public int MaxDepthofInheritence { get; set; }
+        public int MaxClassCouplingforClass { get; set; }
+
+        /// <summary>
+        /// Maximum allowed Cyclomatic Complexity for Member
+        /// </summary>
+        public int MaxCyclomaticComplexityforMember { get; set; }
+
+        /// <summary>
+        /// Maximum allowed Cyclomatic Complexity for Class
+        /// </summary>
+        public int MaxCyclomaticComplexityforClass { get; set; }
+
+        /// <summary>
+        /// Maximum allowed Depth of Inheritence for Member
+        /// </summary>
+        public int MaxDepthofInheritenceforMember { get; set; }
+
+        /// <summary>
+        /// Maximum allowed Depth of Inheritence for Class
+        /// </summary>
+        public int MaxDepthofInheritenceforClass { get; set; }
 
         /// <summary>
         /// Maximum allowed Lines of Code for Classes
@@ -53,9 +73,14 @@ namespace TfsSharpTR.Roslyn.Metrics
         public int MaxLinesofCodeforMembers { get; set; }
 
         /// <summary>
-        /// Minimum allowed Maintainability Index
+        /// Minimum allowed Maintainability Index for Member
         /// </summary>
-        public int MinMaintainabilityIndex { get; set; }
+        public int MinMaintainabilityIndexforMember { get; set; }
+
+        /// <summary>
+        /// Minimum allowed Maintainability Index for Class
+        /// </summary>
+        public int MinMaintainabilityIndexforClass { get; set; }
 
         /// <summary>
         /// Maximum allowed Efferent Coupling

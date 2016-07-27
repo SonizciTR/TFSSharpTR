@@ -35,11 +35,11 @@ namespace TfsSharpTR.Roslyn.Enforcer
         /// <summary>
         /// This projects will exclude from adding process
         /// </summary>
-        public List<string> ExcludedProjects { get; set; }
+        public List<string> ExcludedProjects { get; set; } = new List<string>();
 
         /// <summary>
         /// This solutions will not be checked
         /// </summary>
-        public List<string> ExcludedSolutions { get; set; }
+        public List<string> ExcludedSolutions { get; set; } = new List<string>();
     }
 }

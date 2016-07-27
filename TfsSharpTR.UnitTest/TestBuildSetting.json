@@ -59,6 +59,8 @@
     "MinMaintainabilityIndexforMember": 50,
     "MinMaintainabilityIndexforClass": 40,
     "MaxEfferentCoupling": 5,
-    "MaxNumberOfParameters": 5  
+    "MaxNumberOfParameters": 5,
+    "ExcludedSolutions": [ ],
+    "ExcludedProjects": [ ]
   }
 }

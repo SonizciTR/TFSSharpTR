@@ -8,7 +8,7 @@ This project is started because of customizing DevOps operation at TFS. Designed
 I decided th sperate tasks by their dependencies. So you will see different class libraries. If I don't do this, you will need every external libraries included with your packet.
 
 ####Ready Tasks:
-1. FileControlTask : Inside "TfsSharpTR.PreBuild" solution. Git has no file lock feature. Some cases you need some files not to modified or modiefied by some specific users. With this task, just add necessary setting to json file ("FileControlTask" part). It checks automatically.
+* FileControlTask : Inside "TfsSharpTR.PreBuild" solution. Git has no file lock feature. Some cases you need some files not to modified or modiefied by some specific users. With this task, just add necessary setting to json file ("FileControlTask" part). It checks automatically.
 ```javascript
 {
   "PreBuildTasks": [ "FileControlTask" ], //Must have settings
@@ -26,7 +26,7 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 }
 ```
 
-2. StyleCop : Inside "TfsSharpTR.StyleCopRelated" solution. Runs your stylecop rules. You can excluded specific files.
+* StyleCop : Inside "TfsSharpTR.StyleCopRelated" solution. Runs your stylecop rules. You can excluded specific files.
 ```javascript
 {
   "PreBuildTasks": [ "StyleCopTask" ], //Must have settings
@@ -42,7 +42,7 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 }
 ```
 
-3. Code Metrics : Inside "TfsSharpTR.Roslyn" solution. Using ArchiMetrics project on github. Analyze all solutions in the project or SolutiontoBuild variable solution.
+* Code Metrics : Inside "TfsSharpTR.Roslyn" solution. Using ArchiMetrics project on github. Analyze all solutions in the project or SolutiontoBuild variable solution.
  
 ```javascript
 {
@@ -71,7 +71,7 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 }
 ```
 
-4. AnalyzerEnforcer : Inside "TfsSharpTR.Roslyn" solution. Sometimes we are controlling solution with custom packages that has over custom rules. If there is new project added to solution, there will be no control over this. AnalyzerEnforcer; at build time addes your nuget packages to soluiton if they are not exist. This is very usefull forcing custom nuget packages.
+* AnalyzerEnforcer : Inside "TfsSharpTR.Roslyn" solution. Sometimes we are controlling solution with custom packages that has over custom rules. If there is new project added to solution, there will be no control over this. AnalyzerEnforcer; at build time addes your nuget packages to soluiton if they are not exist. This is very usefull forcing custom nuget packages.
 
 ```javascript
 {
@@ -93,9 +93,9 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 
 ####Not Ready Tasks (No Promises):
 
-5. Partial Unit Test
-6. AutoDeploy (For IIS apppool start/stop; there is a big problem if you are deploying to another domain. ServerManager.OpenRemote method uses NTLM authentication only :( . I am looking for a solution )
-7. Code Documentation (thinking to use SandCastle)
+* Partial Unit Test
+* AutoDeploy (For IIS apppool start/stop; there is a big problem if you are deploying to another domain. ServerManager.OpenRemote method uses NTLM authentication only :( . I am looking for a solution )
+* Code Documentation (thinking to use SandCastle)
 
 ## Setting Json File
 There is a must have part :

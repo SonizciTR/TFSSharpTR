@@ -25,13 +25,18 @@ namespace TfsSharpTR.Roslyn.Metrics
                 return new TaskStatu("CM01", "No setting found");
 
             string buildPath = tfsVariables.BuildSourceDirectory;
-            var solutionsPath = SolutionHelper.FindSolutionFiles(buildPath);
+            var solutionsPath = string.IsNullOrEmpty(tfsVariables.SolutiontoBuild) ? 
+                SolutionHelper.FindSolutionFiles(buildPath)
+                : new string[] { tfsVariables.SolutiontoBuild };
 
             if (!solutionsPath.Any())
                 return new TaskStatu("CM02", "No solution file found");
 
             foreach (var slnPath in solutionsPath)
             {
+                if (setting.ExcludedSolutions.Any(x => x == slnPath))
+                    continue;
+
                 using (var slnProvider = new SolutionProvider())
                 {
                     var solution = slnProvider.Get(slnPath).Result;
@@ -40,7 +45,7 @@ namespace TfsSharpTR.Roslyn.Metrics
                     if(!projects.Any())
                         return new TaskStatu("CM03", string.Format("No solution found in [{0}] solution", slnName));
                     WriteDetail(string.Format("Calculating metrics for [{0}] solution", slnName));
-                    var metricBag = GetSolutionMetric(projects, solution);
+                    var metricBag = GetSolutionMetric(projects, solution, setting);
                     if (metricBag == null)
                         return new TaskStatu("CM04", "CodeMetric failed due to an project build or style error.");
 
@@ -172,13 +177,16 @@ namespace TfsSharpTR.Roslyn.Metrics
             return WriteDetail(string.Format("({4}) - {0} is exceed by [{1}]. Value/Limit is {2}/{3}", ruleName, source, metricValue, maxValue, src));
         }
 
-        private List<MetricProject> GetSolutionMetric(List<Project> projects, Solution solution)
+        private List<MetricProject> GetSolutionMetric(List<Project> projects, Solution solution, CodeMetricSetting setting)
         {
             var metricCalculator = new CodeMetricsCalculator();
             var depo = new List<MetricProject>(projects.Count);
 
             foreach (var prj in projects)
             {
+                if (setting.ExcludedProjects.Any(x => x == prj.Name))
+                    continue;
+
                 var tmpProject = new MetricProject();
                 tmpProject.ProjectName = prj.Name;
                 tmpProject.AssemblyName = prj.AssemblyName;

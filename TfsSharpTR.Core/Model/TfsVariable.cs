@@ -295,5 +295,10 @@ namespace TfsSharpTR.Core.Model
         /// Set to True if the script is being run by a build step.
         /// </summary>
         public string TFBuild => Get("TF_BUILD");
+
+        /// <summary>
+        /// This is manually set parameter. If you set this, all tasks will check this solution only.
+        /// </summary>
+        public string SolutiontoBuild => Get("SolutiontoBuild");
     }
 }

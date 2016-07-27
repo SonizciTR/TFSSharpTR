@@ -80,7 +80,8 @@ try {
     $tfsVariables["SYSTEM_ACCESSTOKEN"] = $env:SYSTEM_ACCESSTOKEN
 	$tfsVariables["SYSTEM_DEFAULTWORKINGDIRECTORY"] = $env:SYSTEM_DEFAULTWORKINGDIRECTORY
     $tfsVariables["SYSTEM_DEFINITIONID"] = $env:SYSTEM_DEFINITIONID
-    $tfsVariables["SYSTEM_TEAMPROJECTID"] = $env:SYSTEM_TEAMPROJECTID           
+    $tfsVariables["SYSTEM_TEAMPROJECTID"] = $env:SYSTEM_TEAMPROJECTID 
+	$tfsVariables["SolutiontoBuild"] = $env:SolutiontoBuild
            
     $userVariables = New-Object 'system.collections.generic.dictionary[string,string]'
     $userVariables["Action"] = $action

@@ -92,5 +92,15 @@ namespace TfsSharpTR.Roslyn.Metrics
         /// Maximum allowed number of parameters for a class member
         /// </summary>
         public int MaxNumberOfParameters { get; set; }
+
+        /// <summary>
+        /// Solutions that will not be analyzed
+        /// </summary>
+        public List<string> ExcludedSolutions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Projects that will not be analyzed
+        /// </summary>
+        public List<string> ExcludedProjects { get; set; } = new List<string>();
     }
 }

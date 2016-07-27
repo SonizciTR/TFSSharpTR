@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
+using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.PreBuild
@@ -26,8 +27,25 @@ namespace TfsSharpTR.PreBuild
             
             DisplayAllTfsVariables(tfsVariables);
 
+            DisplayAllChangedFiles(tfsVariables);
+
             WriteDetail("This how to use detail method :)", tmrWatch);
             return tsk;
+        }
+
+        private void DisplayAllChangedFiles(TfsVariable tfsVariables)
+        {
+            var files = TFSHelper.ChangedFiles();
+            if (files.Any())
+            {
+                WriteDetail("Changed files are : ");
+                foreach (var itm in files)
+                {
+                    WriteDetail(itm);
+                }
+            }
+            else
+                WriteDetail("No changed files found");
         }
 
         private void DisplayAllTfsVariables(TfsVariable tfsVariables)

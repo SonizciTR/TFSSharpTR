@@ -18,7 +18,7 @@ namespace TfsSharpTR.PreBuild.FileControl
             }
         }
 
-        public List<FileControlItem> Files { get; set; }
+        public List<FileControlItem> Files { get; set; } = new List<FileControlItem>();
     }
 
     public class FileControlItem

@@ -39,7 +39,9 @@
     "References": [
       {
         "DLLName": "",
-        "DLLPath": ""
+        "DLLPath": "",
+        "ExcludedSolutions": [ ],
+        "ExcludedProjects": [ ]
       }
     ]
   },

@@ -26,12 +26,76 @@ I decided th sperate tasks by their dependencies. So you will see different clas
 }
 ```
 
+2. StyleCop : Inside "TfsSharpTR.StyleCopRelated" solution. Runs your stylecop rules. You can excluded specific files.
+```javascript
+{
+  "PreBuildTasks": [ "StyleCopTask" ], //Must have settings
+  "PostBuildTasks": [ "TestTask" ], //Must have settings
+
+  "StyleCopTask": {
+		"ExcludedFiles": [ "GlobalSupression.cs", "AssemblyInfo.cs" ],
+		"MaxErrorCount": 0,
+		"MaxLogCount": 30,
+		"TreatWarnAsError": false,
+		"SettingFile": "Settings.StyleCop"
+	  },
+}
+```
+
+3. Code Metrics : Inside "TfsSharpTR.Roslyn" solution. Using ArchiMetrics project on github. Analyze all solutions in the project or SolutiontoBuild variable solution.
+ 
+```javascript
+{
+  "PreBuildTasks": [ "CodeMetricTask" ], //Must have settings
+  "PostBuildTasks": [ "TestTask" ], //Must have settings
+
+  "CodeMetric": {
+    "MaxLogCount": 50,
+    "MaxCouplingComplexityforMember": 40,
+    "MaxCouplingComplexityforClass": 40,
+    "MaxClassCouplingforMember": 20,
+    "MaxClassCouplingforClass": 40,
+    "MaxCyclomaticComplexityforMember": 20,
+    "MaxCyclomaticComplexityforClass": 40,
+    "MaxDepthofInheritenceforClass": 7,
+    "MaxDepthofInheritenceforMember": 7,
+    "MaxLinesofCodeforClass": 1000,
+    "MaxLinesofCodeforMembers": 40,
+    "MinMaintainabilityIndexforMember": 50,
+    "MinMaintainabilityIndexforClass": 40,
+    "MaxEfferentCoupling": 5,
+    "MaxNumberOfParameters": 5,
+    "ExcludedSolutions": [ ],
+    "ExcludedProjects": [ ]
+  }
+}
+```
+
+4. AnalyzerEnforcer : Inside "TfsSharpTR.Roslyn" solution. Sometimes we are controlling solution with custom packages that has over custom rules. If there is new project added to solution, there will be no control over this. AnalyzerEnforcer; at build time addes your nuget packages to soluiton if they are not exist. This is very usefull forcing custom nuget packages.
+
+```javascript
+{
+  "PreBuildTasks": [ "AnalyzerEnforcerTask" ], //Must have settings
+  "PostBuildTasks": [ "TestTask" ], //Must have settings
+
+  "AnalyzerEnforcerTask": {
+    "References": [
+      {
+        "DLLName": "",
+        "DLLPath": "",
+        "ExcludedSolutions": [ ],
+        "ExcludedProjects": [ ]
+      }
+    ]
+  },
+}
+```
+
 ####Not Ready Tasks (No Promises):
-2. Code Analysis
-3. Code Metrics
-4. StyleCop
-5. AutoDeploy (For IIS apppool start/stop; there is a big problem if you are deploying to another domain. ServerManager.OpenRemote method uses NTLM authentication only :( . I am looking for a solution )
-6. Code Documentation (thinking to use SandCastle)
+
+5. Partial Unit Test
+6. AutoDeploy (For IIS apppool start/stop; there is a big problem if you are deploying to another domain. ServerManager.OpenRemote method uses NTLM authentication only :( . I am looking for a solution )
+7. Code Documentation (thinking to use SandCastle)
 
 ## Setting Json File
 There is a must have part :

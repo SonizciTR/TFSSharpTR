@@ -5,6 +5,7 @@ using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -66,6 +67,16 @@ namespace TfsSharpTR.Core.Helper
             }
 
             return grpList;
+        }
+
+        internal string DownloadLatestVersion(string filePath)
+        {
+            Item item = VerControlServer.GetItem(filePath);
+            var tmpStrm = item.DownloadFile();
+            using (var reader = new StreamReader(tmpStrm, Encoding.UTF8))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         public List<TFSFileState> TfsPendingChangeFiles()

@@ -76,6 +76,11 @@ namespace TfsSharpTR.Core.Helper
             return logicClient.Value.TfsPendingChangeFiles();
         }
 
+        /// <summary>
+        /// Downloads the latest version of file from TFS server
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static string DownloadFile(string filePath)
         {
             Check();
@@ -84,8 +89,7 @@ namespace TfsSharpTR.Core.Helper
                 return logicApi.Value.DownloadLatestVersion(filePath);
             }
 
-            return null;
-            //return logicClient.Value.TfsPendingChangeFiles();
+            return logicClient.Value.DownloadLatestVersion(filePath);
         }
     }
 }

@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="BaseTask.cs" />
     <Compile Include="Common\Logger.cs" />
+    <Compile Include="Common\TFSFileState.cs" />
     <Compile Include="Common\TfsSharpTRExtension.cs" />
     <Compile Include="DiffEngine\BinaryFile.cs" />
     <Compile Include="DiffEngine\CharData.cs" />

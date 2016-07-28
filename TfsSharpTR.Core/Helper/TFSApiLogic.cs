@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Core.Helper
@@ -43,30 +44,32 @@ namespace TfsSharpTR.Core.Helper
         /// Like they pulled at the same time.
         /// </summary>
         /// <returns></returns>
-        public List<string> GitPendingChangeFiles()
+        public List<TFSFileState> GitPendingChangeFiles()
         {
-            var filesChanged = new List<string>();
+            var filesChanged = new List<TFSFileState>();
 
             GitRepositoryService grs = new GitRepositoryService();
             grs.Initialize(TeamColl);
 
             var gitRepo = grs.QueryRepositories(SettingTFS.TeamProjectName).FirstOrDefault(x => x.Name == SettingTFS.RepoName);
             if (gitRepo == null)
-                return new List<string>();
+                return new List<TFSFileState>();
 
             string tmpUrl = string.Format(urlFindCommitsFiles, TeamColl.Uri, gitRepo.Id, SettingTFS.BuildSourceVersion);
             string rawJson = HttpGet(tmpUrl);
             if (string.IsNullOrEmpty(rawJson))
-                return new List<string>();
+                return new List<TFSFileState>();
 
             var gitCommitData = JsonConvert.DeserializeObject<GitCommitRef>(rawJson);
             var isExist = gitCommitData?.Changes?.Any() ?? false;
             if ( !isExist )
-                return new List<string>();
+                return new List<TFSFileState>();
 
             foreach (var item in gitCommitData.Changes)
             {
-                filesChanged.Add(item.Item.Path);
+                var tmpState = item.ChangeType.ToSourceControlFileState();
+
+                filesChanged.Add(new TFSFileState(item.Item.Path, tmpState));
             }
 
             return filesChanged;
@@ -77,7 +80,7 @@ namespace TfsSharpTR.Core.Helper
         /// </summary>
         /// <param name="fullPath"></param>
         /// <returns></returns>
-        public string GitFileLatestVersion(string fullPath)
+        public string DownloadLatestVersion(string fullPath)
         {
             GitRepositoryService grs = new GitRepositoryService();
             grs.Initialize(TeamColl);

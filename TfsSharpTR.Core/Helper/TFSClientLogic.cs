@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Core.Helper
@@ -67,21 +68,22 @@ namespace TfsSharpTR.Core.Helper
             return grpList;
         }
 
-        public List<string> TfsPendingChangeFiles()
+        public List<TFSFileState> TfsPendingChangeFiles()
         {
-            var filesChanged = new List<string>();
+            var filesChanged = new List<TFSFileState>();
 
             string shelveName = initSetting.TFVCShelveSet;
             var shelveDetail = shelveName?.Split(';');
             if ((shelveDetail == null) || (shelveDetail.Count() != 2))
-                return new List<string>();
+                return new List<TFSFileState>();
 
             var changeGrp = VerControlServer.QueryShelvedChanges(shelveDetail[0], shelveDetail[1]);
             foreach (var chng in changeGrp)
             {
                 foreach (var item in chng.PendingChanges)
                 {
-                    filesChanged.Add(item.LocalOrServerItem);
+                    var tmpState = item.ToSourceControlFileState();
+                    filesChanged.Add(new TFSFileState(item.LocalOrServerItem, tmpState));
                 }
             }
 

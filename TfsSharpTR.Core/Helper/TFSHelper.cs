@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TfsSharpTR.Core.Common;
 using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Core.Helper
@@ -64,23 +65,23 @@ namespace TfsSharpTR.Core.Helper
         /// There is a DANGER for git. Please look :TFSApiLogic implementation
         /// </summary>
         /// <returns></returns>
-        public static List<string> ChangedFiles()
+        public static List<TFSFileState> ChangedFiles()
         {
             Check();
             if ((initSetting.RepoProvider == "TfsGit") || (initSetting.RepoProvider == "Git"))
-            {
+            {   
                 return logicApi.Value.GitPendingChangeFiles();
             }
 
             return logicClient.Value.TfsPendingChangeFiles();
         }
 
-        public static string GetFile(string filePath)
+        public static string DownloadFile(string filePath)
         {
             Check();
             if ((initSetting.RepoProvider == "TfsGit") || (initSetting.RepoProvider == "Git"))
-            {
-                return logicApi.Value.GitFileLatestVersion(filePath);
+            {   
+                return logicApi.Value.DownloadLatestVersion(filePath);
             }
 
             return null;

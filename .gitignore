@@ -16,3 +16,5 @@
 /TfsSharpTR.AutoDeploy/obj
 /TfsSharpTR.Roslyn/bin
 /TfsSharpTR.Roslyn/obj
+/TfsSharpTR.PostBuild/bin
+/TfsSharpTR.PostBuild/obj

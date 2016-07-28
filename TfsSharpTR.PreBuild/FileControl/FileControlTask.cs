@@ -17,15 +17,16 @@ namespace TfsSharpTR.PreBuild.FileControl
             if (setting == null)
                 return new TaskStatu("No setting found.");
 
-            var filesModified = TFSHelper.ChangedFiles();
-            if (!filesModified.Any())
+            var allFiles = TFSHelper.ChangedFiles();
+            if (!allFiles.Any())
                 return new TaskStatu("No changed file found.");
 
             string adName = TFSHelper.UserDomainName;
             var usrGroups = TFSHelper.GroupUserJoined();
 
-            foreach (var sourceFile in filesModified)
+            foreach (var sourceData in allFiles)
             {
+                var sourceFile = sourceData.FilePath;
                 var rule = setting.Files.FirstOrDefault(x => x.FileNames.Any(y => sourceFile.EndsWith(y)));
 
                 if (rule == null)
@@ -40,7 +41,7 @@ namespace TfsSharpTR.PreBuild.FileControl
                 return new TaskStatu("FC01", string.Format("[{0}} file is restirected for [{1}] user.", sourceFile, adName));
             }
 
-            return new TaskStatu(string.Format("All changes controlled successfully. FileCount/TotalRule = {0}/{1}.", filesModified.Count, setting.Files.Count));
+            return new TaskStatu(string.Format("All changes controlled successfully. FileCount/TotalRule = {0}/{1}.", allFiles.Count, setting.Files.Count));
         }
     }
 }

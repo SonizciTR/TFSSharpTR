@@ -41,7 +41,7 @@ namespace TfsSharpTR.PreBuild
                 WriteDetail("Changed files are : ");
                 foreach (var itm in files)
                 {
-                    WriteDetail(itm);
+                    WriteDetail(itm.State + " : " + itm.FilePath);
                 }
             }
             else

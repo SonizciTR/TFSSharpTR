@@ -94,6 +94,9 @@
     <Compile Include="Metrics\CodeMetricTask.cs" />
     <Compile Include="Metrics\MetricProject.cs" />
     <Compile Include="Metrics\MetricSource.cs" />
+    <Compile Include="PartialUnitTest\MethodUnitTestCollection.cs" />
+    <Compile Include="PartialUnitTest\PartialUnitTestSetting.cs" />
+    <Compile Include="PartialUnitTest\PartialUnitTestTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

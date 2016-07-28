@@ -64,5 +64,9 @@
     "MaxNumberOfParameters": 5,
     "ExcludedSolutions": [ ],
     "ExcludedProjects": [ ]
+  },
+
+  "PartialUnitTest": {
+    "MaxLogCount": 55
   }
 }

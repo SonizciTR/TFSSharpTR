@@ -19,13 +19,26 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         {
             var tmp = this.FirstOrDefault(x => x.Doc.Id == doc.Id);
 
-            if(tmp == null)
+            if (tmp == null)
             {
                 tmp.Methods.AddRange(data);
             }
             else
             {
                 this.Add(new MethodUnitTestItem(doc, data));
+            }
+        }
+
+        public int MethodCount
+        {
+            get
+            {
+                int cnt = 0;
+                foreach (var item in this)
+                {
+                    cnt = item.Methods.Count;
+                }
+                return cnt;
             }
         }
     }

@@ -18,6 +18,10 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
+    /// <summary>
+    /// Find changed files. Then found members and check those member has used in test methods.
+    /// 
+    /// </summary>
     public class PartialUnitTestTask : BaseTask<PartialUnitTestSetting>
     {
         private int failCount = 0;
@@ -33,7 +37,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             var codesChanged = codes.Where(x => x.State == SourceControlFileState.Changed).ToList();
             var codesAdded = codes.Where(x => x.State == SourceControlFileState.Added).ToList();
             if (codesChanged.Count + codesAdded.Count < 1)
-                return new TaskStatu("No changes found to check for partial unit test");
+                return new TaskStatu("No code changes found to check for partial unit test");
 
             var tmpFile = codesChanged.Any() ? codesChanged[0] : codesAdded[0];
             Solution gSolution = GetSolutionInfo(tfsVariables, setting, tmpFile);
@@ -47,6 +51,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             if (tmpMethodsforAdded == null)
                 return new TaskStatu("PUT05", "No suitable project document found for added list");
 
+            int totalMethod = tmpMethodsforAdded.MethodCount + tmpMethodsforChanged.MethodCount;
+            WriteDetail(string.Format("{0} number of methods will be looked for unit test", totalMethod));
             bool isUnitTestOk = CheckforUnitTest(setting, gSolution, tmpMethodsforChanged, tmpMethodsforAdded);
 
             return isUnitTestOk ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT06", "Partial Unit Test  failed");

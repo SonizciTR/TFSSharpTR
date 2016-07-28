@@ -86,7 +86,6 @@
     <Compile Include="Common\TfsSharpTRExtension.cs" />
     <Compile Include="DiffEngine\BinaryFile.cs" />
     <Compile Include="DiffEngine\CharData.cs" />
-    <Compile Include="DiffEngine\Class1.cs" />
     <Compile Include="DiffEngine\Engine.cs" />
     <Compile Include="DiffEngine\Structures.cs" />
     <Compile Include="DiffEngine\TextFile.cs" />

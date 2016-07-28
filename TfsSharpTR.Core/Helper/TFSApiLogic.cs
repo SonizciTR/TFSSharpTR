@@ -20,6 +20,7 @@ namespace TfsSharpTR.Core.Helper
         private static TfsVariable SettingTFS = null;
         //https://{instance}/defaultcollection/_apis/git/repositories/{repository}/pullRequests/{pullRequest}?api-version={version}
         private const string urlFindCommitsFiles = "{0}/_apis/git/repositories/{1}/commits/{2}/changes";
+        private const string urlLatestFileVersion = "{0}/_apis/git/repositories/{1}/items/{2}";
 
         public TFSApiLogic(TfsVariable tfsVar) : base(tfsVar)
         {
@@ -69,6 +70,27 @@ namespace TfsSharpTR.Core.Helper
             }
 
             return filesChanged;
+        }
+
+        /// <summary>
+        /// Downloads the latest version of file from TFS-Git server
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        public string GitFileLatestVersion(string fullPath)
+        {
+            GitRepositoryService grs = new GitRepositoryService();
+            grs.Initialize(TeamColl);
+            
+            var gitRepo = grs.QueryRepositories(SettingTFS.TeamProjectName).FirstOrDefault(x => x.Name == SettingTFS.RepoName);
+            if (gitRepo == null)
+                throw new Exception("No repo found");
+
+            var tmpUrl = string.Format(urlLatestFileVersion, TeamColl.Uri, gitRepo.Id, fullPath);
+
+            var rawJson = HttpGet(tmpUrl);
+
+            return rawJson;
         }
     }
 }

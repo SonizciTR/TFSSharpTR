@@ -74,5 +74,17 @@ namespace TfsSharpTR.Core.Helper
 
             return logicClient.Value.TfsPendingChangeFiles();
         }
+
+        public static string GetFile(string filePath)
+        {
+            Check();
+            if ((initSetting.RepoProvider == "TfsGit") || (initSetting.RepoProvider == "Git"))
+            {
+                return logicApi.Value.GitFileLatestVersion(filePath);
+            }
+
+            return null;
+            //return logicClient.Value.TfsPendingChangeFiles();
+        }
     }
 }

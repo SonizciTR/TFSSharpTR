@@ -17,7 +17,6 @@ namespace TfsSharpTR.PreBuild
     /// </summary>
     public class TestTask : BaseTask<BaseBuildSetting>
     {
-        private string folderPath;
         private const int waitTimeMs = 5000;
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<BaseBuildSetting> usrVariables)

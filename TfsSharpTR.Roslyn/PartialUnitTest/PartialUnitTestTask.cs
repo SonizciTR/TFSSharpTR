@@ -47,7 +47,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             var tmpMethodsforChanged = GetChangeforChangedFiles(codesChanged, tfsVariables, gSolution);
             if (tmpMethodsforChanged == null)
                 return new TaskStatu("PUT04", "No suitable project document found for changed list");
-            var tmpMethodsforAdded = GetChangeforChangedAdded(codesChanged, tfsVariables, gSolution);
+            var tmpMethodsforAdded = GetChangeforChangedAdded(codesAdded, tfsVariables, gSolution);
             if (tmpMethodsforAdded == null)
                 return new TaskStatu("PUT05", "No suitable project document found for added list");
 

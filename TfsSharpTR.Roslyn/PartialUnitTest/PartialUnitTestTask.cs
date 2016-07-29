@@ -158,7 +158,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             {
                 foreach (var slnFullPath in slnFiles)
                 {
-                    string mainFolderName = Path.GetDirectoryName(slnPath);
+                    string mainFolderName = Path.GetDirectoryName(slnFullPath);
                     var mainFolder = new DirectoryInfo(mainFolderName);
                     var repoFolder = mainFolder.Parent.FullName;
                     string tmpFile = repoFolder + itmChanged.FilePath;

@@ -121,7 +121,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             foreach (var itmChanged in changedFiles)
             {
-                var webPath = itmChanged.FilePath.Replace("/", "\\");
+                var webPath = itmChanged.FilePath.Substring(1).Replace("/", "\\");
                 var serverVersion = TFSHelper.DownloadFile(webPath);
                 serverVersion = string.IsNullOrEmpty(serverVersion) ? serverVersion : serverVersion.Replace("\r\n", "\n"); 
                 var localVersionFullPath = Path.Combine(tfsVariables.BuildSourceDirectory, webPath);

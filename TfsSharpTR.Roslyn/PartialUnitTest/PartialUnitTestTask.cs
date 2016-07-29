@@ -275,8 +275,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             bool isTestMethod = HasAttibute(referenceMds.AttributeLists, "TestMethod");
                             if (isTestMethod)
                             {
-                                depo.Add(new UnitTestDetail(location.Document.FilePath, location.Document.Project.AssemblyName ));
-                                return depo;
+                                depo.Add(
+                                    new UnitTestDetail(location.Document.FilePath, 
+                                    location.Document.Project.AssemblyName )
+                                    );
                             }
                         }
                     }

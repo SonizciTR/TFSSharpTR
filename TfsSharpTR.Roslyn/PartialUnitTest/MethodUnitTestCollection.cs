@@ -21,11 +21,11 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             if (tmp == null)
             {
-                tmp.Methods.AddRange(data);
+                this.Add(new MethodUnitTestItem(doc, data));
             }
             else
             {
-                this.Add(new MethodUnitTestItem(doc, data));
+                tmp.Methods.AddRange(data);
             }
         }
 

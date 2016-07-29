@@ -123,6 +123,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             {
                 var webPath = itmChanged.FilePath.Replace("/", "\\");
                 var serverVersion = TFSHelper.DownloadFile(webPath);
+                serverVersion = string.IsNullOrEmpty(serverVersion) ? serverVersion : serverVersion.Replace("\r\n", "\n"); 
                 var localVersionFullPath = Path.Combine(tfsVariables.BuildSourceDirectory, webPath);
                 var report = GetFileChanges(serverVersion, localVersionFullPath);
                 Document doc = null;

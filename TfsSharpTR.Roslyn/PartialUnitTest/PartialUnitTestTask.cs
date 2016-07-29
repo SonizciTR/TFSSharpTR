@@ -234,18 +234,17 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private static MethodDeclarationSyntax GetMethodFromLine(SyntaxTree syntaxTree, int lineNumber)
         {
-            Microsoft.CodeAnalysis.Text.TextLine line = syntaxTree.GetText().Lines
-                .Where(l => l.LineNumber == lineNumber)
-                .FirstOrDefault();
+            var line = syntaxTree.GetText().Lines
+                .FirstOrDefault(l => l.LineNumber == lineNumber);
             int spnStart = line.Span.Start;
             int spnEnd = line.Span.End;
 
             var root = syntaxTree.GetRoot();
             var mds = root.DescendantNodes()
                         .OfType<MethodDeclarationSyntax>()
-                        .Where(md => md.Modifiers.Any(SyntaxKind.PublicKeyword))
-                        .Where(md => md.FullSpan.Start <= spnStart && spnEnd <= md.FullSpan.End)
-                        .FirstOrDefault();
+                        .FirstOrDefault(md => md.Modifiers.Any(SyntaxKind.PublicKeyword) 
+                                                && md.FullSpan.Start <= spnStart 
+                                                && spnEnd <= md.FullSpan.End);
 
             return mds;
 
@@ -253,7 +252,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private static List<UnitTestDetail> FindUnitTestReferences(Solution solution, IMethodSymbol method)
         {
-            IEnumerable<ReferencedSymbol> methodReferences = SymbolFinder.FindReferencesAsync(method, solution).Result;
+            var methodReferences = SymbolFinder.FindReferencesAsync(method, solution).Result.ToList();
 
             if (!methodReferences.Any())
                 return null;
@@ -284,7 +283,6 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
                 }
             } 
-            
 
             return depo;
         }

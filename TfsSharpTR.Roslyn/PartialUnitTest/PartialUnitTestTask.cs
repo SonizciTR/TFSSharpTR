@@ -151,18 +151,30 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             string[] slnFiles = isSolutionSelected ? new string[] { tfsVariables.SolutiontoBuild }
             : SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory);
-
-            foreach (var slnFullPath in slnFiles)
+            string slnPath = null;
+            if (isSolutionSelected)
+                slnPath = tfsVariables.SolutiontoBuild;
+            else
             {
-                string slnPath = Directory.GetFiles(slnFullPath, tfsVariables.SolutiontoBuild, SearchOption.AllDirectories).FirstOrDefault();
-                if (slnPath == null)
-                    continue;
+                foreach (var slnFullPath in slnFiles)
+                {
+                    string mainFolderName = Path.GetDirectoryName(slnPath);
+                    var mainFolder = new DirectoryInfo(mainFolderName);
+                    var repoFolder = mainFolder.Parent.FullName;
+                    string tmpFile = repoFolder + itmChanged.FilePath;
+                    if(File.Exists(tmpFile))
+                    {
+                        slnPath = slnFullPath;
+                        break;
+                    }
+                }
 
-                MSBuildWorkspace workSpace = MSBuildWorkspace.Create();
-                var solution = workSpace.OpenSolutionAsync(slnPath).Result;
-                return solution;
+                if (string.IsNullOrEmpty(slnPath))
+                    return null;
             }
-            return null;
+            MSBuildWorkspace workSpace = MSBuildWorkspace.Create();
+            var solution = workSpace.OpenSolutionAsync(slnPath).Result;
+            return solution;
         }
 
         private static ArrayList GetFileChanges(string source, string destinationPath)

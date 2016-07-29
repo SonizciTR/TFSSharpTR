@@ -67,8 +67,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     foreach (var itmMethod in itmDoc.Methods)
                     {
                         IMethodSymbol method = itmDoc.Doc.GetSemanticModelAsync().Result.GetDeclaredSymbol(itmMethod);
-                        bool unitTestExist = FindUnitTestReferences(solution, method);
-                        if (!unitTestExist)
+                        var unitTest = FindUnitTestReferences(solution, method);
+                        if ((unitTest == null) || !unitTest.Any())
                         {
                             WriteDetail(string.Format("[{0}] method test is not found!!!", method.Name));
                             ++failCount;
@@ -251,35 +251,42 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         }
 
-        private static bool FindUnitTestReferences(Solution solution, IMethodSymbol method)
+        private static List<UnitTestDetail> FindUnitTestReferences(Solution solution, IMethodSymbol method)
         {
             IEnumerable<ReferencedSymbol> methodReferences = SymbolFinder.FindReferencesAsync(method, solution).Result;
 
-            //no reference
-            if (methodReferences.Count().Equals(0))
-                return false;
+            if (!methodReferences.Any())
+                return null;
 
-            ReferencedSymbol methodReference = methodReferences.Single();
-            IEnumerable<ReferenceLocation> locations = methodReference.Locations;
-            foreach (ReferenceLocation location in locations)
+            var depo = new List<UnitTestDetail>();
+
+            foreach (ReferencedSymbol methodReference in methodReferences)
             {
-                MethodDeclarationSyntax referenceMds = GetMethodFromLine(location.Document.GetSemanticModelAsync().Result.SyntaxTree, location.Location.GetMappedLineSpan().StartLinePosition.Line);
-
-                if (referenceMds != null)
+                IEnumerable<ReferenceLocation> locations = methodReference.Locations;
+                foreach (ReferenceLocation location in locations)
                 {
-                    ClassDeclarationSyntax referenceCds = referenceMds.Parent as ClassDeclarationSyntax;
-                    bool isTestClass = HasAttibute(referenceCds.AttributeLists, "TestClass");
-                    if (isTestClass)
+                    MethodDeclarationSyntax referenceMds = GetMethodFromLine(location.Document.GetSemanticModelAsync().Result.SyntaxTree, location.Location.GetMappedLineSpan().StartLinePosition.Line);
+
+                    if (referenceMds != null)
                     {
-                        bool isTestMethod = HasAttibute(referenceMds.AttributeLists, "TestMethod");
-                        if (isTestMethod)
-                            return true;
+                        ClassDeclarationSyntax referenceCds = referenceMds.Parent as ClassDeclarationSyntax;
+                        bool isTestClass = HasAttibute(referenceCds.AttributeLists, "TestClass");
+                        if (isTestClass)
+                        {
+                            bool isTestMethod = HasAttibute(referenceMds.AttributeLists, "TestMethod");
+                            if (isTestMethod)
+                            {
+                                depo.Add(new UnitTestDetail(location.Document.FilePath, location.Document.Project.AssemblyName ));
+                                return depo;
+                            }
+                        }
                     }
+
                 }
+            } 
+            
 
-            }
-
-            return false;
+            return depo;
         }
 
         private static bool HasAttibute(SyntaxList<AttributeListSyntax> attributeLists, string attibuteName)

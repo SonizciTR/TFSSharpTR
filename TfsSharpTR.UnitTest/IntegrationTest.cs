@@ -13,6 +13,7 @@ using TfsSharpTR.StyleCopRelated;
 using TfsSharpTR.AutoDeploy;
 using TfsSharpTR.Roslyn.Enforcer;
 using TfsSharpTR.Roslyn.Metrics;
+using TfsSharpTR.Roslyn.PartialUnitTest;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -181,6 +182,16 @@ namespace TfsSharpTR.UnitTest
         public void CodeMetricTask()
         {
             var tsk = new CodeMetricTask();
+            var rslt = RunTask(tsk.Initializer);
+
+            var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
+            Assert.IsTrue(rslt.IsSuccess, rMsg);
+        }
+
+        [TestMethod]
+        public void PartialUnitTestTask()
+        {
+            var tsk = new PartialUnitTestTask();
             var rslt = RunTask(tsk.Initializer);
 
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";

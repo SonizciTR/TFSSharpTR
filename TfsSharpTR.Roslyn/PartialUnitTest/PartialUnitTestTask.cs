@@ -210,7 +210,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             int sourceIndex = 0;
             int destIndex = 0;
             int changeLength = 0;
-            int changedLine = 0;
+            int changedLineStart = 0;
+            int changedLineEnd = 0;
 
             foreach (DiffResultSpan change in changes)
             {
@@ -218,13 +219,14 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 sourceIndex = change.SourceIndex + 1;
                 destIndex = change.DestIndex + 1;
                 changeLength = change.Length;
-                changedLine = changeType.Equals(DiffResultSpanStatus.DeleteSource) ? sourceIndex : destIndex;
+                changedLineStart = changeType.Equals(DiffResultSpanStatus.DeleteSource) ? sourceIndex : destIndex;
+                changedLineEnd = changedLineStart + changeLength - 1;
 
-                var mds = GetMethodFromLine(syntaxTree, changedLine);
+                var mds = GetMethodBetweenLines(syntaxTree, changedLineStart, changedLineEnd);
 
                 if (mds != null)
                 {
-                    mdsList.Add(mds);
+                    mdsList.AddRange(mds);
                 }
             }
 
@@ -247,6 +249,28 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                                                 && spnEnd <= md.FullSpan.End);
 
             return mds;
+
+        }
+
+        private static List<MethodDeclarationSyntax> GetMethodBetweenLines(SyntaxTree syntaxTree, int lineNumberStart, int lineNumberEnd)
+        {
+            var lineStart = syntaxTree.GetText().Lines
+                .FirstOrDefault(l => l.LineNumber == lineNumberStart);
+
+            var lineEnd = syntaxTree.GetText().Lines
+               .FirstOrDefault(l => l.LineNumber == lineNumberEnd);
+
+            int spnStart = lineEnd.Span.Start;
+            int spnEnd = lineStart.Span.End;
+
+            var root = syntaxTree.GetRoot();
+            var mds = root.DescendantNodes()
+                        .OfType<MethodDeclarationSyntax>()
+                        .Where(md => md.Modifiers.Any(SyntaxKind.PublicKeyword)
+                                                && md.FullSpan.Start <= spnStart
+                                                && spnEnd <= md.FullSpan.End);
+
+            return mds.ToList();
 
         }
 
@@ -277,7 +301,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             {
                                 depo.Add(
                                     new UnitTestDetail(location.Document.FilePath, 
-                                    location.Document.Project.AssemblyName )
+                                    location.Document.Project.AssemblyName)
                                     );
                             }
                         }

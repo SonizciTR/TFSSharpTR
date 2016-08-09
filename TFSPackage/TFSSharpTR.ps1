@@ -31,7 +31,10 @@ try {
                return
             }
             
-            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") -OR $_.Name.StartsWith("Microsoft.VisualStudio") -OR $_.Name.StartsWith("mssp7en") -OR $_.Name.StartsWith("Microsoft.CodeAnalysis.Analyzers") -OR $_.Name.StartsWith("Microsoft.CodeAnalysis.CSharp.Analyzers"))
+            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") 
+				-OR $_.Name.StartsWith("Microsoft.VisualStudio") -OR $_.Name.StartsWith("mssp7en") 
+				-OR $_.Name.StartsWith("Microsoft.CodeAnalysis.Analyzers") 
+				-OR $_.Name.StartsWith("Microsoft.CodeAnalysis.CSharp.Analyzers") -OR $_.Name.StartsWith("dbghelp"))
             {
                return
             }

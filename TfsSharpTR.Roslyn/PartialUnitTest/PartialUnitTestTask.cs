@@ -58,7 +58,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             WriteDetail(string.Format("{0} number of methods will be looked for unit test", totalMethod));
             var unitTesttoCheck = CheckforUnitTest(setting, gSolution, tmpMethodsforChanged, tmpMethodsforAdded);
             if (unitTesttoCheck == null)
-                return new TaskStatu("PUT06", "Partial Unit Test  failed");
+                return new TaskStatu("PUT06", "No unit test found for partial check");
 
             bool isAllSucc = RunUnitTests(tfsVariables, setting, unitTesttoCheck, usrVariables.WorkingPath);
 
@@ -81,8 +81,9 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
                 string tstMethodLine = sb.ToString().TrimEnd(',');
                 string settFile = Path.Combine(workingPath, setting.RunSettingFile);
+                WriteDetail($"Unit Test Setting file found : {File.Exists(settFile)}. Path = [{settFile}]");
                 string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
-                var runResult = RunAndExit(prms);
+                var runResult = RunMsUnitTestExe(prms);
 
                 if (!runResult)
                 {
@@ -142,7 +143,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             return false;
         }
 
-        private bool RunAndExit(string parameters)
+        private bool RunMsUnitTestExe(string parameters)
         {
             var exePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
                           @"\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
@@ -176,7 +177,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     sb.AppendLine(tmp);
                 }
                 var line = sb.ToString();
-
+                WriteDetail("Exe Output : \n" + line);
                 return proc.ExitCode == 0;
             }
             catch (Exception ex)

@@ -16,6 +16,7 @@ using TfsSharpTR.Core.Model;
 using TfsSharpTR.Core.Common;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Coverage.Analysis;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
@@ -59,12 +60,12 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             if (unitTesttoCheck == null)
                 return new TaskStatu("PUT06", "Partial Unit Test  failed");
 
-            bool isAllSucc = RunUnitTests(setting, unitTesttoCheck);
+            bool isAllSucc = RunUnitTests(tfsVariables, setting, unitTesttoCheck);
 
             return isAllSucc ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT06", "Partial Unit Test  failed");
         }
 
-        private bool RunUnitTests(PartialUnitTestSetting setting, List<UnitTestDetail> unitTesttoCheck)
+        private bool RunUnitTests(TfsVariable tfsVariables, PartialUnitTestSetting setting, List<UnitTestDetail> unitTesttoCheck)
         {
             Stopwatch watch = Stopwatch.StartNew();
             string cmdRaw = string.IsNullOrEmpty(setting.RunSettingFile) ? cmdParams : cmdParams + " /Settings:{2}";
@@ -88,9 +89,56 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     return false;
                 }
             }
+            bool isCoverageOk = DisplayCoverage(tfsVariables, setting);
 
             WriteDetail("All test methods runned", watch);
-            return true;
+            return isCoverageOk;
+        }
+
+        private bool DisplayCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
+        {
+            string targetPath = tfsVariables.BuildDirectory;
+            var coverageFiles = Directory.GetFiles(targetPath, "*.coverage");
+            if (!coverageFiles.Any())
+            {
+                WriteDetail("No coverage file found!");
+                return false;
+            }
+
+            try
+            {
+                foreach (var file in coverageFiles)
+                {
+                    using (var info = CoverageInfo.CreateFromFile(file))
+                    {
+                        foreach (var module in info.Modules)
+                        {
+                            byte[] coverageBuffer = module.GetCoverageBuffer(null);
+                            using (var reader = module.Symbols.CreateReader())
+                            {
+                                uint methodId;
+                                string mthdName, undecoratedMthd, className, namespaceName;
+
+                                var lines = new List<BlockLineRange>();
+
+                                while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
+                                {
+                                    var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
+                                    string tmpUnitName = namespaceName + "." + className + "." + mthdName;
+
+                                    string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered"; 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                WriteDetail($"Coverage calculation failed : {ex}");
+            }
+
+            return false;
         }
 
         private bool RunAndExit(string parameters)

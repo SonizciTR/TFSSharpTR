@@ -55,6 +55,9 @@
     <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop">
       <HintPath>..\DLLs\Roslyn\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Coverage.Analysis">
+      <HintPath>..\DLLs\Coverage\Microsoft.VisualStudio.Coverage.Analysis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable">
       <SpecificVersion>False</SpecificVersion>

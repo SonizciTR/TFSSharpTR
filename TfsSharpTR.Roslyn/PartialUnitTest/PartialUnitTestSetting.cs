@@ -26,5 +26,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         /// Run Settings File for unit test. Optional.
         /// </summary>
         public string RunSettingFile { get; set; }
+
+        /// <summary>
+        /// Acceptable minimum code coverage percantage
+        /// </summary>
+        public int MinCoveragePerc { get; set; }
     }
 }

@@ -67,6 +67,7 @@
   },
 
   "PartialUnitTest": {
-    "MaxLogCount": 55
+    "MaxLogCount": 55,
+    "RunSettingFile": ""
   }
 }

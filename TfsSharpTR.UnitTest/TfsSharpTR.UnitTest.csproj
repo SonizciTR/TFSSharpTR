@@ -65,6 +65,9 @@
       <HintPath>..\DLLs\Roslyn\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.Coverage.Analysis">
+      <HintPath>..\DLLs\Coverage\Microsoft.VisualStudio.Coverage.Analysis.dll</HintPath>
+    </Reference>
     <Reference Include="StyleCop, Version=4.7.1000.0, Culture=neutral, PublicKeyToken=f904653c63bc2738, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DLLs\StyleCop\StyleCop.dll</HintPath>
@@ -158,6 +161,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\DLLs\Coverage\dbghelp.dll">
+      <Link>dbghelp.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DLLs\Coverage\Microsoft.VisualStudio.Coverage.Symbols.dll">
+      <Link>Microsoft.VisualStudio.Coverage.Symbols.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\DLLs\StyleCop\mssp7en.dll">
       <Link>mssp7en.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

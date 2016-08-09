@@ -15,6 +15,7 @@ using TfsSharpTR.Core.Helper;
 using TfsSharpTR.Core.Model;
 using TfsSharpTR.Core.Common;
 using Microsoft.CodeAnalysis.MSBuild;
+using System.Diagnostics;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
@@ -25,6 +26,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
     public class PartialUnitTestTask : BaseTask<PartialUnitTestSetting>
     {
         private int failCount = 0;
+        const string cmdParams = @"{0} /Tests:{1} /logger:trx /Enablecodecoverage";
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<PartialUnitTestSetting> usrVariables)
         {
@@ -53,13 +55,92 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             int totalMethod = tmpMethodsforAdded.MethodCount + tmpMethodsforChanged.MethodCount;
             WriteDetail(string.Format("{0} number of methods will be looked for unit test", totalMethod));
-            bool isUnitTestOk = CheckforUnitTest(setting, gSolution, tmpMethodsforChanged, tmpMethodsforAdded);
+            var unitTesttoCheck = CheckforUnitTest(setting, gSolution, tmpMethodsforChanged, tmpMethodsforAdded);
+            if (unitTesttoCheck == null)
+                return new TaskStatu("PUT06", "Partial Unit Test  failed");
 
-            return isUnitTestOk ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT06", "Partial Unit Test  failed");
+            bool isAllSucc = RunUnitTests(setting, unitTesttoCheck);
+
+            return isAllSucc ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT06", "Partial Unit Test  failed");
         }
 
-        private bool CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, params MethodUnitTestCollection[] bags)
+        private bool RunUnitTests(PartialUnitTestSetting setting, List<UnitTestDetail> unitTesttoCheck)
         {
+            Stopwatch watch = Stopwatch.StartNew();
+            string cmdRaw = string.IsNullOrEmpty(setting.RunSettingFile) ? cmdParams : cmdParams + " /Settings:{2}";
+            var groupedUnitTest = unitTesttoCheck.GroupBy(x => x.AssemblyPath);
+
+            foreach (var itmGrp in groupedUnitTest)
+            {
+                var sb = new StringBuilder();
+                foreach (var itmUnitTest in itmGrp)
+                {
+                    sb.Append(itmUnitTest.MethodName + ",");
+                }
+
+                string tstMethodLine = sb.ToString().TrimEnd(',');
+                string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, setting.RunSettingFile);
+                var runResult = RunAndExit(prms);
+
+                if (!runResult)
+                {
+                    WriteDetail($"One or more of these test method(s) is/are failed: [{tstMethodLine}]");
+                    return false;
+                }
+            }
+
+            WriteDetail("All test methods runned", watch);
+            return true;
+        }
+
+        private bool RunAndExit(string parameters)
+        {
+            var exePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
+                          @"\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
+            if (!File.Exists(exePath))
+            {
+                WriteDetail("Unit test run exe could not found : " + exePath);
+                return false;
+            }
+
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = exePath,
+                Arguments = parameters,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                var proc = new Process
+                {
+                    StartInfo = processInfo
+                };
+                bool isStarted = proc.Start();
+                var sb = new StringBuilder();
+                while (!proc.StandardOutput.EndOfStream)
+                {
+                    var tmp = proc.StandardOutput.ReadLine();
+                    sb.AppendLine(tmp);
+                }
+                var line = sb.ToString();
+
+                return proc.ExitCode == 0;
+            }
+            catch (Exception ex)
+            {
+                WriteDetail($"Unit test exe run failed : {ex.ToString()}");
+            }
+
+            return false;
+        }
+
+        private List<UnitTestDetail> CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, params MethodUnitTestCollection[] bags)
+        {
+            List<UnitTestDetail> lst = new List<UnitTestDetail>();
             foreach (var queuDepo in bags)
             {
                 foreach (var itmDoc in queuDepo)
@@ -73,14 +154,18 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             WriteDetail(string.Format("[{0}] method test is not found!!!", method.Name));
                             ++failCount;
                             if (failCount > setting.MaxLogCount)
-                                return false;
+                                return null;
+                        }
+                        else
+                        {
+                            lst.AddRange(unitTest);
                         }
                     }
                     WriteDetail(string.Format("[{0}] project's all test are found", itmDoc.Doc.Project.Name));
                 }
             }
 
-            return failCount == 0;
+            return failCount == 0 ? lst : null;
         }
 
         private MethodUnitTestCollection GetChangeforChangedAdded(List<TFSFileState> codesAdded, TfsVariable tfsVariables, Solution solution)
@@ -300,8 +385,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             if (isTestMethod)
                             {
                                 depo.Add(
-                                    new UnitTestDetail(location.Document.FilePath, 
-                                    location.Document.Project.AssemblyName)
+                                    new UnitTestDetail(referenceMds.Identifier.Text, 
+                                    location.Document.Project.OutputFilePath)
                                     );
                             }
                         }

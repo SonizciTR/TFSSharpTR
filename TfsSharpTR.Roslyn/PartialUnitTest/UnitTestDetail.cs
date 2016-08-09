@@ -8,17 +8,17 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
     public class UnitTestDetail
     {
-        public string FilePath { get; set; }
-        public string AssemblyName { get; set; }
+        public string MethodName { get; set; }
+        public string AssemblyPath { get; set; }
 
         public UnitTestDetail()
         {
         }
 
-        public UnitTestDetail(string file, string assemblyName)
+        public UnitTestDetail(string mthdName, string assmblyPath)
         {
-            FilePath = file;
-            AssemblyName = assemblyName;
+            MethodName = mthdName;
+            AssemblyPath = assmblyPath;
         }
     }
 }

@@ -21,5 +21,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         /// Max number of log line will be written to screen
         /// </summary>
         public int MaxLogCount { get; set; } = 50;
+
+        /// <summary>
+        /// Run Settings File for unit test. Optional.
+        /// </summary>
+        public string RunSettingFile { get; set; }
     }
 }

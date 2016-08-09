@@ -60,12 +60,12 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             if (unitTesttoCheck == null)
                 return new TaskStatu("PUT06", "Partial Unit Test  failed");
 
-            bool isAllSucc = RunUnitTests(tfsVariables, setting, unitTesttoCheck);
+            bool isAllSucc = RunUnitTests(tfsVariables, setting, unitTesttoCheck, usrVariables.WorkingPath);
 
-            return isAllSucc ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT06", "Partial Unit Test  failed");
+            return isAllSucc ? new TaskStatu("Partial Unit Test check successful") : new TaskStatu("PUT07", "Partial Unit Test  failed");
         }
 
-        private bool RunUnitTests(TfsVariable tfsVariables, PartialUnitTestSetting setting, List<UnitTestDetail> unitTesttoCheck)
+        private bool RunUnitTests(TfsVariable tfsVariables, PartialUnitTestSetting setting, List<UnitTestDetail> unitTesttoCheck, string workingPath)
         {
             Stopwatch watch = Stopwatch.StartNew();
             string cmdRaw = string.IsNullOrEmpty(setting.RunSettingFile) ? cmdParams : cmdParams + " /Settings:{2}";
@@ -80,7 +80,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
 
                 string tstMethodLine = sb.ToString().TrimEnd(',');
-                string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, setting.RunSettingFile);
+                string settFile = Path.Combine(workingPath, setting.RunSettingFile);
+                string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
                 var runResult = RunAndExit(prms);
 
                 if (!runResult)

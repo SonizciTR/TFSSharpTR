@@ -26,6 +26,8 @@ namespace TfsSharpTR.Core
 
                 var dlls = GetDllList(settUsr.WorkingPath);
                 var allTasks = GetAllTasks(dlls, settUsr);
+                allTasks = ReOrder(settUsr, allTasks);
+
                 return allTasks;
             }
             catch(Exception ex)
@@ -33,6 +35,19 @@ namespace TfsSharpTR.Core
                 Logger.Write(ex);
                 throw;
             }
+        }
+
+        private static TaskList ReOrder(UserVariable<BaseBuildSetting> settUsr, TaskList allTasks)
+        {
+            var orderOrigin = settUsr.ActionName == "PreBuild" ? settUsr.SettingFileData.PreBuildTasks : settUsr.SettingFileData.PostBuildTasks;
+            var orderedTaskList = new TaskList();
+            for (int i = 0; i < orderOrigin.Count; i++)
+            {
+                var tmp = allTasks.FirstOrDefault(x => x.ClassName.EndsWith("." + orderOrigin[i]));
+                if (tmp != null)
+                    orderedTaskList.Add(tmp);
+            }
+            return orderedTaskList;
         }
 
         private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<BaseBuildSetting> setting)

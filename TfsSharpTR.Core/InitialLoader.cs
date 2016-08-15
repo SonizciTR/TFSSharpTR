@@ -61,11 +61,11 @@ namespace TfsSharpTR.Core
                     bool isExist = false;
                     if (setting.ActionName == "PreBuild")
                     {
-                        isExist = tmpSetting.PreBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
+                        isExist = tmpSetting.PreBuildTasks.Any(x => tmpTsk.ClassName.EndsWith("." + x));
                     }
                     else if (setting.ActionName == "PostBuild")
                     {
-                        isExist = tmpSetting.PostBuildTasks.Any(x => tmpTsk.ClassName.EndsWith(x));
+                        isExist = tmpSetting.PostBuildTasks.Any(x => tmpTsk.ClassName.EndsWith("." + x));
                     }
                     
                     if(isExist)

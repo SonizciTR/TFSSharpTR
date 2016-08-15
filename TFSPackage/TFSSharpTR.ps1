@@ -97,14 +97,13 @@ try {
     Add-Type -Path "TfsSharpTR.Core.dll"
     Write-Host "Getting list of tasks."
     $taskList = [TfsSharpTR.Core.InitialLoader]::Get($tfsVariables, $userVariables)
-    Write-Host "All tasks gathered."
+    Write-Host "All tasks gathered. Count : " $taskList.Count
 
-    Write-Host $taskList.Count
     foreach($task in $taskList){
        $dllName = $task.DLLName.Trim()
        $className = $task.ClassName.Trim()
        $methodName = $task.MethodName.Trim()      
-       Write-Host "dllName: "$dllName - " className: " $className - " methodName: " $methodName " is starting."
+       Write-Host "Triggering : " $dllName - " - " $className
  
        Add-Type -Path $dllName
        $taskObj = New-Object -TypeName $className

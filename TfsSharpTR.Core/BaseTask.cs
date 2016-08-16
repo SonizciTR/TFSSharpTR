@@ -91,19 +91,33 @@ namespace TfsSharpTR.Core
         public bool WriteDetail(string message, Stopwatch watch = null)
         {
             string msg = string.Empty;
+            string tmpMsg = ReFormatMessage(message);
             if (watch != null)
             {
                 watch.Stop();
-                msg = string.Format(" - {0} => {1}. Total Time (ms) : {2}", DateTime.Now, message, watch.Elapsed.TotalMilliseconds);
+                msg = string.Format(" - {0} => {1} Total Time (ms) : {2}", DateTime.Now, tmpMsg, watch.Elapsed.TotalMilliseconds);
             }
             else
             {
-                msg = string.Format(" - {0} => {1}.", DateTime.Now, message);
+                msg = string.Format(" - {0} => {1}", DateTime.Now, tmpMsg);
             }
 
             intrDetailContainer.Add(msg);
 
             return true;
+        }
+
+        private static readonly string[] lineEndings = new[] { ".", "!", "..." };
+
+        private static string ReFormatMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return "";
+            string lastChar = message[message.Length - 1].ToString();
+            if (lineEndings.Any(x => x == lastChar))
+                return message;
+
+            return message + ".";
         }
     }
 }

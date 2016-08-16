@@ -100,7 +100,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         private bool DisplayCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
         {
             string targetPath = Directory.GetParent(tfsVariables.BuildDirectory).FullName;
-            var coverageFiles = Directory.GetFiles(targetPath, "*.coverage");
+            var coverageFiles = Directory.GetFiles(targetPath, "*.coverage", SearchOption.AllDirectories);
             if (!coverageFiles.Any())
             {
                 WriteDetail("No coverage file found!");

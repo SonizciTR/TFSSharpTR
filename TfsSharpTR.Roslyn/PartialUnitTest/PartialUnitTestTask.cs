@@ -99,7 +99,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private bool DisplayCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
         {
-            string targetPath = tfsVariables.BuildDirectory;
+            string targetPath = Directory.GetParent(tfsVariables.BuildDirectory).FullName;
             var coverageFiles = Directory.GetFiles(targetPath, "*.coverage");
             if (!coverageFiles.Any())
             {
@@ -128,12 +128,15 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                                     var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
                                     string tmpUnitName = namespaceName + "." + className + "." + mthdName;
 
-                                    string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered"; 
+                                    string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
+                                    WriteDetail(mLine);
                                 }
                             }
                         }
                     }
                 }
+
+                return true;
             }
             catch(Exception ex)
             {

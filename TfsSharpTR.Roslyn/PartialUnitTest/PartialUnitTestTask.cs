@@ -91,7 +91,9 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     return false;
                 }
             }
-            bool isCoverageOk = DisplayCoverage(tfsVariables, setting);
+            bool isCoverageOk = true;
+            if(groupedUnitTest.Any())
+                isCoverageOk = DisplayCoverage(tfsVariables, setting);
 
             WriteDetail("All test methods runned", watch);
             return isCoverageOk;

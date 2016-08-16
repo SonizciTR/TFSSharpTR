@@ -7,6 +7,14 @@ param
 )
  
 try {
+
+	if($env:Process_Architecture -ne "x86")
+	{
+		Write-Warning 'Launching x86 Powershell'
+		&"$env:windir\syswow64\windowspowershell\v1.0\powershell.exe" -noninteractive -noprofile -executionpolicy bypass -file $myinvocation.MyCommand.path -sharpTRLibraryFolder $sharpTRLibraryFolder -settingFile $settingFile -action $action
+		exit
+	}
+
 	$ErrorActionPreference = "Stop"
     $destDir = "$env:AGENT_BUILDDIRECTORY\TFSSharpTR"
     

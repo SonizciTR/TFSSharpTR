@@ -71,6 +71,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             string cmdRaw = string.IsNullOrEmpty(setting.RunSettingFile) ? cmdParams : cmdParams + " /Settings:{2}";
             var groupedUnitTest = unitTesttoCheck.GroupBy(x => x.AssemblyPath);
             bool isSucc = false;
+            var cmdResults = new List<VstestConsoleParser>();
             foreach (var itmGrp in groupedUnitTest)
             {
                 var sb = new StringBuilder();
@@ -85,6 +86,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
 
                 var runResult = RunMsUnitTestExe(prms);
+                cmdResults.Add(runResult);
 
                 DisplayResult(runResult, itmGrp.Key, tstMethodLine);
                 isSucc = runResult.IsAllSucceeded;
@@ -92,8 +94,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 if (!isSucc)
                     break;
             }
-            if(isSucc && unitTesttoCheck.Any())
-                isSucc &= CalculateCoverage(tfsVariables, setting);
+            if(isSucc && cmdResults.Any())
+                isSucc &= CalculateCoverage(tfsVariables, setting, cmdResults);
 
             WriteDetail("All test methods runned", watch);
             return isSucc;
@@ -111,15 +113,9 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             WriteDetail(lastMsg);
         }
 
-        private bool CalculateCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
+        private bool CalculateCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting, List<VstestConsoleParser> cmdResults)
         {
-            string targetPath = Directory.GetParent(tfsVariables.BuildDirectory).FullName;
-            var coverageFiles = Directory.GetFiles(targetPath, "*.coverage", SearchOption.AllDirectories);
-            if (!coverageFiles.Any())
-            {
-                WriteDetail("No coverage file found!");
-                return false;
-            }
+            var coverageFiles = cmdResults.Select(x => x.CoverageFilePath).ToList();
 
             try
             {

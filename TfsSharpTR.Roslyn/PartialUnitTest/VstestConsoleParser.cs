@@ -56,8 +56,11 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
                 if (isMethodResultArea)
                 {
-                    var tmp = new VstestMethodResult(prsdtoLines[i]);
-                    Result.Add(tmp);
+                    if (!prsdtoLines[i].StartsWith("Warning:"))
+                    {
+                        var tmp = new VstestMethodResult(prsdtoLines[i]);
+                        Result.Add(tmp);
+                    }
                 }
             }
         }

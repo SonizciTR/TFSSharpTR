@@ -27,19 +27,19 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             if (string.IsNullOrEmpty(data))
                 throw new Exception("vstest output can not be null.");
 
-            var plstNewLine = data.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-            if (plstNewLine.Length < 9)
+            var prsdtoLines = data.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            if (prsdtoLines.Length < 9)
                 throw new Exception("Not enough line to process vstest output.");
 
             bool isProcessArea = false;
-            for (int i = 0; i < plstNewLine.Length; i++)
+            for (int i = 0; i < prsdtoLines.Length; i++)
             {
-                if (plstNewLine[i].StartsWith(CnstUnitTestStartLine))
+                if (prsdtoLines[i].StartsWith(CnstUnitTestStartLine))
                 {
                     isProcessArea = true;
                     continue;
                 }
-                else if (plstNewLine[i].StartsWith(CnstUnitTestEndLine))
+                else if (prsdtoLines[i].StartsWith(CnstUnitTestEndLine))
                 {
                     isProcessArea = false;
                     break;
@@ -47,7 +47,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
                 if (isProcessArea)
                 {
-                    var tmp = new VstestMethodResult(plstNewLine[i]);
+                    var tmp = new VstestMethodResult(prsdtoLines[i]);
                     Result.Add(tmp);
                 }
             }

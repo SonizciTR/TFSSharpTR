@@ -111,33 +111,44 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             try
             {
+                CoverageInfo mergedCoverageInfo = null;
                 foreach (var file in coverageFiles)
                 {
                     WriteDetail($"[{file}] is going to be processed.");
-                    using (var info = CoverageInfo.CreateFromFile(file))
+                    if (mergedCoverageInfo == null)
+                        mergedCoverageInfo = CoverageInfo.CreateFromFile(file);
+                    else
                     {
-                        foreach (var module in info.Modules)
+                        var tmp = CoverageInfo.CreateFromFile(file);
+                        mergedCoverageInfo = CoverageInfo.Join(mergedCoverageInfo, tmp);
+
+                    }
+                }
+
+                if (mergedCoverageInfo != null)
+                {
+                    foreach (var module in mergedCoverageInfo.Modules)
+                    {
+                        byte[] coverageBuffer = module.GetCoverageBuffer(null);
+                        using (var reader = module.Symbols.CreateReader())
                         {
-                            byte[] coverageBuffer = module.GetCoverageBuffer(null);
-                            using (var reader = module.Symbols.CreateReader())
+                            uint methodId;
+                            string mthdName, undecoratedMthd, className, namespaceName;
+
+                            var lines = new List<BlockLineRange>();
+
+                            while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
                             {
-                                uint methodId;
-                                string mthdName, undecoratedMthd, className, namespaceName;
+                                var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
+                                string tmpUnitName = namespaceName + "." + className + "." + mthdName;
 
-                                var lines = new List<BlockLineRange>();
-
-                                while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
-                                {
-                                    var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
-                                    string tmpUnitName = namespaceName + "." + className + "." + mthdName;
-
-                                    //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
-                                    string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
-                                    WriteDetail(mLine);
-                                }
+                                //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
+                                string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
+                                WriteDetail(mLine);
                             }
                         }
                     }
+                    mergedCoverageInfo.Dispose();
                 }
 
                 return true;

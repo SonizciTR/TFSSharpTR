@@ -70,7 +70,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             Stopwatch watch = Stopwatch.StartNew();
             string cmdRaw = string.IsNullOrEmpty(setting.RunSettingFile) ? cmdParams : cmdParams + " /Settings:{2}";
             var groupedUnitTest = unitTesttoCheck.GroupBy(x => x.AssemblyPath);
-
+            bool isSucc = false;
             foreach (var itmGrp in groupedUnitTest)
             {
                 var sb = new StringBuilder();
@@ -84,22 +84,33 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 WriteDetail($"Unit Test Setting file found : {File.Exists(settFile)}. Path = [{settFile}]");
                 string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
                 var runResult = RunMsUnitTestExe(prms);
-
-                if (!runResult)
+                DisplayResult(runResult, itmGrp.Key, tstMethodLine);
+                if (!runResult.IsAllSucceeded)
                 {
-                    WriteDetail($"One or more of these test method(s) is/are failed: [{tstMethodLine}]");
-                    return false;
+                    isSucc = false;
+                    break;
                 }
             }
-            bool isCoverageOk = true;
-            if(groupedUnitTest.Any())
-                isCoverageOk = DisplayCoverage(tfsVariables, setting);
+            if(isSucc && groupedUnitTest.Any())
+                isSucc &= CalculateCoverage(tfsVariables, setting);
 
             WriteDetail("All test methods runned", watch);
-            return isCoverageOk;
+            return isSucc;
         }
 
-        private bool DisplayCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
+        private void DisplayResult(VstestConsoleParser runResult, string assemblyName, string unitTestMethodNames)
+        {
+            WriteDetail($"These results are for [{assemblyName}] assembly's [{unitTestMethodNames}] methods : ");
+
+            foreach (var item in runResult.Result)
+            {
+                WriteDetail(item.MethodName + " => run is " + item.Message);
+            }
+            string lastMsg = runResult.IsAllSucceeded ? "Overall partial unit test succedded" : "Overall partial unit test failed";
+            WriteDetail(lastMsg);
+        }
+
+        private bool CalculateCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting)
         {
             string targetPath = Directory.GetParent(tfsVariables.BuildDirectory).FullName;
             var coverageFiles = Directory.GetFiles(targetPath, "*.coverage", SearchOption.AllDirectories);
@@ -161,14 +172,14 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             return false;
         }
 
-        private bool RunMsUnitTestExe(string parameters)
+        private VstestConsoleParser RunMsUnitTestExe(string parameters)
         {
             var exePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
                           @"\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
             if (!File.Exists(exePath))
             {
                 WriteDetail("Unit test run exe could not found : " + exePath);
-                return false;
+                return new VstestConsoleParser();
             }
 
             var processInfo = new ProcessStartInfo
@@ -196,14 +207,14 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
                 var line = sb.ToString();
                 WriteDetail("Exe Output : \n" + line);
-                return proc.ExitCode == 0;
+                return new VstestConsoleParser(proc.ExitCode, line);
             }
             catch (Exception ex)
             {
                 WriteDetail($"Unit test exe run failed : {ex.ToString()}");
             }
 
-            return false;
+            return new VstestConsoleParser();
         }
 
         private List<UnitTestDetail> CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, params MethodUnitTestCollection[] bags)

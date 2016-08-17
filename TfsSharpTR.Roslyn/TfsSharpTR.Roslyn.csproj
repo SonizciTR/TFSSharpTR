@@ -101,6 +101,8 @@
     <Compile Include="PartialUnitTest\PartialUnitTestSetting.cs" />
     <Compile Include="PartialUnitTest\PartialUnitTestTask.cs" />
     <Compile Include="PartialUnitTest\UnitTestDetail.cs" />
+    <Compile Include="PartialUnitTest\VstestConsoleParser.cs" />
+    <Compile Include="PartialUnitTest\VstestMethodResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

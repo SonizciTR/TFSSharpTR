@@ -49,7 +49,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
                 else if(prsdtoLines[i] == CnstCoverageStartLine)
                 {
-                    CoverageFilePath = prsdtoLines[i + 1];
+                    CoverageFilePath = prsdtoLines[i + 1].Trim();
                 }
 
                 if (isMethodResultArea)

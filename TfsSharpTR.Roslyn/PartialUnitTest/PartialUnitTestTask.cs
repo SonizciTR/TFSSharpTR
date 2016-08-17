@@ -85,7 +85,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 WriteDetail($"Unit Test Setting file found : {File.Exists(settFile)}. Path = [{settFile}]");
                 string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
 
-                var runResult = RunMsUnitTestExe(prms);
+                var runResult = RunMsUnitTestExe(prms, itmGrp.Key);
                 cmdResults.Add(runResult);
 
                 DisplayResult(runResult, itmGrp.Key, tstMethodLine);
@@ -94,7 +94,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 if (!isSucc)
                     break;
             }
-            if(isSucc && cmdResults.Any())
+            if (isSucc && cmdResults.Any())
                 isSucc &= CalculateCoverage(tfsVariables, setting, cmdResults);
 
             WriteDetail("All test methods runned", watch);
@@ -119,49 +119,40 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             try
             {
-                CoverageInfo mergedCoverageInfo = null;
-                foreach (var file in coverageFiles)
+                foreach (var itmOut in cmdResults)
                 {
-                    WriteDetail($"[{file}] is going to be processed.");
-                    if (mergedCoverageInfo == null)
-                        mergedCoverageInfo = CoverageInfo.CreateFromFile(file);
-                    else
+                    using (var coverInfo = CoverageInfo.CreateFromFile(itmOut.CoverageFilePath))
                     {
-                        var tmp = CoverageInfo.CreateFromFile(file);
-                        mergedCoverageInfo = CoverageInfo.Join(mergedCoverageInfo, tmp);
-
-                    }
-                }
-
-                if (mergedCoverageInfo != null)
-                {
-                    foreach (var module in mergedCoverageInfo.Modules)
-                    {
-                        byte[] coverageBuffer = module.GetCoverageBuffer(null);
-                        using (var reader = module.Symbols.CreateReader())
+                        foreach (var module in coverInfo.Modules)
                         {
-                            uint methodId;
-                            string mthdName, undecoratedMthd, className, namespaceName;
+                            if (module.Name != itmOut.AssemblyName)
+                                continue;
 
-                            var lines = new List<BlockLineRange>();
-
-                            while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
+                            byte[] coverageBuffer = module.GetCoverageBuffer(null);
+                            using (var reader = module.Symbols.CreateReader())
                             {
-                                var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
-                                string tmpUnitName = namespaceName + "." + className + "." + mthdName;
+                                uint methodId;
+                                string mthdName, undecoratedMthd, className, namespaceName;
 
-                                //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
-                                string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
-                                WriteDetail(mLine);
+                                var lines = new List<BlockLineRange>();
+
+                                while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
+                                {
+                                    var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
+                                    string tmpUnitName = namespaceName + "." + className + "." + mthdName;
+
+                                    //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
+                                    string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
+                                    WriteDetail(mLine);
+                                }
                             }
                         }
                     }
-                    mergedCoverageInfo.Dispose();
                 }
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteDetail($"Coverage calculation failed : {ex}");
             }
@@ -169,7 +160,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             return false;
         }
 
-        private VstestConsoleParser RunMsUnitTestExe(string parameters)
+        private VstestConsoleParser RunMsUnitTestExe(string parameters, string dllName)
         {
             var exePath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) +
                           @"\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe";
@@ -204,7 +195,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
                 var line = sb.ToString();
                 WriteDetail("Exe Output : \n" + line);
-                return new VstestConsoleParser(proc.ExitCode, line);
+                return new VstestConsoleParser(proc.ExitCode, line, dllName);
             }
             catch (Exception ex)
             {
@@ -284,7 +275,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             {
                 var webPath = itmChanged.FilePath.Substring(1).Replace("/", "\\");
                 var serverVersion = TFSHelper.DownloadFile(webPath);
-                serverVersion = string.IsNullOrEmpty(serverVersion) ? serverVersion : serverVersion.Replace("\r\n", "\n"); 
+                serverVersion = string.IsNullOrEmpty(serverVersion) ? serverVersion : serverVersion.Replace("\r\n", "\n");
                 var localVersionFullPath = Path.Combine(tfsVariables.BuildSourceDirectory, webPath);
                 var report = GetFileChanges(serverVersion, localVersionFullPath);
                 Document doc = null;
@@ -324,7 +315,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     var mainFolder = new DirectoryInfo(mainFolderName);
                     var repoFolder = mainFolder.Parent.FullName;
                     string tmpFile = repoFolder + itmChanged.FilePath;
-                    if(File.Exists(tmpFile))
+                    if (File.Exists(tmpFile))
                     {
                         slnPath = slnFullPath;
                         break;
@@ -405,8 +396,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             var root = syntaxTree.GetRoot();
             var mds = root.DescendantNodes()
                         .OfType<MethodDeclarationSyntax>()
-                        .FirstOrDefault(md => md.Modifiers.Any(SyntaxKind.PublicKeyword) 
-                                                && md.FullSpan.Start <= spnStart 
+                        .FirstOrDefault(md => md.Modifiers.Any(SyntaxKind.PublicKeyword)
+                                                && md.FullSpan.Start <= spnStart
                                                 && spnEnd <= md.FullSpan.End);
 
             return mds;
@@ -461,7 +452,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             if (isTestMethod)
                             {
                                 depo.Add(
-                                    new UnitTestDetail(referenceMds.Identifier.Text, 
+                                    new UnitTestDetail(referenceMds.Identifier.Text,
                                     location.Document.Project.OutputFilePath)
                                     );
                             }
@@ -469,7 +460,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     }
 
                 }
-            } 
+            }
 
             return depo;
         }

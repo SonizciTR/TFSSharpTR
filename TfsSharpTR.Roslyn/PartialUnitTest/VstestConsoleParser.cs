@@ -13,15 +13,17 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         public List<VstestMethodResult> Result { get; set; } = new List<VstestMethodResult>();
         public string TrxFilePath { get; set; }
         public string CoverageFilePath { get; set; }
+        public string AssemblyName { get; set; }
 
         public VstestConsoleParser()
         {
             IsAllSucceeded = false;
         }
 
-        public VstestConsoleParser(int exitCode, string consoleOutput)
+        public VstestConsoleParser(int exitCode, string consoleOutput, string dllName)
         {
             IsAllSucceeded = exitCode == 0;
+            AssemblyName = System.IO.Path.GetFileName(dllName);
             StartParsing(consoleOutput);
         }
 

@@ -7,9 +7,12 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
     {
         private const string CnstUnitTestStartLine = "Starting test discovery, please wait...";
         private const string CnstUnitTestEndLine = "Results File:";
+        private const string CnstCoverageStartLine = "Attachments:";
 
         public bool IsAllSucceeded { get; set; }
         public List<VstestMethodResult> Result { get; set; } = new List<VstestMethodResult>();
+        public string TrxFilePath { get; set; }
+        public string CoverageFilePath { get; set; }
 
         public VstestConsoleParser()
         {
@@ -31,21 +34,26 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             if (prsdtoLines.Length < 9)
                 throw new Exception("Not enough line to process vstest output.");
 
-            bool isProcessArea = false;
+            bool isMethodResultArea = false;
             for (int i = 0; i < prsdtoLines.Length; i++)
             {
                 if (prsdtoLines[i].StartsWith(CnstUnitTestStartLine))
                 {
-                    isProcessArea = true;
+                    isMethodResultArea = true;
                     continue;
                 }
                 else if (prsdtoLines[i].StartsWith(CnstUnitTestEndLine))
                 {
-                    isProcessArea = false;
+                    isMethodResultArea = false;
+                    TrxFilePath = prsdtoLines[i].Replace(CnstUnitTestEndLine, "").Trim();
                     break;
                 }
+                else if(prsdtoLines[i] == CnstCoverageStartLine)
+                {
+                    CoverageFilePath = prsdtoLines[i + 1];
+                }
 
-                if (isProcessArea)
+                if (isMethodResultArea)
                 {
                     var tmp = new VstestMethodResult(prsdtoLines[i]);
                     Result.Add(tmp);

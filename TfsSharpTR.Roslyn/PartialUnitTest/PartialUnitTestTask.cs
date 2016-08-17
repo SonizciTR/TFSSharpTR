@@ -91,7 +91,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     break;
                 }
             }
-            if(isSucc && groupedUnitTest.Any())
+            if(isSucc && unitTesttoCheck.Any())
                 isSucc &= CalculateCoverage(tfsVariables, setting);
 
             WriteDetail("All test methods runned", watch);

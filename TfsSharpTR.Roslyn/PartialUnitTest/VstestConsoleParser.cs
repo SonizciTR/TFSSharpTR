@@ -46,7 +46,6 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 {
                     isMethodResultArea = false;
                     TrxFilePath = prsdtoLines[i].Replace(CnstUnitTestEndLine, "").Trim();
-                    break;
                 }
                 else if(prsdtoLines[i] == CnstCoverageStartLine)
                 {

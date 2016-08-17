@@ -83,13 +83,14 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 string settFile = Path.Combine(workingPath, setting.RunSettingFile);
                 WriteDetail($"Unit Test Setting file found : {File.Exists(settFile)}. Path = [{settFile}]");
                 string prms = string.Format(cmdRaw, itmGrp.Key, tstMethodLine, settFile);
+
                 var runResult = RunMsUnitTestExe(prms);
+
                 DisplayResult(runResult, itmGrp.Key, tstMethodLine);
-                if (!runResult.IsAllSucceeded)
-                {
-                    isSucc = false;
+                isSucc = runResult.IsAllSucceeded;
+
+                if (!isSucc)
                     break;
-                }
             }
             if(isSucc && unitTesttoCheck.Any())
                 isSucc &= CalculateCoverage(tfsVariables, setting);

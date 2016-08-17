@@ -24,7 +24,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             MethodName = spltd[1];
 
             int tmp;
-            if (int.TryParse(spltd[4], out tmp))
+            if (int.TryParse(spltd[4].TrimEnd(')'), out tmp))
                 Index = tmp;
         }
     }

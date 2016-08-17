@@ -121,6 +121,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             {
                 foreach (var itmOut in cmdResults)
                 {
+                    WriteDetail($"[{Path.GetFileName(itmOut.CoverageFilePath)}] file is starting to read.");
                     using (var coverInfo = CoverageInfo.CreateFromFile(itmOut.CoverageFilePath))
                     {
                         var dllName = itmOut.AssemblyName.ToLowerInvariant();

@@ -123,9 +123,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 {
                     using (var coverInfo = CoverageInfo.CreateFromFile(itmOut.CoverageFilePath))
                     {
+                        var dllName = itmOut.AssemblyName.ToLowerInvariant();
                         foreach (var module in coverInfo.Modules)
                         {
-                            if (module.Name != itmOut.AssemblyName)
+                            if (module.Name != dllName)
                                 continue;
 
                             byte[] coverageBuffer = module.GetCoverageBuffer(null);
@@ -135,15 +136,25 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                                 string mthdName, undecoratedMthd, className, namespaceName;
 
                                 var lines = new List<BlockLineRange>();
+                                int indx = 0;
+                                var bagofIndexes = itmOut.Result.Select(x => x.Index).ToList();
 
                                 while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
                                 {
-                                    var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
-                                    string tmpUnitName = namespaceName + "." + className + "." + mthdName;
+                                    if (bagofIndexes.Any(x => x == indx))
+                                    {
+                                        var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
+                                        string tmpUnitName = namespaceName + "." + className + "." + mthdName;
 
-                                    //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
-                                    string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
-                                    WriteDetail(mLine);
+                                        //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
+                                        string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
+                                        WriteDetail(mLine);
+                                        bagofIndexes.Remove(indx);
+                                    }
+                                    if (bagofIndexes.Count == 0)
+                                        break;
+
+                                    ++indx;
                                 }
                             }
                         }

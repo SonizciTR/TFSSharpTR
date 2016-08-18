@@ -59,7 +59,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             int totalMethod = tmpMethodsforAdded.MethodCount + tmpMethodsforChanged.MethodCount;
             WriteDetail(string.Format("{0} number of methods will be looked for unit test", totalMethod));
-            var unitTesttoCheck = CheckforUnitTest(setting, gSolution, tmpMethodsforChanged, tmpMethodsforAdded);
+            var unitTesttoCheck = CheckforUnitTest(setting, gSolution, tfsVariables, tmpMethodsforChanged, tmpMethodsforAdded);
             if (unitTesttoCheck == null)
                 return new TaskStatu("PUT06", "No unit test found for partial check");
 
@@ -211,7 +211,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             return new VstestConsoleParser();
         }
 
-        private List<UnitTestDetail> CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, params MethodUnitTestCollection[] bags)
+        private List<UnitTestDetail> CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, TfsVariable tfsVariables, params MethodUnitTestCollection[] bags)
         {
             List<UnitTestDetail> lst = new List<UnitTestDetail>();
             foreach (var queuDepo in bags)
@@ -221,7 +221,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     foreach (var itmMethod in itmDoc.Methods)
                     {
                         IMethodSymbol method = itmDoc.Doc.GetSemanticModelAsync().Result.GetDeclaredSymbol(itmMethod);
-                        var unitTest = FindUnitTestReferences(solution, method);
+                        var unitTest = FindUnitTestReferences(solution, method, tfsVariables);
                         if ((unitTest == null) || !unitTest.Any())
                         {
                             WriteDetail(string.Format("[{0}] method test is not found!!!", method.Name));
@@ -432,7 +432,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         }
 
-        private static List<UnitTestDetail> FindUnitTestReferences(Solution solution, IMethodSymbol method)
+        private static List<UnitTestDetail> FindUnitTestReferences(Solution solution, IMethodSymbol method, TfsVariable tfsVariables)
         {
             var methodReferences = SymbolFinder.FindReferencesAsync(method, solution).Result.ToList();
 
@@ -457,6 +457,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             bool isTestMethod = HasAttibute(referenceMds.AttributeLists, "TestMethod");
                             if (isTestMethod)
                             {
+                                string rightDll = FindRightOutputDll(location.Document.Project.OutputFilePath, tfsVariables);
                                 depo.Add(
                                     new UnitTestDetail(referenceMds.Identifier.Text,
                                     location.Document.Project.OutputFilePath)
@@ -469,6 +470,16 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             }
 
             return depo;
+        }
+
+        private static string FindRightOutputDll(string outputFilePath, TfsVariable tfsVariables)
+        {
+            if(tfsVariables.BuildConfiguration.ToLowerInvariant() == "release")
+            {
+                return outputFilePath.Replace(@"\bin\Debug\", @"\bin\Release\");
+            }
+
+            return outputFilePath;
         }
 
         private static bool HasAttibute(SyntaxList<AttributeListSyntax> attributeLists, string attibuteName)

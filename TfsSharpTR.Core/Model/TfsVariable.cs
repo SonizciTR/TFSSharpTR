@@ -300,5 +300,10 @@ namespace TfsSharpTR.Core.Model
         /// This is manually set parameter. If you set this, all tasks will check this solution only.
         /// </summary>
         public string SolutiontoBuild => Get("SolutiontoBuild");
+
+        /// <summary>
+        /// "Release" or "Debug" at normal circumstances. Variable parameter from build variables
+        /// </summary>
+        public string BuildConfiguration => Get("BuildConfiguration");
     }
 }

@@ -41,6 +41,9 @@ namespace TfsSharpTR.Core.Common
             if (source == VersionControlChangeType.Delete)
                 return SourceControlFileState.Deleted;
 
+            if (source == (VersionControlChangeType.SourceRename | VersionControlChangeType.Delete))
+                return SourceControlFileState.Deleted;
+
             return SourceControlFileState.Changed;
         }
 

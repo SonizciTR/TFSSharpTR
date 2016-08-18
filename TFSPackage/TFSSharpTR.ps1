@@ -8,7 +8,7 @@ param
  
 try {
 
-	if($env:Process_Architecture -ne "x86")
+	if($env:Processor_Architecture -ne "x86")
 	{
 		Write-Warning 'Launching x86 Powershell'
 		&"$env:windir\syswow64\windowspowershell\v1.0\powershell.exe" -noninteractive -noprofile -executionpolicy bypass -file $myinvocation.MyCommand.path -sharpTRLibraryFolder $sharpTRLibraryFolder -settingFile $settingFile -action $action
@@ -39,9 +39,9 @@ try {
                return
             }
             
-            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") 
-				-OR $_.Name.StartsWith("Microsoft.VisualStudio") -OR $_.Name.StartsWith("mssp7en") 
-				-OR $_.Name.StartsWith("Microsoft.CodeAnalysis.Analyzers") 
+            if($_.Name.StartsWith("TfsSharpTR") -OR $_.Name.StartsWith("Microsoft.TeamFoundation") `
+				-OR $_.Name.StartsWith("Microsoft.VisualStudio") -OR $_.Name.StartsWith("mssp7en") `
+				-OR $_.Name.StartsWith("Microsoft.CodeAnalysis.Analyzers") `
 				-OR $_.Name.StartsWith("Microsoft.CodeAnalysis.CSharp.Analyzers") -OR $_.Name.StartsWith("dbghelp"))
             {
                return

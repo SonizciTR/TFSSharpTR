@@ -14,6 +14,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         public string TrxFilePath { get; set; }
         public string CoverageFilePath { get; set; }
         public string AssemblyName { get; set; }
+        public List<string> Warnings { get; set; } = new List<string>();
 
         public VstestConsoleParser()
         {
@@ -56,7 +57,11 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
                 if (isMethodResultArea)
                 {
-                    if (!prsdtoLines[i].StartsWith("Warning:"))
+                    if (prsdtoLines[i].StartsWith("Warning:"))
+                    {
+                        Warnings.Add(prsdtoLines[i]);
+                    }
+                    else
                     {
                         var tmp = new VstestMethodResult(prsdtoLines[i]);
                         Result.Add(tmp);

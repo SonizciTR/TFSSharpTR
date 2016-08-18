@@ -105,6 +105,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         {
             WriteDetail($"These results are for [{assemblyName}] assembly's [{unitTestMethodNames}] methods : ");
 
+            foreach (var item in runResult.Warnings)
+            {
+                WriteDetail(item);
+            }
             foreach (var item in runResult.Result)
             {
                 WriteDetail(item.MethodName + " => run is " + item.Message);

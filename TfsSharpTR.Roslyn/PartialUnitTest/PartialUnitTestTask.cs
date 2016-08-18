@@ -459,8 +459,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             {
                                 string rightDll = FindRightOutputDll(location.Document.Project.OutputFilePath, tfsVariables);
                                 depo.Add(
-                                    new UnitTestDetail(referenceMds.Identifier.Text,
-                                    location.Document.Project.OutputFilePath)
+                                    new UnitTestDetail(referenceMds.Identifier.Text, rightDll)
                                     );
                             }
                         }

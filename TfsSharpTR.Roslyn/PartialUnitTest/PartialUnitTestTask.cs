@@ -148,8 +148,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                                     var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
                                     string tmpUnitName = namespaceName + "." + className + "." + mthdName;
 
-                                    //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
-                                    string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
+                                    string mLine = $"Covered/NotCovered => Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
                                     WriteDetail(mLine);
                                 }
                             }

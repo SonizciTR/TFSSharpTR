@@ -107,17 +107,16 @@ namespace TfsSharpTR.Core
             return true;
         }
 
-        private static readonly string[] lineEndings = new[] { ".", "!", "..." };
+        private static readonly string[] lineEndings = new[] { ".", "!", "...", ".", "=>" };
 
         private static string ReFormatMessage(string message)
         {
             if (string.IsNullOrEmpty(message))
                 return "";
-            string lastChar = message[message.Length - 1].ToString();
-            if (lineEndings.Any(x => x == lastChar))
+            if (lineEndings.Any(x => message.EndsWith(x) ))
                 return message;
 
-            return message + ".";
+            return message.Trim() + ".";
         }
     }
 }

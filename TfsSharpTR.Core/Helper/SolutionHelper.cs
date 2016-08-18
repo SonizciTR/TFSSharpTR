@@ -9,9 +9,9 @@ namespace TfsSharpTR.Core.Helper
 {
     public static class SolutionHelper
     {
-        public static string[] FindSolutionFiles(string buildPath)
+        public static string[] FindSolutionFiles(string buildPath, string filter = "*.sln")
         {
-            return Directory.GetFiles(buildPath, "*.sln", SearchOption.AllDirectories);
+            return Directory.GetFiles(buildPath, filter, SearchOption.AllDirectories);
         }
     }
 }

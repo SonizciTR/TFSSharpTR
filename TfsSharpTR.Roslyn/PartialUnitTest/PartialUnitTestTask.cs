@@ -36,7 +36,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 return new TaskStatu("PUT01", "No setting found.");
 
             var changedAll = TFSHelper.ChangedFiles();
-            if(!changedAll.Any())
+            if (!changedAll.Any())
                 return new TaskStatu("No code change found on TFS");
 
             var codes = changedAll.Where(x => x.FilePath.EndsWith(".cs")).ToList();
@@ -307,12 +307,13 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         private Solution GetSolutionInfo(TfsVariable tfsVariables, PartialUnitTestSetting setting, TFSFileState itmChanged)
         {
             bool isSolutionSelected = !string.IsNullOrEmpty(tfsVariables.SolutiontoBuild);
-
-            string[] slnFiles = isSolutionSelected ? new string[] { tfsVariables.SolutiontoBuild }
-            : SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory);
             string slnPath = null;
+            string[] slnFiles = isSolutionSelected
+                ? SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory, tfsVariables.SolutiontoBuild)
+                : SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory);
+            
             if (isSolutionSelected)
-                slnPath = tfsVariables.SolutiontoBuild;
+                slnPath = slnFiles.FirstOrDefault();
             else
             {
                 foreach (var slnFullPath in slnFiles)

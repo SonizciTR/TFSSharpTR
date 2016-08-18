@@ -16,8 +16,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         public VstestMethodResult(string data)
         {
             var spltd = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (spltd.Length < 3)
-                throw new Exception("vstest output line process failed.");
+            if (spltd.Length < 4)
+                throw new Exception("vstest output line too short : " + data);
 
             Message = spltd[0];
             IsSuccess = Message == "Passed";

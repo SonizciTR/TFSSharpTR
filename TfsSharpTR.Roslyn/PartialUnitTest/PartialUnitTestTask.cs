@@ -473,7 +473,11 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private static string FindRightOutputDll(string outputFilePath, TfsVariable tfsVariables)
         {
-            if(tfsVariables.BuildConfiguration.ToLowerInvariant() == "release")
+            string buildMode = string.IsNullOrEmpty(tfsVariables.BuildConfiguration)
+                ? ""
+                : tfsVariables.BuildConfiguration.ToLowerInvariant();
+
+            if (buildMode == "release")
             {
                 return outputFilePath.Replace(@"\bin\Debug\", @"\bin\Release\");
             }

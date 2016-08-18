@@ -36,7 +36,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 int cnt = 0;
                 foreach (var item in this)
                 {
-                    cnt = item.Methods.Count;
+                    cnt += item.Methods.Count;
                 }
                 return cnt;
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
@@ -8,6 +9,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         private const string CnstUnitTestStartLine = "Starting test discovery, please wait...";
         private const string CnstUnitTestEndLine = "Results File:";
         private const string CnstCoverageStartLine = "Attachments:";
+        private readonly string[] CnstCoverageMeaningFulls = new[] { "Passed", "Failed" };
 
         public bool IsAllSucceeded { get; set; }
         public List<VstestMethodResult> Result { get; set; } = new List<VstestMethodResult>();
@@ -61,7 +63,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                     {
                         Warnings.Add(prsdtoLines[i]);
                     }
-                    else
+                    else if(CnstCoverageMeaningFulls.Any(x => prsdtoLines[i].StartsWith(x)))
                     {
                         var tmp = new VstestMethodResult(prsdtoLines[i]);
                         Result.Add(tmp);

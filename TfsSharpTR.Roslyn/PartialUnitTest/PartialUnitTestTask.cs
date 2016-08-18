@@ -36,7 +36,10 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 return new TaskStatu("PUT01", "No setting found.");
 
             var changedAll = TFSHelper.ChangedFiles();
-            var codes = changedAll.Where(x => x.FilePath.EndsWith(".cs"));
+            if(!changedAll.Any())
+                return new TaskStatu("No code change found on TFS");
+
+            var codes = changedAll.Where(x => x.FilePath.EndsWith(".cs")).ToList();
             var codesChanged = codes.Where(x => x.State == SourceControlFileState.Changed).ToList();
             var codesAdded = codes.Where(x => x.State == SourceControlFileState.Added).ToList();
             if (codesChanged.Count + codesAdded.Count < 1)

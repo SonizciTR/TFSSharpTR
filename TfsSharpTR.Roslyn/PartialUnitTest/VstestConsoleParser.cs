@@ -35,7 +35,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             var prsdtoLines = data.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             if (prsdtoLines.Length < 9)
-                throw new Exception("Not enough line to process vstest output.");
+                throw new Exception("Not enough line to process vstest output : \n " + data);
 
             bool isMethodResultArea = false;
             for (int i = 0; i < prsdtoLines.Length; i++)

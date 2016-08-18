@@ -119,8 +119,6 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private bool CalculateCoverage(TfsVariable tfsVariables, PartialUnitTestSetting setting, List<VstestConsoleParser> cmdResults)
         {
-            var coverageFiles = cmdResults.Select(x => x.CoverageFilePath).ToList();
-
             try
             {
                 foreach (var itmOut in cmdResults)

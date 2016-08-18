@@ -141,25 +141,15 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                                 string mthdName, undecoratedMthd, className, namespaceName;
 
                                 var lines = new List<BlockLineRange>();
-                                int indx = 0;
-                                var bagofIndexes = itmOut.Result.Select(x => x.Index).ToList();
 
                                 while (reader.GetNextMethod(out methodId, out mthdName, out undecoratedMthd, out className, out namespaceName, lines))
                                 {
-                                    if (bagofIndexes.Any(x => x == indx))
-                                    {
-                                        var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
-                                        string tmpUnitName = namespaceName + "." + className + "." + mthdName;
+                                    var stats = CoverageInfo.GetMethodStatistics(coverageBuffer, lines);
+                                    string tmpUnitName = namespaceName + "." + className + "." + mthdName;
 
-                                        //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
-                                        string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
-                                        WriteDetail(mLine);
-                                        bagofIndexes.Remove(indx);
-                                    }
-                                    if (bagofIndexes.Count == 0)
-                                        break;
-
-                                    ++indx;
+                                    //string mLine = $"[{tmpUnitName}] is : {stats.BlocksCovered} block covered. {stats.BlocksNotCovered} block not covered. {stats.LinesPartiallyCovered} Lines Partially covered. {stats.LinesNotCovered} Lines Not covered";
+                                    string mLine = $"Covered/NotCovered = Block - Line : {stats.BlocksCovered} / {stats.BlocksNotCovered} - {stats.LinesCovered} / {stats.LinesNotCovered} => {tmpUnitName} ";
+                                    WriteDetail(mLine);
                                 }
                             }
                         }

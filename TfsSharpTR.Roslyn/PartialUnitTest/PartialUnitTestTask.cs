@@ -249,7 +249,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
             foreach (var itmChanged in codesAdded)
             {
-                var webPath = itmChanged.FilePath.Replace("/", "\\");
+                var webPath = itmChanged.FilePath.Replace("/", "\\").TrimStart('\\');
                 var localVersionFullPath = Path.Combine(tfsVariables.BuildSourceDirectory, webPath);
                 Document doc = null;
                 foreach (var tmp in solution.Projects)
@@ -351,8 +351,11 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
         private static List<MethodDeclarationSyntax> GetAllPublicMethods(Document doc)
         {
             var syntaxTree = doc.GetSemanticModelAsync().Result.SyntaxTree;
+            bool isTestClass = IsThisTestClass(syntaxTree);
+            if (isTestClass)
+                return new List<MethodDeclarationSyntax>();
             var root = syntaxTree.GetRoot();
-
+           
             var mdsList = root.DescendantNodes()
                         .OfType<MethodDeclarationSyntax>()
                         .Where(md => md.Modifiers.Any(SyntaxKind.PublicKeyword));
@@ -360,10 +363,23 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             return mdsList.ToList();
         }
 
+        private static bool IsThisTestClass(SyntaxTree syntaxTree)
+        {
+            var root = syntaxTree.GetRoot();
+            var classInfo = root.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+            if (HasAttibute(classInfo.AttributeLists, "TestClass"))
+                return true;
+
+            return false;
+        }
+
         private static List<MethodDeclarationSyntax> GetChangedPublicMethods(Document doc, ArrayList changes)
         {
             List<MethodDeclarationSyntax> mdsList = new List<MethodDeclarationSyntax>();
             var syntaxTree = doc.GetSemanticModelAsync().Result.SyntaxTree;
+            bool isTestClass = IsThisTestClass(syntaxTree);
+            if (isTestClass)
+                return new List<MethodDeclarationSyntax>();
 
             DiffResultSpanStatus changeType = DiffResultSpanStatus.NoChange;
             int sourceIndex = 0;

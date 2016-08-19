@@ -53,7 +53,7 @@ namespace TfsSharpTR.Core.Common
                 return SourceControlFileState.Added;
             if (source.IsDelete)
                 return SourceControlFileState.Deleted;
-
+            
             return SourceControlFileState.Changed;
         }
     }

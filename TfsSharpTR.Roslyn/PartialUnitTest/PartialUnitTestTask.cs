@@ -265,7 +265,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
 
                 var tmpMethods = GetAllPublicMethods(doc);
-                depo.Add(doc, tmpMethods);
+                if (tmpMethods != null)
+                    depo.Add(doc, tmpMethods);
             }
 
             return depo;
@@ -298,7 +299,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                 }
 
                 var tmpMethods = GetChangedPublicMethods(doc, report);
-                depo.Add(doc, tmpMethods);
+                if (tmpMethods != null)
+                    depo.Add(doc, tmpMethods);
             }
 
             return depo;
@@ -311,7 +313,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             string[] slnFiles = isSolutionSelected
                 ? SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory, tfsVariables.SolutiontoBuild)
                 : SolutionHelper.FindSolutionFiles(tfsVariables.BuildSourceDirectory);
-            
+
             if (isSolutionSelected)
                 slnPath = slnFiles.FirstOrDefault();
             else
@@ -353,9 +355,9 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             var syntaxTree = doc.GetSemanticModelAsync().Result.SyntaxTree;
             bool isTestClass = IsThisTestClass(syntaxTree);
             if (isTestClass)
-                return new List<MethodDeclarationSyntax>();
+                return null;
             var root = syntaxTree.GetRoot();
-           
+
             var mdsList = root.DescendantNodes()
                         .OfType<MethodDeclarationSyntax>()
                         .Where(md => md.Modifiers.Any(SyntaxKind.PublicKeyword));
@@ -379,7 +381,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
             var syntaxTree = doc.GetSemanticModelAsync().Result.SyntaxTree;
             bool isTestClass = IsThisTestClass(syntaxTree);
             if (isTestClass)
-                return new List<MethodDeclarationSyntax>();
+                return null;
 
             DiffResultSpanStatus changeType = DiffResultSpanStatus.NoChange;
             int sourceIndex = 0;

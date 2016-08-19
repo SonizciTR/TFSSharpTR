@@ -130,9 +130,8 @@ try {
     }
 } 
 catch {
-    Write-Host ("Hata: " + $_.Exception.ToString())
-	Throw [System.Exception] $_.Exception
 	Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    Throw [System.Exception] $_.Exception
 }
 finally {
  

@@ -26,7 +26,6 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
     /// </summary>
     public class PartialUnitTestTask : BaseTask<PartialUnitTestSetting>
     {
-
         const string cmdParams = @"{0} /Tests:{1} /logger:trx /Enablecodecoverage";
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<PartialUnitTestSetting> usrVariables)

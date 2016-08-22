@@ -26,7 +26,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
     /// </summary>
     public class PartialUnitTestTask : BaseTask<PartialUnitTestSetting>
     {
-        private int failCount = 0;
+
         const string cmdParams = @"{0} /Tests:{1} /logger:trx /Enablecodecoverage";
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<PartialUnitTestSetting> usrVariables)
@@ -213,11 +213,13 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         private List<UnitTestDetail> CheckforUnitTest(PartialUnitTestSetting setting, Solution solution, TfsVariable tfsVariables, params MethodUnitTestCollection[] bags)
         {
+            int totalFailCount = 0;
             List<UnitTestDetail> lst = new List<UnitTestDetail>();
             foreach (var queuDepo in bags)
             {
                 foreach (var itmDoc in queuDepo)
                 {
+                    int tmpFail = 0;
                     foreach (var itmMethod in itmDoc.Methods)
                     {
                         IMethodSymbol method = itmDoc.Doc.GetSemanticModelAsync().Result.GetDeclaredSymbol(itmMethod);
@@ -225,8 +227,8 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                         if ((unitTest == null) || !unitTest.Any())
                         {
                             WriteDetail(string.Format("[{0}] method test is not found!!!", method.Name));
-                            ++failCount;
-                            if (failCount > setting.MaxLogCount)
+                            ++tmpFail;
+                            if (totalFailCount > setting.MaxLogCount)
                                 return null;
                         }
                         else
@@ -234,11 +236,13 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
                             lst.AddRange(unitTest);
                         }
                     }
-                    WriteDetail(string.Format("[{0}] project's all test are found", itmDoc.Doc.Project.Name));
+                    totalFailCount += tmpFail;
+                    if (tmpFail == 0)
+                        WriteDetail(string.Format("[{0}] project's all test are found", itmDoc.Doc.Project.Name));
                 }
             }
 
-            return failCount == 0 ? lst : null;
+            return totalFailCount == 0 ? lst : null;
         }
 
         private MethodUnitTestCollection GetChangeforChangedAdded(List<TFSFileState> codesAdded, TfsVariable tfsVariables, Solution solution)

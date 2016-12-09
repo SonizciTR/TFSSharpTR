@@ -1,5 +1,5 @@
 # TFSSharpTR
-TFS Sharp Task Runner for TFS 2015 Web Build
+TFS Sharp Task Runner is; C# code runner on TFS 2015 Web Build. Basic need came from DevOps. If you are implementing DevOps using TFS, you will need this.
 
 TFS Sharp Task Runner similer to Gulp or Grunt. It runs C# code with single json config file.
 

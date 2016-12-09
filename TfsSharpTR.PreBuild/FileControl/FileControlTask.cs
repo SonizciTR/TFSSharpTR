@@ -13,7 +13,7 @@ namespace TfsSharpTR.PreBuild.FileControl
     {
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<FileControlSetting> usrVariables)
         {
-            var setting = usrVariables.Data;
+            var setting = usrVariables.Config;
             if (setting == null)
                 return new TaskStatu("No setting found.");
 

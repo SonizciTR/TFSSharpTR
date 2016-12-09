@@ -21,7 +21,7 @@ namespace TfsSharpTR.Core
                 var settUsr = new UserVariable<RawBasicBuildSetting>(RawBasicBuildSetting.KeyBaseConfigArea, usrVar);
                 Logger.Set(settUsr.WorkingPath);
 
-                if (settUsr.Data == null)
+                if (settUsr.Config == null)
                     throw new Exception("User Setting File is missing or wrongly formatted.");
 
                 var dlls = GetDllList(settUsr.WorkingPath);
@@ -39,7 +39,7 @@ namespace TfsSharpTR.Core
 
         private static TaskList ReOrder(UserVariable<RawBasicBuildSetting> settUsr, TaskList allTasks)
         {
-            var orderOrigin = settUsr.ActionName == "PreBuild" ? settUsr.Data.PreBuildTasks : settUsr.Data.PostBuildTasks;
+            var orderOrigin = settUsr.ActionName == "PreBuild" ? settUsr.Config.PreBuildTasks : settUsr.Config.PostBuildTasks;
             var orderedTaskList = new TaskList();
             for (int i = 0; i < orderOrigin.Count; i++)
             {
@@ -53,7 +53,7 @@ namespace TfsSharpTR.Core
         private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<RawBasicBuildSetting> setting)
         {
             var tasks = new TaskList();
-            var tmpSetting = setting.Data;
+            var tmpSetting = setting.Config;
 
             foreach (var dll in dllFiles)
             {

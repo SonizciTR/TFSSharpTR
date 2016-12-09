@@ -30,7 +30,7 @@ namespace TfsSharpTR.StyleCopRelated
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<StyleCopSetting> usrVariables)
         {
-            GlobalSetting = usrVariables?.Data;
+            GlobalSetting = usrVariables?.Config;
             SourceBaseFolder = tfsVariables.BuildSourceDirectory;
             if (GlobalSetting == null)
                 return new TaskStatu("SCT02", "No setting loaded.");
@@ -103,19 +103,19 @@ namespace TfsSharpTR.StyleCopRelated
                 console.ViolationEncountered -= this.OnViolationEncountered;
             }
 
-            return violateError.Count <= usrVariables.Data.MaxErrorCount;
+            return violateError.Count <= usrVariables.Config.MaxErrorCount;
         }
 
         private string FindRuleFile(UserVariable<StyleCopSetting> usrVariables)
         {
             string styleSettingFile = string.Empty;
 
-            if (!string.IsNullOrEmpty(usrVariables.Data.SettingFile))
+            if (!string.IsNullOrEmpty(usrVariables.Config.SettingFile))
             {
-                string onlyFileName = Path.GetFileName(usrVariables.Data.SettingFile);
-                styleSettingFile = onlyFileName == usrVariables.Data.SettingFile ?
-                    Path.Combine(usrVariables.WorkingPath, usrVariables.Data.SettingFile)
-                    : usrVariables.Data.SettingFile;
+                string onlyFileName = Path.GetFileName(usrVariables.Config.SettingFile);
+                styleSettingFile = onlyFileName == usrVariables.Config.SettingFile ?
+                    Path.Combine(usrVariables.WorkingPath, usrVariables.Config.SettingFile)
+                    : usrVariables.Config.SettingFile;
                 if (File.Exists(styleSettingFile))
                     WriteDetail("Custom StyleCop rule file = [" + styleSettingFile + "]");
                 else

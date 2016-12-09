@@ -41,7 +41,7 @@ namespace TfsSharpTR.Core
                 var usrVar = new UserVariable<Tsetting>(this.GetType().Name, usrVarRaw);
                 Logger.Set(usrVar.WorkingPath);
 
-                var bsSetting = usrVar.Data;
+                var bsSetting = usrVar.Config;
                 if (bsSetting == null)
                     return new ShellStatu(false, string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
 

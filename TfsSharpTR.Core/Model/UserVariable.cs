@@ -36,7 +36,7 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// Json setting file's all text
         /// </summary>
-        private string DataasString
+        private string ConfigasString
         {
             get
             {
@@ -49,11 +49,11 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// Task's special setting from json file
         /// </summary>
-        public Tsetting Data
+        public Tsetting Config
         {
             get
             {
-                string fData = DataasString;
+                string fData = ConfigasString;
                 if (string.IsNullOrEmpty(fData))
                     return default(Tsetting);
 

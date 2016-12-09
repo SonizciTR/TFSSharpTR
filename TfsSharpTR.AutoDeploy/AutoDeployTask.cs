@@ -18,7 +18,7 @@ namespace TfsSharpTR.AutoDeploy
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<AutoDeploySetting> usrVariables)
         {
             var sourceFolder = tfsVariables.BuildDirectory;
-            var setting = usrVariables?.Data;
+            var setting = usrVariables?.Config;
             if (setting == null)
                 return new TaskStatu("ADT01", "No setting loaded.");
 

@@ -46,7 +46,7 @@
     ]
   },
 
-  "CodeMetric": {
+  "CodeMetricTask": {
     "MaxLogCount": 50,
     "MaxCouplingComplexityforMember": 40,
     "MaxCouplingComplexityforClass": 40,
@@ -66,7 +66,7 @@
     "ExcludedProjects": [ ]
   },
 
-  "PartialUnitTest": {
+  "PartialUnitTestTask": {
     "MaxLogCount": 55,
     "RunSettingFile": ""
   }

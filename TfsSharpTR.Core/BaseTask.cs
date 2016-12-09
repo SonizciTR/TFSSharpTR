@@ -15,7 +15,7 @@ namespace TfsSharpTR.Core
     /// <summary>
     /// Every task that want to trigger should be inhereted from this class
     /// </summary>
-    /// <typeparam name="Tsetting">Your task setting model shoul be inhereted from BuildSetting</typeparam>
+    /// <typeparam name="Tsetting">Your task setting model deserialized from json config file</typeparam>
     public abstract class BaseTask<Tsetting> where Tsetting : class
     {   
         private List<string> intrDetailContainer = new List<string>();

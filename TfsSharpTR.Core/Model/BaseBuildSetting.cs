@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace TfsSharpTR.Core.Model
 {
+    /// <summary>
+    /// BaseTask's setting model should be implemented from this class
+    /// </summary>
     public abstract class BaseBuildSetting
     {
+        /// <summary>
+        /// Which part of setting file to parse. This is the key name of whole json file. Deserialize to this object
+        /// </summary>
         public abstract string SettingFileAreaName { get; }
     }
 
@@ -16,7 +22,7 @@ namespace TfsSharpTR.Core.Model
     /// </summary>
     public class RawBasicBuildSetting : BaseBuildSetting
     {
-        public const string KeyBaseConfigArea = "Base";
+        internal const string KeyBaseConfigArea = "Base";
         public override string SettingFileAreaName
         {
             get

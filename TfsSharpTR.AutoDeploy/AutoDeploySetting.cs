@@ -8,16 +8,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.AutoDeploy
 {
-    public class AutoDeploySetting : BaseBuildSetting
+    public class AutoDeploySetting
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "AutoDeployTask";
-            }
-        }
-
         public const string KeyDiff = "DIFF";
         public const string KeyAll = "ALL";
 
@@ -26,7 +18,7 @@ namespace TfsSharpTR.AutoDeploy
         /// DIFF : Synchronized deployment of only new files
         /// ALL : Synchronized deployment of all files
         /// </summary>
-        public string Mode { get; set; } = "ALL";
+        public string Mode { get; set; } = KeyAll;
 
         /// <summary>
         /// Files that do not want to deploy

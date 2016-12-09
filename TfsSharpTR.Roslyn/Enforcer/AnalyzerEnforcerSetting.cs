@@ -7,16 +7,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.Enforcer
 {
-    public class AnalyzerEnforcerSetting : BaseBuildSetting
+    public class AnalyzerEnforcerSetting
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "AnalyzerEnforcerTask";
-            }
-        }
-
         public List<ReferenceEnforcerItem> References { get; set; }
     }
 

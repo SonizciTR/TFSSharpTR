@@ -113,7 +113,7 @@ namespace TfsSharpTR.UnitTest
             var dictTfs = DummyTfsVariable();
             var dictUsr = DummyUserVariable();
             var tfs = new TfsVariable(dictTfs);
-            var usr = new UserVariable<FileControlSetting>(dictUsr);
+            var usr = new UserVariable<RawBasicBuildSetting>("", dictUsr);
 
             return tsk("xFile", "xClass", "xMethod", dictTfs, dictUsr);
         }
@@ -153,7 +153,7 @@ namespace TfsSharpTR.UnitTest
         {
             var tsk = new StyleCopTask();
             var rslt = RunTask(tsk.Initializer);
-
+            
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
             Assert.IsTrue(rslt.IsSuccess, rMsg);
         }

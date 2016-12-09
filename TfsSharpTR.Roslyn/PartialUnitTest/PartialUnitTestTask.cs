@@ -30,7 +30,7 @@ namespace TfsSharpTR.Roslyn.PartialUnitTest
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<PartialUnitTestSetting> usrVariables)
         {
-            var setting = usrVariables.SettingFileData;
+            var setting = usrVariables.Data;
             if (setting == null)
                 return new TaskStatu("PUT01", "No setting found.");
 

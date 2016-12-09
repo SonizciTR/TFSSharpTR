@@ -7,16 +7,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
-    public class PartialUnitTestSetting : BaseBuildSetting
+    public class PartialUnitTestSetting 
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "PartialUnitTest";
-            }
-        }
-
         /// <summary>
         /// Max number of log line will be written to screen
         /// </summary>

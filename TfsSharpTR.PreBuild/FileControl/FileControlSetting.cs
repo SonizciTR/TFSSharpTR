@@ -8,16 +8,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.PreBuild.FileControl
 {
-    public class FileControlSetting : BaseBuildSetting
+    public class FileControlSetting
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "FileControlTask";
-            }
-        }
-
         public List<FileControlItem> Files { get; set; } = new List<FileControlItem>();
     }
 

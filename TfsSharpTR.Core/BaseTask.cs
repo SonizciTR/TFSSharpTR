@@ -16,10 +16,8 @@ namespace TfsSharpTR.Core
     /// Every task that want to trigger should be inhereted from this class
     /// </summary>
     /// <typeparam name="Tsetting">Your task setting model shoul be inhereted from BuildSetting</typeparam>
-    public abstract class BaseTask<Tsetting> where Tsetting : BaseBuildSetting, new()
-    {
-        private Tsetting SettingforTask { get; set; }
-
+    public abstract class BaseTask<Tsetting> where Tsetting : class
+    {   
         private List<string> intrDetailContainer = new List<string>();
 
         /// <summary>
@@ -40,10 +38,10 @@ namespace TfsSharpTR.Core
             {
                 taskLongName = Path.GetFileNameWithoutExtension(dllName) + " -> " + className;
                 var tfsVar = new TfsVariable(tfsVarRaw);
-                var usrVar = new UserVariable<Tsetting>(usrVarRaw);
+                var usrVar = new UserVariable<Tsetting>(this.GetType().Name, usrVarRaw);
                 Logger.Set(usrVar.WorkingPath);
 
-                var bsSetting = usrVar.SettingFileData;
+                var bsSetting = usrVar.Data;
                 if (bsSetting == null)
                     return new ShellStatu(false, string.Format("{0}.{1} tasks setting could not deserialized.", className, methodName));
 

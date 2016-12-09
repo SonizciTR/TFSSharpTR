@@ -7,16 +7,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.Metrics
 {
-    public class CodeMetricSetting : BaseBuildSetting
+    public class CodeMetricSetting
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "CodeMetric";
-            }
-        }
-
         /// <summary>
         /// Maximum error logged to screen. Check will be canceled above this number.
         /// </summary>

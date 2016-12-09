@@ -20,7 +20,7 @@ namespace TfsSharpTR.Roslyn.Metrics
 
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<CodeMetricSetting> usrVariables)
         {
-            var setting = usrVariables.SettingFileData;
+            var setting = usrVariables.Data;
             if (setting == null)
                 return new TaskStatu("CM01", "No setting found");
 

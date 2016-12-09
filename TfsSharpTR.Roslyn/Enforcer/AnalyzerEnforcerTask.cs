@@ -23,7 +23,7 @@ namespace TfsSharpTR.Roslyn.Enforcer
         public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<AnalyzerEnforcerSetting> usrVariables)
         {
             string settingOkMsg = CheckSetting(usrVariables);
-            var setting = usrVariables.SettingFileData;
+            var setting = usrVariables.Data;
             if (!string.IsNullOrEmpty(settingOkMsg))
                 return new TaskStatu("RET01", settingOkMsg);
             string buildPath = tfsVariables.BuildSourceDirectory;
@@ -99,7 +99,7 @@ namespace TfsSharpTR.Roslyn.Enforcer
 
         private string CheckSetting(UserVariable<AnalyzerEnforcerSetting> usrVariables)
         {
-            var setting = usrVariables?.SettingFileData;
+            var setting = usrVariables?.Data;
             if (setting == null)
                 return "Settings is missing.";
 

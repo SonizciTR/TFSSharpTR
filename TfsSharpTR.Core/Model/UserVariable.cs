@@ -13,10 +13,12 @@ namespace TfsSharpTR.Core.Model
     /// User settings that manage at web build screen
     /// </summary>
     /// <typeparam name="Tsetting"></typeparam>
-    public class UserVariable<Tsetting> : CommonVariable where Tsetting : BaseBuildSetting, new()
+    public class UserVariable<Tsetting> : CommonVariable where Tsetting : class
     {
-        public UserVariable(Dictionary<string, string> keys) : base(keys)
+        private string taskBelong;
+        public UserVariable(string taskName, Dictionary<string, string> keys) : base(keys)
         {
+            taskBelong = taskName;
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// Json setting file's all text
         /// </summary>
-        private string SettingFileDataString
+        private string DataasString
         {
             get
             {
@@ -45,17 +47,17 @@ namespace TfsSharpTR.Core.Model
         /// <summary>
         /// Task's special setting from json file
         /// </summary>
-        public Tsetting SettingFileData
+        public Tsetting Data
         {
             get
             {
-                string fData = SettingFileDataString;
+                string fData = DataasString;
                 if (string.IsNullOrEmpty(fData))
                     return default(Tsetting);
                 
-                string keyName = new Tsetting().SettingFileAreaName;
+                string keyName = taskBelong;
                 if (keyName == RawBasicBuildSetting.KeyBaseConfigArea)
-                {
+                {   
                     return JsonConvert.DeserializeObject<Tsetting>(fData);
                 }
                 else

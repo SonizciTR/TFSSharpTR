@@ -8,16 +8,8 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.StyleCopRelated
 {  
-    public class StyleCopSetting : BaseBuildSetting
+    public class StyleCopSetting
     {
-        public override string SettingFileAreaName
-        {
-            get
-            {
-                return "StyleCopTask";
-            }
-        }
-
         public List<string> ExcludedFiles { get; set; }
 
         /// <summary>

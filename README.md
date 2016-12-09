@@ -128,9 +128,9 @@ Other settings are all optional. Like "FileControlTask" part below.
 
 It is very easy. Look "TestTask.cs" file. 
 
-Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirstTask" etc...), this is your task. Inherit your class from BaseTask<T>. "T" should be inherited from BaseBuildSetting. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
+Add "TfsSharpTR.Core.dll" reference to your class library. Add a class ("MyFirstTask" etc...), this is your task. Inherit your class from BaseTask<T>. "T" is config model for your task. It will be parsed from json config file. Last step; add your task to "PreBuildTasks" or "PostBuildTasks" of json setting file. That is it ;) .
 
-If you want to add your custom setting, it is very easy. Add a class and inherit from BaseBuildSetting. Your class automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add your json format to setting file.
+If you don't have a custom setting, use "RawBasicBuildSetting". Your config model automatically parsed from setting file and added to UserVariable parameter of the method. Don't forget to add your json format to setting file. Your config name should be your task name in config json file.
 
 ## Install
 I am assuming you have enough privliges at TFS server.

@@ -183,7 +183,7 @@ namespace TfsSharpTR.UnitTest
         {
             var tsk = new CodeMetricTask();
             var rslt = RunTask(tsk.Initializer);
-
+            
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
             Assert.IsTrue(rslt.IsSuccess, rMsg);
         }

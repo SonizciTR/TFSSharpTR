@@ -18,7 +18,9 @@ namespace TfsSharpTR.Core.Model
         private string taskBelong;
         public UserVariable(string taskName, Dictionary<string, string> keys) : base(keys)
         {
-            taskBelong = taskName;
+            taskBelong = typeof(Tsetting) == typeof(RawBasicBuildSetting) 
+                ? RawBasicBuildSetting.KeyBaseConfigArea 
+                : taskName;
         }
 
         /// <summary>
@@ -54,10 +56,10 @@ namespace TfsSharpTR.Core.Model
                 string fData = DataasString;
                 if (string.IsNullOrEmpty(fData))
                     return default(Tsetting);
-                
+
                 string keyName = taskBelong;
                 if (keyName == RawBasicBuildSetting.KeyBaseConfigArea)
-                {   
+                {
                     return JsonConvert.DeserializeObject<Tsetting>(fData);
                 }
                 else
@@ -66,7 +68,7 @@ namespace TfsSharpTR.Core.Model
                     var tmpPart = msg[keyName];
                     if (tmpPart == null)
                         return null;
-                    
+
                     return JsonConvert.DeserializeObject<Tsetting>(tmpPart.ToString());
                 }
             }

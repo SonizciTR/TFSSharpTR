@@ -8,7 +8,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.PreBuild.FileControl
 {
-    public class FileControlSetting : IBaseBuildSetting
+    public class FileControlSetting : BaseBuildSetting
     {
         public override string SettingFileAreaName
         {

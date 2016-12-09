@@ -97,7 +97,7 @@
     <Compile Include="Helper\TFSHelper.cs" />
     <Compile Include="Helper\TFSClientLogic.cs" />
     <Compile Include="InitialLoader.cs" />
-    <Compile Include="Model\BaseVariable.cs" />
+    <Compile Include="Model\CommonVariable.cs" />
     <Compile Include="Model\BaseBuildSetting.cs" />
     <Compile Include="Model\ShellStatu.cs" />
     <Compile Include="Model\TaskItem.cs" />

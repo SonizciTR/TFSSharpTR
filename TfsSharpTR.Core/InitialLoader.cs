@@ -18,7 +18,7 @@ namespace TfsSharpTR.Core
             try
             {
                 var settTfs = new TfsVariable(tfsVariables);
-                var settUsr = new UserVariable<BaseBuildSetting>(usrVar);
+                var settUsr = new UserVariable<RawBasicBuildSetting>(usrVar);
                 Logger.Set(settUsr.WorkingPath);
 
                 if (settUsr.SettingFileData == null)
@@ -37,7 +37,7 @@ namespace TfsSharpTR.Core
             }
         }
 
-        private static TaskList ReOrder(UserVariable<BaseBuildSetting> settUsr, TaskList allTasks)
+        private static TaskList ReOrder(UserVariable<RawBasicBuildSetting> settUsr, TaskList allTasks)
         {
             var orderOrigin = settUsr.ActionName == "PreBuild" ? settUsr.SettingFileData.PreBuildTasks : settUsr.SettingFileData.PostBuildTasks;
             var orderedTaskList = new TaskList();
@@ -50,7 +50,7 @@ namespace TfsSharpTR.Core
             return orderedTaskList;
         }
 
-        private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<BaseBuildSetting> setting)
+        private static TaskList GetAllTasks(List<string> dllFiles, UserVariable<RawBasicBuildSetting> setting)
         {
             var tasks = new TaskList();
             var tmpSetting = setting.SettingFileData;

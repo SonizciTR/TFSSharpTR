@@ -12,12 +12,12 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.PreBuild
 {
-    public class TestAsyncTask : BaseTask<BaseBuildSetting>
+    public class TestAsyncTask : BaseTask<RawBasicBuildSetting>
     {
         private string folderPath;
         private const int waitTimeMs = 5000;
 
-        public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<BaseBuildSetting> usrVariables)
+        public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<RawBasicBuildSetting> usrVariables)
         {
             Stopwatch tmrWatch = Stopwatch.StartNew();
             TaskStatu tsk = new TaskStatu("TestAsyncTask at begining.");

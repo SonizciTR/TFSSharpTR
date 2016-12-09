@@ -7,7 +7,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.Metrics
 {
-    public class CodeMetricSetting : IBaseBuildSetting
+    public class CodeMetricSetting : BaseBuildSetting
     {
         public override string SettingFileAreaName
         {

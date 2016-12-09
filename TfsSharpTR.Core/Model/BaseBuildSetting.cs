@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TfsSharpTR.Core.Model
 {
-    public abstract class IBaseBuildSetting
+    public abstract class BaseBuildSetting
     {
         public abstract string SettingFileAreaName { get; }
     }
@@ -14,7 +14,7 @@ namespace TfsSharpTR.Core.Model
     /// <summary>
     /// Build settings, from Json file
     /// </summary>
-    public class BaseBuildSetting : IBaseBuildSetting
+    public class RawBasicBuildSetting : BaseBuildSetting
     {
         public const string KeyBaseConfigArea = "Base";
         public override string SettingFileAreaName

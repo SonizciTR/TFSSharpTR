@@ -7,7 +7,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.Enforcer
 {
-    public class AnalyzerEnforcerSetting : IBaseBuildSetting
+    public class AnalyzerEnforcerSetting : BaseBuildSetting
     {
         public override string SettingFileAreaName
         {

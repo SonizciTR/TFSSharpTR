@@ -13,7 +13,7 @@ namespace TfsSharpTR.Core.Model
     /// User settings that manage at web build screen
     /// </summary>
     /// <typeparam name="Tsetting"></typeparam>
-    public class UserVariable<Tsetting> : BaseVariable where Tsetting : IBaseBuildSetting, new()
+    public class UserVariable<Tsetting> : CommonVariable where Tsetting : BaseBuildSetting, new()
     {
         public UserVariable(Dictionary<string, string> keys) : base(keys)
         {
@@ -54,7 +54,7 @@ namespace TfsSharpTR.Core.Model
                     return default(Tsetting);
                 
                 string keyName = new Tsetting().SettingFileAreaName;
-                if (keyName == BaseBuildSetting.KeyBaseConfigArea)
+                if (keyName == RawBasicBuildSetting.KeyBaseConfigArea)
                 {
                     return JsonConvert.DeserializeObject<Tsetting>(fData);
                 }

@@ -15,11 +15,11 @@ namespace TfsSharpTR.PreBuild
     /// <summary>
     /// This is just a POC (proof of concept) class. 
     /// </summary>
-    public class TestTask : BaseTask<BaseBuildSetting>
+    public class TestTask : BaseTask<RawBasicBuildSetting>
     {
         private const int waitTimeMs = 5000;
 
-        public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<BaseBuildSetting> usrVariables)
+        public override TaskStatu Job(TfsVariable tfsVariables, UserVariable<RawBasicBuildSetting> usrVariables)
         {
             Stopwatch tmrWatch = Stopwatch.StartNew();
             TaskStatu tsk = new TaskStatu("TestTask start successfully");

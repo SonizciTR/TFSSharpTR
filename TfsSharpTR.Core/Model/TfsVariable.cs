@@ -10,7 +10,7 @@ namespace TfsSharpTR.Core.Model
     /// <summary>
     /// All the data gathered from: https://www.visualstudio.com/en-us/docs/build/define/variables
     /// </summary>
-    public class TfsVariable : BaseVariable
+    public class TfsVariable : CommonVariable
     {
         public TfsVariable(Dictionary<string, string> keys) : base(keys)
         {

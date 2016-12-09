@@ -7,7 +7,7 @@ using TfsSharpTR.Core.Model;
 
 namespace TfsSharpTR.Roslyn.PartialUnitTest
 {
-    public class PartialUnitTestSetting : IBaseBuildSetting
+    public class PartialUnitTestSetting : BaseBuildSetting
     {
         public override string SettingFileAreaName
         {

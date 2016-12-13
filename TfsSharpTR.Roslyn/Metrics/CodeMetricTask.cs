@@ -25,9 +25,10 @@ namespace TfsSharpTR.Roslyn.Metrics
                 return new TaskStatu("CM01", "No setting found");
 
             string buildPath = tfsVariables.BuildSourceDirectory;
-            var solutionsPath = string.IsNullOrEmpty(tfsVariables.SolutiontoBuild) ? 
-                SolutionHelper.FindSolutionFiles(buildPath)
-                : new string[] { tfsVariables.SolutiontoBuild };
+            var solutionsPath = SolutionHelper.FindSolutionFiles(buildPath);
+            solutionsPath = !string.IsNullOrEmpty(tfsVariables.SolutiontoBuild) ?
+                solutionsPath.Where(x => x.Contains(tfsVariables.SolutiontoBuild)).ToArray()
+                : solutionsPath;
 
             if (!solutionsPath.Any())
                 return new TaskStatu("CM02", "No solution file found");

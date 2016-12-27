@@ -12,6 +12,8 @@ namespace TfsSharpTR.StyleCopRelated
     {
         public List<string> ExcludedFiles { get; set; }
 
+        public List<string> ExcludedProjects { get; set; }
+
         /// <summary>
         /// Acceptable max error count
         /// </summary>

@@ -14,6 +14,7 @@ using TfsSharpTR.AutoDeploy;
 using TfsSharpTR.Roslyn.Enforcer;
 using TfsSharpTR.Roslyn.Metrics;
 using TfsSharpTR.Roslyn.PartialUnitTest;
+using System.IO;
 
 namespace TfsSharpTR.UnitTest
 {
@@ -156,6 +157,23 @@ namespace TfsSharpTR.UnitTest
             
             var rMsg = rslt.Msgs.Any() ? rslt.Msgs[0] : "No Message";
             Assert.IsTrue(rslt.IsSuccess, rMsg);
+        }
+
+        [TestMethod]
+        public void StyleCopTask_ExclusionCheck()
+        {
+            var tsk = new StyleCopTask();
+            string srcFolder = Environment.CurrentDirectory + "\\";
+            string tmpSrcFolder = Path.GetFullPath(Path.Combine(srcFolder, @"..\..\..\"));
+            var sourceFiles = Directory.GetFiles(tmpSrcFolder, "*.cs", SearchOption.AllDirectories).ToList();
+
+            var excFiles = new List<string> { "", "" };
+            var excProjects = new List<string> { "Debug", "TfsSharpTR.R*", "TfsSharpTR.C*", "*.AutoDeploy", "TfsSharpTR.P*", "TfsSharpTR.U*", "TfsSharpTR.StyleCopRelated" };
+            //var excProjects = new List<string> { "TfsSharpTR.AutoDeploy" };
+            var rslt = tsk.FilterFiles(sourceFiles, excFiles, excProjects);
+
+            var rMsg = rslt.Any() ? string.Join(", ", rslt) : "No Message";
+            Assert.IsTrue(!rMsg.Any(), rMsg);
         }
 
         [TestMethod]

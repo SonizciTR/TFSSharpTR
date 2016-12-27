@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TfsSharpTR.Core;
 using TfsSharpTR.Core.Common;
@@ -35,16 +36,19 @@ namespace TfsSharpTR.StyleCopRelated
             if (GlobalSetting == null)
                 return new TaskStatu("SCT02", "No setting loaded.");
 
-            bool isExclusionExist = GlobalSetting.ExcludedFiles.Any();
+            bool isExcFilesExist = GlobalSetting.ExcludedFiles.Any();
+            bool isExcProjectsExist = GlobalSetting.ExcludedProjects.Any();
             SourceBaseFolder = tfsVariables.BuildSourceDirectory;
             WriteDetail("Source Folder : " + SourceBaseFolder);
             WriteDetail("Exclusion files : " +
-                (isExclusionExist ? string.Join(", ", GlobalSetting.ExcludedFiles) : "None"));
+                (isExcFilesExist ? string.Join(", ", GlobalSetting.ExcludedFiles) : "None"));
+            WriteDetail("Exclusion projects : " +
+                (isExcFilesExist ? string.Join(", ", GlobalSetting.ExcludedProjects) : "None"));
 
             var srcFilesAll = Directory.GetFiles(SourceBaseFolder, "*.cs", SearchOption.AllDirectories).ToList();
             List<string> srcFilestoCheck;
-            if (isExclusionExist)
-                srcFilestoCheck = FilterFiles(srcFilesAll, GlobalSetting.ExcludedFiles);
+            if (isExcFilesExist || isExcProjectsExist)
+                srcFilestoCheck = FilterFiles(srcFilesAll, GlobalSetting.ExcludedFiles, GlobalSetting.ExcludedProjects);
             else
                 srcFilestoCheck = srcFilesAll;
 
@@ -191,23 +195,64 @@ namespace TfsSharpTR.StyleCopRelated
             }
         }
 
-        private List<string> FilterFiles(List<string> srcFilesAll, List<string> excludedFiles)
+        public List<string> FilterFiles(List<string> srcFilesAll, List<string> excludedFiles, List<string> excludedProjects)
         {
             if ((excludedFiles == null) || (!excludedFiles.Any()))
                 return srcFilesAll;
 
-            var tmpExcluded = excludedFiles.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            var tmpExcludedFiles = excludedFiles.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            var tmpExludedProjects = excludedProjects.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            //var tmpRegexProjects = tmpExludedProjects.Select(x => new Regex(WildcardToRegex(x), RegexOptions.IgnoreCase)).ToList();
+
             var checkGroup = new List<string>();
             foreach (var itmFile in srcFilesAll)
             {
-                bool isMatch = tmpExcluded.Any(x => itmFile.EndsWith(x));
+                bool isMatchFile = tmpExcludedFiles.Any(x => itmFile.EndsWith(x));
+                //bool isMatchProject = tmpRegexProjects.Any(x => x.IsMatch(itmFile));
+                bool isMatchProject = IsFolderMatch(tmpExludedProjects, itmFile);
 
-                if (isMatch)
+                if (isMatchFile || isMatchProject)
                     continue;
 
                 checkGroup.Add(itmFile);
             }
             return checkGroup;
+        }
+
+        private bool IsFolderMatch(List<string> tmpExludedProjects, string itmFile)
+        {
+            try
+            {
+                var spltd = itmFile.Split('\\');
+
+                foreach (var exc in tmpExludedProjects)
+                {
+                    var tmpKeyword = exc.Replace("*", "");
+                    for (int i = 0; i < spltd.Length - 1; i++)
+                    {
+                        bool isMatch = false;
+                        if (exc.StartsWith("*") && exc.EndsWith("*"))
+                            isMatch = spltd[i].Contains(tmpKeyword);
+                        else if (exc.StartsWith("*") && !exc.EndsWith("*"))
+                            isMatch = spltd[i].EndsWith(tmpKeyword);
+                        else if (!exc.StartsWith("*") && exc.EndsWith("*"))
+                            isMatch = spltd[i].StartsWith(tmpKeyword);
+                        else
+                            isMatch = spltd[i] == tmpKeyword;
+                        if (isMatch)
+                            return true;
+                    }
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
+        public static string WildcardToRegex(string pattern)
+        {
+            return pattern.Replace("*", ".*").Replace("?", ".").Replace(".", "\\.");
+            //return pattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", ".");
         }
     }
 }

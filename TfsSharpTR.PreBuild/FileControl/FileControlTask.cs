@@ -38,7 +38,7 @@ namespace TfsSharpTR.PreBuild.FileControl
                 if (rule.AllowedGroup.Any(x => (usrGroups.Any(y => y.EndsWith(x)))))
                     continue;
 
-                return new TaskStatu("FC01", string.Format("[{0}} file is restirected for [{1}] user.", sourceFile, adName));
+                return new TaskStatu("FC01", string.Format("[{0}] file is restirected for [{1}] user.", sourceFile, adName));
             }
 
             return new TaskStatu(string.Format("All changes controlled successfully. FileCount/TotalRule = {0}/{1}.", allFiles.Count, setting.Files.Count));

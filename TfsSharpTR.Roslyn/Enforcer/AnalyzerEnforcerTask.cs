@@ -27,7 +27,12 @@ namespace TfsSharpTR.Roslyn.Enforcer
             if (!string.IsNullOrEmpty(settingOkMsg))
                 return new TaskStatu("RET01", settingOkMsg);
             string buildPath = tfsVariables.BuildSourceDirectory;
+
             string[] slnFiles = SolutionHelper.FindSolutionFiles(buildPath);
+            slnFiles = !string.IsNullOrEmpty(tfsVariables.SolutiontoBuild) ?
+                slnFiles.Where(x => x.Contains(tfsVariables.SolutiontoBuild)).ToArray()
+                : slnFiles;
+
             if ((slnFiles == null) || (!slnFiles.Any()))
                 return new TaskStatu("RET02", "No solution file found.");
 

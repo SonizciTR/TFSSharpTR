@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TfsSharpTR.Core.Common;
 
@@ -141,6 +142,26 @@ namespace TfsSharpTR.Core.Helper
             string diffName = fullFilePath.Replace(folderName, "").TrimStart('/', '\\');
             diffName = diffName.TrimStart('\\', '/');
             return diffName;
+        }
+
+        /// <summary>
+        /// Try to find with asteriks(*) charater styled pattern.
+        /// 
+        /// </summary>
+        /// <param name="sourceFullPath">example :> C:\Folder1\Folder2\....\1.txt</param>
+        /// <param name="patternToLook">exmple :> *.txt</param>
+        /// <returns>Is pattern found in source path</returns>
+        public static bool IsFilePatternExist(string sourceFullPath, string patternToLook)
+        {
+            var reg = new Regex(WildcardToRegex(patternToLook), RegexOptions.IgnoreCase);
+            return reg.IsMatch(sourceFullPath);
+        }
+
+        private static string WildcardToRegex(string pattern)
+        {
+            return pattern.Replace(@"\", @"\").Replace("*", @"\S+").Replace(".", @"\.");
+            //return pattern.Replace("*", ".*").Replace("?", ".").Replace(".", "\\.");
+            //return pattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", ".");
         }
     }
 }

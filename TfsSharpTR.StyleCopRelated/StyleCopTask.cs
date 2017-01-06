@@ -209,7 +209,8 @@ namespace TfsSharpTR.StyleCopRelated
             {
                 bool isMatchFile = tmpExcludedFiles.Any(x => itmFile.EndsWith(x));
                 //bool isMatchProject = tmpRegexProjects.Any(x => x.IsMatch(itmFile));
-                bool isMatchProject = IsFolderMatch(tmpExludedProjects, itmFile);
+                //bool isMatchProject = IsFolderMatch(tmpExludedProjects, itmFile);
+                bool isMatchProject = tmpExludedProjects.Any(x => FileHelper.IsFilePatternExist(itmFile, x));
 
                 if (isMatchFile || isMatchProject)
                     continue;
@@ -217,42 +218,6 @@ namespace TfsSharpTR.StyleCopRelated
                 checkGroup.Add(itmFile);
             }
             return checkGroup;
-        }
-
-        private bool IsFolderMatch(List<string> tmpExludedProjects, string itmFile)
-        {
-            try
-            {
-                var spltd = itmFile.Split('\\');
-
-                foreach (var exc in tmpExludedProjects)
-                {
-                    var tmpKeyword = exc.Replace("*", "");
-                    for (int i = 0; i < spltd.Length - 1; i++)
-                    {
-                        bool isMatch = false;
-                        if (exc.StartsWith("*") && exc.EndsWith("*"))
-                            isMatch = spltd[i].Contains(tmpKeyword);
-                        else if (exc.StartsWith("*") && !exc.EndsWith("*"))
-                            isMatch = spltd[i].EndsWith(tmpKeyword);
-                        else if (!exc.StartsWith("*") && exc.EndsWith("*"))
-                            isMatch = spltd[i].StartsWith(tmpKeyword);
-                        else
-                            isMatch = spltd[i] == tmpKeyword;
-                        if (isMatch)
-                            return true;
-                    }
-                }
-            }
-            catch { }
-
-            return false;
-        }
-
-        public static string WildcardToRegex(string pattern)
-        {
-            return pattern.Replace("*", ".*").Replace("?", ".").Replace(".", "\\.");
-            //return pattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", ".");
         }
     }
 }

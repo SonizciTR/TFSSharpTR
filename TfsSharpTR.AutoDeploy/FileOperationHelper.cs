@@ -1,4 +1,5 @@
-﻿using TfsSharpTR.Core.Helper;
+﻿using System.Text.RegularExpressions;
+using TfsSharpTR.Core.Helper;
 
 namespace TfsSharpTR.AutoDeploy
 {

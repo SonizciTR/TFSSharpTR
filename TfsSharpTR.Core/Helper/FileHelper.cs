@@ -145,7 +145,7 @@ namespace TfsSharpTR.Core.Helper
         }
 
         /// <summary>
-        /// Try to find with asteriks(*) charater styled pattern.
+        /// Try to find with asterisk (*) charater styled pattern.
         /// 
         /// </summary>
         /// <param name="sourceFullPath">example :> C:\Folder1\Folder2\....\1.txt</param>

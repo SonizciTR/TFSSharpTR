@@ -33,7 +33,8 @@ I decided th sperate tasks by their dependencies. So you will see different clas
   "PostBuildTasks": [ "TestTask" ], //Must have settings
 
   "StyleCopTask": {
-		"ExcludedFiles": [ "GlobalSupression.cs", "AssemblyInfo.cs" ],
+		"ExcludedFiles": [ "GlobalSuppressions.cs", "AssemblyInfo.cs" ],
+		"ExcludedProjects": [ "TfsSharpTR.R*", "TfsSharpTR.StyleCopRelated" ],
 		"MaxErrorCount": 0,
 		"MaxLogCount": 30,
 		"TreatWarnAsError": false,

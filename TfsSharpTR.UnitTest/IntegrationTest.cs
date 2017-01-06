@@ -34,9 +34,9 @@ namespace TfsSharpTR.UnitTest
             dict.Add("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "");
             dict.Add("BUILD_SOURCEVERSION", "");
             dict.Add("BUILD_REPOSITORY_NAME", "");
-            dict.Add("BUILD_REPOSITORY_PROVIDER", "");
+            dict.Add("BUILD_REPOSITORY_PROVIDER", "TfsGit");
             dict.Add("BUILD_BINARIESDIRECTORY", @"");
-            dict.Add("BUILD_SOURCESDIRECTORY", @"C:\Kod\Test2015AutoDeploy");
+            dict.Add("BUILD_SOURCESDIRECTORY", @"C:\Kod\TFSSharpTR");
             dict.Add("BUILD_REPOSITORY_LOCALPATH", @"");
 
             return dict;

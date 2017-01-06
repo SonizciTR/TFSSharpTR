@@ -151,6 +151,10 @@ namespace TfsSharpTR.StyleCopRelated
                 file = e.Element.Document.SourceCode.Path;
             }
 
+            //This is internal stylecop error. Generally happens when new c# version style codding.
+            if (e.Violation?.Rule?.CheckId == "SA0102")
+                return;
+
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(file);
             var lnNumber = string.Format(CultureInfo.CurrentUICulture, ". LineNumber: {0}, ", e.LineNumber.ToString(CultureInfo.CurrentCulture));
